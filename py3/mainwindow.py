@@ -495,12 +495,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # <editor-fold desc="Imaging Camera">
     def camera_loop(self):
-        thread = threading.Thread(target=self.camera_loop_thread)
-        thread.daemon = True
-        thread.start()
+        if self.camera_loop_button.isChecked():
+            thread = threading.Thread(target=self.camera_loop_thread)
+            thread.daemon = True
+            thread.start()
+        else:
+            self.camera_capture_button.setChecked(False)
 
     def camera_loop_thread(self):
-        out = cv2.VideoWriter('output.avi', -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
+        avi_name = '{}.avi'.format(str(ephem.now()).replace('/', '-').replace(':', '', 1).replace(':', '_'))
+        out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
         while self.camera_loop_button.isChecked():
             exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
             image = appglobals.camera.capture(exp_sec, True)
@@ -509,8 +513,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             image = Image.fromarray(image)
             pix = ImageQt.toqpixmap(image)
             self.camera_preview_label.setPixmap(pix)
-        if os.path.getsize('output.avi') == 0:
-            os.remove('output.avi')
+        out.release()
+        if os.path.getsize(avi_name) == 0:
+            os.remove(avi_name)
     # </editor-fold>
 
     # <editor-fold desc="Focuser">

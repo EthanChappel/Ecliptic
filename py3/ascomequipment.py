@@ -7,7 +7,6 @@ clr.AddReference("ASCOM.DriverAccess")
 clr.AddReference("ASCOM.Utilities")
 import ASCOM.DriverAccess
 import ASCOM.Utilities
-from System import Array
 
 
 class Device():
@@ -102,22 +101,14 @@ class Camera(Device):
         return self.device.ImageReady
 
     def capture(self, exposure, light):
-        print(0)
         self.device.StartExposure(exposure, light)
-        print(1)
         while not self.device.ImageReady:
             pass
-        print(2)
         image = self.device.ImageArray
-        print(3)
         width, height = self.device.NumX, self.device.NumY
-        print(4)
-        image = np.asarray(list(image), dtype=np.uint8).reshape(width, height)
-        print(5)
+        image = np.asarray(list(image), dtype=np.uint8).reshape(width, height)  # list(image) is slow
         image = np.rot90(image, 1)
-        print(6)
         image = np.flipud(image)
-        print(8)
         return image
 
     def stop_exposure(self):

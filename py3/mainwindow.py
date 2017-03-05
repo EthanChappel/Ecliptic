@@ -397,13 +397,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.filter_table.cellWidget(count, 4).setValue(int(f['Upper Cutoff']))
             count += 1
 
-    def setup_driver(self, driver, device):
-        appglobals.devices[device].disconnect()
-        appglobals.devices[device].setup_dialog()
-        parameters = appglobals.devices[device].get_parameters(driver)
-        check = self.sender().parent()
-        self.equip_settings(check, device)
-
     def setup_telescope(self):
         appglobals.telescope.disconnect()
         appglobals.telescope.setup_dialog()
@@ -767,10 +760,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.exec_()
 
     def close_app(self):
-        for d in appglobals.devices:
-            if appglobals.devices[d].connected():
-                appglobals.devices[d].disconnect()
-                appglobals.devices[d].dispose()
+        appglobals.telescope = None
+        appglobals.camera = None
+        appglobals.guider = None
+        appglobals.focuser = None
+        appglobals.wheel = None
         sys.exit()
 
     def closeEvent(self, event):

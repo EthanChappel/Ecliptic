@@ -12,7 +12,7 @@ def excepthook(exc_type, exc_val, tracebackobj):
     messagebox = QtWidgets.QMessageBox()
     messagebox.setIcon(QtWidgets.QMessageBox.Critical)
 
-    message = str(''.join(traceback.format_tb(tracebackobj)))
+    message = str("".join(traceback.format_tb(tracebackobj)))
     message_text = str(exc_type) + message + str(exc_val)
     print(message_text)
     messagebox.setWindowTitle("Exception - Solar System Sequencer")

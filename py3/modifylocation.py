@@ -9,12 +9,12 @@ import appglobals
 class LocationDialog(QtWidgets.QDialog):
     def __init__(self):
         super(LocationDialog, self).__init__()
-        self.location = {'Latitude': '00:00:00', 'Longitude': '00:00:00'}
-        if os.path.exists('location.json'):
-            with open('location.json', 'r') as f:
+        self.location = {"Latitude": "00:00:00", "Longitude": "00:00:00"}
+        if os.path.exists("location.json"):
+            with open("location.json", "r") as f:
                 self.location = json.load(f)
-        self.lat = self.location['Latitude'].split(':')
-        self.long = self.location['Longitude'].split(':')
+        self.lat = self.location["Latitude"].split(":")
+        self.long = self.location["Longitude"].split(":")
         self.ui = ui_modifylocation.Ui_LocationDialog()
 
         self.ui.setupUi(self)
@@ -33,15 +33,15 @@ class LocationDialog(QtWidgets.QDialog):
     # Do if "OK" button is pressed
     def ok(self):
         self.accept()
-        self.latitude = str(self.ui.lat_d_spin.value()) + ':' + str(self.ui.lat_m_spin.value()) + ':' + str(self.ui.lat_s_spin.value())
-        self.longitude = str(self.ui.long_d_spin.value()) + ':' + str(self.ui.long_m_spin.value()) + ':' + str(self.ui.long_s_spin.value())
+        self.latitude = str(self.ui.lat_d_spin.value()) + ":" + str(self.ui.lat_m_spin.value()) + ":" + str(self.ui.lat_s_spin.value())
+        self.longitude = str(self.ui.long_d_spin.value()) + ":" + str(self.ui.long_m_spin.value()) + ":" + str(self.ui.long_s_spin.value())
 
-        if os.path.exists('location.json'):
-            os.remove('location.json')
+        if os.path.exists("location.json"):
+            os.remove("location.json")
         location_dict = {}
-        location_dict.update({'Latitude': self.latitude})
-        location_dict.update({'Longitude': self.longitude})
-        with open('location.json', 'a') as f:
+        location_dict.update({"Latitude": self.latitude})
+        location_dict.update({"Longitude": self.longitude})
+        with open("location.json", "a") as f:
             json.dump(location_dict, f, indent=0)
 
     # Do if "Cancel" button is pressed

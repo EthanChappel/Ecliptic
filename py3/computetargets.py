@@ -18,56 +18,56 @@ class ComputeTargets:
         self.neptune = ephem.Neptune()
 
     def compute_targets(self, obj):
-        if obj == 'Sun':
+        if obj == "Sun":
             self.sun.compute(self.observer)
-        elif obj == 'Mercury':
+        elif obj == "Mercury":
             self.mercury.compute(self.observer)
-        elif obj == 'Venus':
+        elif obj == "Venus":
             self.venus.compute(self.observer)
-        elif obj == 'Mars':
+        elif obj == "Mars":
             self.mars.compute(self.observer)
-        elif obj == 'Jupiter':
+        elif obj == "Jupiter":
             self.jupiter.compute(self.observer)
-        elif obj == 'Saturn':
+        elif obj == "Saturn":
             self.saturn.compute(self.observer)
-        elif obj == 'Uranus':
+        elif obj == "Uranus":
             self.uranus.compute(self.observer)
-        elif obj == 'Neptune':
+        elif obj == "Neptune":
             self.neptune.compute(self.observer)
 
     def object_alt(self, obj):
         self.compute_targets(obj)
-        if obj == 'Mercury':
+        if obj == "Mercury":
             rascension = self.mercury.ra
             declination = self.mercury.dec
             azimuth = self.mercury.az
             altitude = self.mercury.alt
-        elif obj == 'Venus':
+        elif obj == "Venus":
             rascension = self.venus.ra
             declination = self.venus.dec
             azimuth = self.venus.az
             altitude = self.venus.alt
-        elif obj == 'Mars':
+        elif obj == "Mars":
             rascension = self.mars.ra
             declination = self.mars.dec
             azimuth = self.mars.az
             altitude = self.mars.alt
-        elif obj == 'Jupiter':
+        elif obj == "Jupiter":
             rascension = self.jupiter.ra
             declination = self.jupiter.dec
             azimuth = self.jupiter.az
             altitude = self.jupiter.alt
-        elif obj == 'Saturn':
+        elif obj == "Saturn":
             rascension = self.saturn.ra
             declination = self.saturn.dec
             azimuth = self.saturn.az
             altitude = self.saturn.alt
-        elif obj == 'Uranus':
+        elif obj == "Uranus":
             rascension = self.uranus.ra
             declination = self.uranus.dec
             azimuth = self.uranus.az
             altitude = self.uranus.alt
-        elif obj == 'Neptune':
+        elif obj == "Neptune":
             rascension = self.neptune.ra
             declination = self.neptune.dec
             azimuth = self.neptune.az
@@ -77,7 +77,7 @@ class ComputeTargets:
             declination = 0
             azimuth = 0
             altitude = 0
-        return {'ra': rascension, 'dec': declination, 'az': azimuth, 'alt': altitude, 'date': self.observer.date}
+        return {"ra": rascension, "dec": declination, "az": azimuth, "alt": altitude, "date": self.observer.date}
 
     def twilight(self):
         sun_error = None
@@ -92,7 +92,7 @@ class ComputeTargets:
             sun_set = None
             sun_error = e
 
-        self.observer.horizon = '-6'
+        self.observer.horizon = "-6"
         try:
             civtwi_rise = self.observer.previous_rising(self.sun).tuple()
             civtwi_set = self.observer.next_setting(self.sun).tuple()
@@ -101,7 +101,7 @@ class ComputeTargets:
             civtwi_set = None
             civil_error = e
 
-        self.observer.horizon = '-12'
+        self.observer.horizon = "-12"
         try:
             nauttwi_rise = self.observer.previous_rising(self.sun).tuple()
             nauttwi_set = self.observer.next_setting(self.sun).tuple()
@@ -110,7 +110,7 @@ class ComputeTargets:
             nauttwi_set = None
             nautical_error = e
 
-        self.observer.horizon = '-18'
+        self.observer.horizon = "-18"
         try:
             astrotwi_rise = self.observer.previous_rising(self.sun).tuple()
             astrotwi_set = self.observer.next_setting(self.sun).tuple()
@@ -119,6 +119,6 @@ class ComputeTargets:
             astrotwi_set = None
             astronomical_error = e
 
-        self.observer.horizon = '0'
+        self.observer.horizon = "0"
         return sun_rise, civtwi_rise, nauttwi_rise, astrotwi_rise, sun_set, civtwi_set, nauttwi_set, astrotwi_set, \
                sun_error, civil_error, nautical_error, astronomical_error

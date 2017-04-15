@@ -12,7 +12,7 @@ import modifylocation
 import targetswindow
 from computetargets import ComputeTargets
 import appglobals
-if sys.platform.startswith('win'):
+if sys.platform.startswith("win"):
     import ascomequipment
 
 
@@ -21,7 +21,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
 
         self.menu = QtWidgets.QMenu()
-        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/icons/logo.svg'))
+        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
         self.was_hidden = False
         self.status_coords_label = QtWidgets.QLabel()
         self.setupUi(self)
@@ -141,7 +141,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set label to show latitude and longitude and show it on status bar
         self.status_coords_label.setText(
-            'Latitude: ' + str(appglobals.location["Latitude"]) + '°,  Longitude: ' +
+            "Latitude: " + str(appglobals.location["Latitude"]) + "°,  Longitude: " +
             str(appglobals.location["Longitude"]) + "°")
         self.statusbar.addWidget(self.status_coords_label)
 
@@ -245,8 +245,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # Save contents of schedule_table into schedule.json
     def save_schedule(self):
-        if os.path.exists('schedule.json'):
-            os.remove('schedule.json')
+        if os.path.exists("schedule.json"):
+            os.remove("schedule.json")
         schedule_list = []
         for row in range(self.schedule_table.rowCount()):
             schedule_dict = {}
@@ -262,7 +262,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 schedule_dict.update({header: value})
             schedule_list.append(schedule_dict)
             self.schedule.update({self.schedule_dateedit.text(): schedule_list})
-        with open('schedule.json', 'a') as f:
+        with open("schedule.json", "a") as f:
             json.dump(self.schedule, f, indent=4)
 
     # Load contents of schedule.json into schedule_table
@@ -272,9 +272,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             for f in self.schedule[schedule]:
                 self.add_schedule_row()
-                time = QtCore.QTime.fromString(f['Time'])
-                target = self.schedule_table.cellWidget(count, 1).findText(f['Target'], QtCore.Qt.MatchFixedString)
-                set_filter = self.schedule_table.cellWidget(count, 2).findText(f['Filter'], QtCore.Qt.MatchFixedString)
+                time = QtCore.QTime.fromString(f["Time"])
+                target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
+                set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
 
                 self.schedule_table.cellWidget(count, 0).blockSignals(True)
                 self.schedule_table.cellWidget(count, 1).blockSignals(True)
@@ -286,9 +286,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.schedule_table.cellWidget(count, 0).setTime(time)
                 self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
                 self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
-                self.schedule_table.cellWidget(count, 3).setValue(int(f['Exposure']))
-                self.schedule_table.cellWidget(count, 4).setValue(int(f['Gain']))
-                self.schedule_table.cellWidget(count, 5).setValue(int(f['Integration']))
+                self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
+                self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
+                self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
 
                 self.schedule_table.cellWidget(count, 0).blockSignals(False)
                 self.schedule_table.cellWidget(count, 1).blockSignals(False)
@@ -318,8 +318,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         upper_spinbox.editingFinished.connect(self.save_filters)
         brand_lineedit.editingFinished.connect(self.save_filters)
 
-        lower_spinbox.setSuffix('nm')
-        upper_spinbox.setSuffix('nm')
+        lower_spinbox.setSuffix("nm")
+        upper_spinbox.setSuffix("nm")
 
         pos_spinbox.setMinimum(0)
         lower_spinbox.setMinimum(0)
@@ -345,8 +345,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # Save contents of filter_table into filters.json
     def save_filters(self):
-        if os.path.exists('filters.json'):
-            os.remove('filters.json')
+        if os.path.exists("filters.json"):
+            os.remove("filters.json")
         filter_list = []
         for row in range(self.filter_table.rowCount()):
             filter_dict = {}
@@ -358,7 +358,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     value = str(self.filter_table.cellWidget(row, col).text())
                 filter_dict.update({header: value})
             filter_list.append(filter_dict)
-        with open('filters.json', 'a') as f:
+        with open("filters.json", "a") as f:
             json.dump(filter_list, f, indent=0)
         with open("filters.json", "r") as f:
             self.filters = json.load(f)
@@ -390,11 +390,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         count = 0
         for f in filters:
             self.add_filter_row()
-            self.filter_table.cellWidget(count, 0).setText(f['Name'])
-            self.filter_table.cellWidget(count, 1).setText(f['Brand'])
-            self.filter_table.cellWidget(count, 2).setValue(int(f['Wheel Position']))
-            self.filter_table.cellWidget(count, 3).setValue(int(f['Lower Cutoff']))
-            self.filter_table.cellWidget(count, 4).setValue(int(f['Upper Cutoff']))
+            self.filter_table.cellWidget(count, 0).setText(f["Name"])
+            self.filter_table.cellWidget(count, 1).setText(f["Brand"])
+            self.filter_table.cellWidget(count, 2).setValue(int(f["Wheel Position"]))
+            self.filter_table.cellWidget(count, 3).setValue(int(f["Lower Cutoff"]))
+            self.filter_table.cellWidget(count, 4).setValue(int(f["Upper Cutoff"]))
             count += 1
 
     # Set observing location
@@ -405,7 +405,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             with open("location.json", "r") as f:
                 appglobals.location = json.load(f)
         self.status_coords_label.setText(
-            'Latitude: ' + str(appglobals.location["Latitude"]) + u"°,  Longitude: " + str(
+            "Latitude: " + str(appglobals.location["Latitude"]) + u"°,  Longitude: " + str(
                 appglobals.location["Longitude"]) + u"°")
         self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
 
@@ -419,7 +419,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
         messagebox.setWindowTitle("Solar System Sequencer")
-        messagebox.setText("{0} failed to connect.".format(name))
+        messagebox.setText(f"{name} failed to connect.")
         messagebox.exec_()
 
     # <editor-fold desc="Telescope">
@@ -433,7 +433,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.telescope.name_()
                 self.telescope_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Telescope Connected", "{0} has been connected.".format(name),
+                    self.tray_icon.showMessage("Telescope Connected", f"{name} has been connected.",
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -441,7 +441,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.mount_group.isChecked():
             try:
@@ -450,7 +450,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except AttributeError:
                 pass
             appglobals.telescope = None
-            self.telescope_name_label.setText('Not Connected')
+            self.telescope_name_label.setText("Not Connected")
 
     def setup_telescope(self):
         appglobals.telescope.disconnect()
@@ -467,7 +467,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.telescope_action.setChecked(False)
 
     def compute_target(self, target, time, print_=False):
-        if target == 'Stop' or target == 'Home' or target == '':
+        if target == "Stop" or target == "Home" or target == "":
             self.goto_target()
         else:
             compute_alt = ComputeTargets(time, appglobals.location["Latitude"], appglobals.location["Longitude"])
@@ -483,9 +483,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         goto_thread.start()
 
     def goto_target_thread(self):
-        if self.object_combobox.currentText() == 'Home':
+        if self.object_combobox.currentText() == "Home":
             appglobals.telescope.home()
-        elif self.object_combobox.currentText() == 'Stop' or self.sender() is self.slewstop_button:
+        elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
             appglobals.telescope.stop_tracking()
         else:
             coords = self.compute_target(self.object_combobox.currentText(), ephem.now())
@@ -523,7 +523,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.guider.name_()
                 self.guide_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Auto-Guider Connected", "{0} has been connected.".format(name),
+                    self.tray_icon.showMessage("Auto-Guider Connected", f"{name} has been connected.",
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -531,7 +531,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.autoguide_group.isChecked():
             try:
@@ -540,7 +540,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except AttributeError as e:
                 pass
             appglobals.guider = None
-            self.guide_name_label.setText('Not Connected')
+            self.guide_name_label.setText("Not Connected")
 
     def setup_autoguider(self):
         appglobals.guider.disconnect()
@@ -584,7 +584,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.camera.name_()
                 self.camera_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Camera Connected", "{0} has been connected.".format(name),
+                    self.tray_icon.showMessage("Camera Connected", f"{name} has been connected.",
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -592,7 +592,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.camera_group.isChecked():
             try:
@@ -601,7 +601,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except AttributeError:
                 pass
             appglobals.camera = None
-            self.camera_name_label.setText('Not Connected')
+            self.camera_name_label.setText("Not Connected")
 
     def setup_camera(self):
         appglobals.camera.disconnect()
@@ -629,7 +629,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_capture_button.setChecked(False)
 
     def camera_loop_thread(self):
-        avi_name = '{}.avi'.format(str(ephem.now()).replace('/', '-').replace(':', '', 1).replace(':', '_'))
+        name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
+        avi_name = f"{name_format}.avi"
         out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
         while self.camera_loop_button.isChecked():
             exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
@@ -656,7 +657,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.focuser.name_()
                 self.focuser_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Focuser Connected", "{0} has been connected.".format(name),
+                    self.tray_icon.showMessage("Focuser Connected", f"{name} has been connected.",
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -664,7 +665,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.focuser_group.isChecked():
             try:
@@ -675,7 +676,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except AttributeError as e:
                 print(e)
             appglobals.focuser = None
-            self.focuser_name_label.setText('Not Connected')
+            self.focuser_name_label.setText("Not Connected")
 
     def setup_focuser(self):
         appglobals.focuser.disconnect()
@@ -707,12 +708,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if appglobals.focuser.absolute:
             position = self.focuser_position_spinbox.text()
             appglobals.focuser.move(position)
-        ''' Attempt at Relative Focusing
+        """ Attempt at Relative Focusing
         old_pos = app_globals.devices["Focuser"].focuser_position()
         else:
             position = int(self.focuser_position_spinbox.text()) - old_pos
             print(int(self.focuser_position_spinbox.text()), old_pos, position)
-        '''
+        """
 
     def temp_comp(self):
         state = self.temp_checkbox.isChecked()
@@ -736,7 +737,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.wheel.name_()
                 self.wheel_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Filter Wheel Connected", "{0} has been connected.".format(name),
+                    self.tray_icon.showMessage("Filter Wheel Connected", f"{name} has been connected.",
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -744,7 +745,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.wheel_group.isChecked():
             try:
@@ -755,7 +756,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except AttributeError as e:
                 print(e)
             appglobals.wheel = None
-            self.wheel_name_label.setText('Not Connected')
+            self.wheel_name_label.setText("Not Connected")
 
     def setup_filterwheel(self):
         appglobals.wheel.disconnect()

@@ -28,6 +28,6 @@ def switch_style(app, flag):
                           "titlebar-close-icon: url(:/icons/ic_close_white_48px.svg);}")
 
         app.setPalette(palette)
-        app.setStyle('Fusion')
+        app.setStyle("Fusion")
     elif not flag:
-        app.setStyle('WindowsVista')
+        app.setStyle("WindowsVista")

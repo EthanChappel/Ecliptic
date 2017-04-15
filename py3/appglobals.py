@@ -14,4 +14,4 @@ if os.path.exists("location.json"):
         try:
             location = json.load(f)
         except json.decoder.JSONDecodeError:
-            location = {'Latitude': 0.0, 'Longitude': 0.0}
+            location = {"Latitude": 0.0, "Longitude": 0.0}

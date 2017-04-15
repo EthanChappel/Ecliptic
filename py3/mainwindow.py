@@ -20,6 +20,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        self.menu = QtWidgets.QMenu()
+        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/icons/logo.svg'))
+        self.was_hidden = False
         self.status_coords_label = QtWidgets.QLabel()
         self.setupUi(self)
 
@@ -58,11 +61,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         window_size.moveCenter(desktop)
         self.move(window_size.topLeft())
 
-        self.was_hidden = False
-
         # Tray icon
-        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(':/icons/logo.svg'))
-        self.menu = QtWidgets.QMenu()
         self.menu.addAction(self.exit_action)
         show_action = self.menu.addAction("Open")
         self.menu.addMenu(self.menu_equipment)
@@ -142,7 +141,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set label to show latitude and longitude and show it on status bar
         self.status_coords_label.setText(
-            'Latitude: ' + str(appglobals.location["Latitude"]) + '°,  Longitude: ' + str(appglobals.location["Longitude"]) + "°")
+            'Latitude: ' + str(appglobals.location["Latitude"]) + '°,  Longitude: ' +
+            str(appglobals.location["Longitude"]) + "°")
         self.statusbar.addWidget(self.status_coords_label)
 
         # Allow table headers to fit schedule_table

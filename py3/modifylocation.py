@@ -1,7 +1,7 @@
 import sys
 import os
 import json
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 import ui_modifylocation
 import appglobals
 

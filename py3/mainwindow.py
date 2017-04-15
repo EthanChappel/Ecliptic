@@ -4,11 +4,9 @@ import json
 import threading
 import ephem
 import cv2
-import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PIL import Image, ImageQt
 from ui_mainwindow import Ui_MainWindow
-import ui_modifylocation
 import res_rc
 import modifylocation
 import targetswindow

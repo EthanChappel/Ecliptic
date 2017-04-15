@@ -1,7 +1,5 @@
-import time
 import ephem
 import numpy as np
-import datetime as dt
 from scipy.interpolate import spline
 from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.figure import Figure

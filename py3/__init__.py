@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import traceback
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 import appglobals
 from guistyle import switch_style
 

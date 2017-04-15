@@ -1,5 +1,4 @@
 import ephem
-import time
 
 
 class ComputeTargets:

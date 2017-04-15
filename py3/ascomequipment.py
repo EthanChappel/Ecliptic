@@ -8,7 +8,7 @@ import ASCOM.DriverAccess
 import ASCOM.Utilities
 
 
-class Device():
+class Device:
     def __init__(self, device):
         super(Device, self).__init__()
         self.device = device

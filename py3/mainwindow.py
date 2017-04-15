@@ -83,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.slewstop_button.clicked.connect(self.goto_target)
         self.telescope_action.toggled.connect(self.connect_telescope)
         self.camera_action.toggled.connect(self.connect_camera)
-        self.guide_action.toggled.connect(self.connect_guider)
+        self.guide_action.toggled.connect(self.connect_autoguider)
         self.focuser_action.toggled.connect(self.connect_focuser)
         self.wheel_action.toggled.connect(self.connect_filters)
 
@@ -397,37 +397,71 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.filter_table.cellWidget(count, 4).setValue(int(f['Upper Cutoff']))
             count += 1
 
+    def location_set(self):
+        location_dialog = modifylocation.LocationDialog()
+        location_dialog.exec_()
+        if os.path.exists("location.json"):
+            with open("location.json", "r") as f:
+                appglobals.location = json.load(f)
+        self.status_coords_label.setText(
+            'Latitude: ' + str(appglobals.location["Latitude"]) + u"°,  Longitude: " + str(
+                appglobals.location["Longitude"]) + u"°")
+        self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
+
+    def open_target_gui(self):
+        self.target_dialog.show()
+
+    def connect_fail_dialog(self, name):
+        messagebox = QtWidgets.QMessageBox()
+        messagebox.setIcon(QtWidgets.QMessageBox.Warning)
+        messagebox.setWindowTitle("Solar System Sequencer")
+        messagebox.setText("{0} failed to connect.".format(name))
+        messagebox.exec_()
+
+    # <editor-fold desc="Telescope">
+
+    def connect_telescope(self):
+        if self.mount_group.isChecked():
+            name = "The telescope"
+            try:
+                appglobals.telescope = ascomequipment.Telescope()
+                self.telescope_settings()
+                name = appglobals.telescope.name_()
+                self.telescope_name_label.setText(name)
+                if self.isHidden():
+                    self.tray_icon.showMessage("Telescope Connected", "{0} has been connected.".format(name),
+                                               QtWidgets.QSystemTrayIcon.Information)
+            except Exception as e:
+                print(e)
+                self.mount_group.setChecked(False)
+                if self.isVisible():
+                    self.connect_fail_dialog(name)
+                else:
+                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                                               QtWidgets.QSystemTrayIcon.Warning)
+        elif not self.mount_group.isChecked():
+            try:
+                appglobals.telescope.disconnect()
+                appglobals.telescope.dispose()
+            except AttributeError:
+                pass
+            appglobals.telescope = None
+            self.telescope_name_label.setText('Not Connected')
+
     def setup_telescope(self):
         appglobals.telescope.disconnect()
         appglobals.telescope.setup_dialog()
         appglobals.telescope.connect()
         self.telescope_settings()
 
-    def setup_camera(self):
-        appglobals.camera.disconnect()
-        appglobals.camera.setup_dialog()
-        appglobals.camera.connect()
-        self.camera_settings()
+    def telescope_settings(self):
+        if not appglobals.telescope.canslew_eq():
+            messagebox = QtWidgets.QMessageBox()
+            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
+            messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
+            messagebox.exec_()
+            self.telescope_action.setChecked(False)
 
-    def setup_focuser(self):
-        appglobals.focuser.disconnect()
-        appglobals.focuser.setup_dialog()
-        appglobals.focuser.connect()
-        self.focuser_settings()
-
-    def setup_filterwheel(self):
-        appglobals.wheel.disconnect()
-        appglobals.wheel.setup_dialog()
-        appglobals.wheel.connect()
-        #self.filterwheel_settings()
-
-    def setup_autoguider(self):
-        appglobals.guider.disconnect()
-        appglobals.guider.setup_dialog()
-        appglobals.guider.connect()
-        self.autoguider_settings()
-
-    # <editor-fold desc="Mount">
     def compute_target(self, target, time, print_=False):
         if target == 'Stop' or target == 'Home' or target == '':
             self.goto_target()
@@ -473,102 +507,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # </editor-fold>
 
     # <editor-fold desc="Auto-guider">
-    def autoguider_loop(self):
-        thread = threading.Thread(target=self.autoguider_loop_thread)
-        thread.daemon = True
-        thread.start()
 
-    def autoguider_loop_thread(self):
-        while self.guider_loop_button.isChecked():
-            exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
-            image = appglobals.guider.capture(exp_sec, True)
-            pix = ImageQt.toqpixmap(image)
-            self.guide_preview_label.setPixmap(pix)
-    # </editor-fold>
+    def connect_autoguider(self):
+        if self.autoguide_group.isChecked():
+            name = "The auto-guider"
+            try:
+                appglobals.guider = ascomequipment.Camera()
+                self.autoguider_settings()
+                name = appglobals.guider.name_()
+                self.guide_name_label.setText(name)
+                if self.isHidden():
+                    self.tray_icon.showMessage("Auto-Guider Connected", "{0} has been connected.".format(name),
+                                               QtWidgets.QSystemTrayIcon.Information)
+            except Exception as e:
+                print(e)
+                self.autoguide_group.setChecked(False)
+                if self.isVisible():
+                    self.connect_fail_dialog(name)
+                else:
+                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
+                                               QtWidgets.QSystemTrayIcon.Warning)
+        elif not self.autoguide_group.isChecked():
+            try:
+                appglobals.guider.disconnect()
+                appglobals.guider.dispose()
+            except AttributeError as e:
+                pass
+            appglobals.guider = None
+            self.guide_name_label.setText('Not Connected')
 
-    # <editor-fold desc="Imaging Camera">
-    def camera_loop(self):
-        if self.camera_loop_button.isChecked():
-            thread = threading.Thread(target=self.camera_loop_thread)
-            thread.daemon = True
-            thread.start()
-        else:
-            self.camera_capture_button.setChecked(False)
-
-    def camera_loop_thread(self):
-        avi_name = '{}.avi'.format(str(ephem.now()).replace('/', '-').replace(':', '', 1).replace(':', '_'))
-        out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
-        while self.camera_loop_button.isChecked():
-            exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-            image = appglobals.camera.capture(exp_sec, True)
-            if self.camera_capture_button.isChecked():
-                out.write(image)
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.camera_preview_label.setPixmap(pix)
-        out.release()
-        if os.path.getsize(avi_name) == 0:
-            os.remove(avi_name)
-    # </editor-fold>
-
-    # <editor-fold desc="Focuser">
-    def move_focuser(self):
-        if appglobals.focuser.absolute:
-            position = self.focuser_position_spinbox.text()
-            appglobals.focuser.move(position)
-        ''' Attempt at Relative Focusing
-        old_pos = app_globals.devices["Focuser"].focuser_position()
-        else:
-            position = int(self.focuser_position_spinbox.text()) - old_pos
-            print(int(self.focuser_position_spinbox.text()), old_pos, position)
-        '''
-
-    def temp_comp(self):
-        state = self.temp_checkbox.isChecked()
-        if state:
-            self.focuser_position_label.setEnabled(False)
-            self.focuser_position_spinbox.setEnabled(False)
-        else:
-            self.focuser_position_label.setEnabled(True)
-            self.focuser_position_spinbox.setEnabled(True)
-        appglobals.focuser.temp_comp(state)
-
-    # </editor-fold>
-
-    # <editor-fold desc="Filter Wheel">
-
-    def change_filter(self):
-        try:
-            text = self.position_combobox.currentText()
-            appglobals.wheel.rotate_wheel(text)
-        except AttributeError:
-            pass
-
-    # </editor-fold>
-
-    def location_set(self):
-        location_dialog = modifylocation.LocationDialog()
-        location_dialog.exec_()
-        if os.path.exists("location.json"):
-            with open("location.json", "r") as f:
-                appglobals.location = json.load(f)
-        self.status_coords_label.setText(
-            'Latitude: ' + str(appglobals.location["Latitude"]) + u"°,  Longitude: " + str(appglobals.location["Longitude"]) + u"°")
-        self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
-
-    def open_target_gui(self):
-        self.target_dialog.show()
-
-    def camera_settings(self):
-        self.camera_gain_spinbox.setMinimum(appglobals.camera.gain_min())
-        self.camera_gain_spinbox.setMaximum(appglobals.camera.gain_max())
-        self.camera_gain_slider.setMinimum(appglobals.camera.gain_min())
-        self.camera_gain_slider.setMaximum(appglobals.camera.gain_max())
-        self.camera_gain_spinbox.setValue(appglobals.camera.gain())
-        self.camera_exposure_spinbox.setMinimum(appglobals.camera.exposure_min() * 1000)
-        self.camera_exposure_spinbox.setMaximum(appglobals.camera.exposure_max() * 1000)
-        self.camera_exposure_slider.setMinimum(appglobals.camera.exposure_min() * 1000)
-        self.camera_exposure_slider.setMaximum(appglobals.camera.exposure_max() * 1000)
+    def setup_autoguider(self):
+        appglobals.guider.disconnect()
+        appglobals.guider.setup_dialog()
+        appglobals.guider.connect()
+        self.autoguider_settings()
 
     def autoguider_settings(self):
         self.guider_gain_spinbox.setMinimum(appglobals.guider.gain_min())
@@ -581,61 +553,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_exposure_slider.setMinimum(appglobals.guider.exposure_min() * 1000)
         self.guider_exposure_slider.setMaximum(appglobals.guider.exposure_max() * 1000)
 
-    def focuser_settings(self):
-        self.focuser_position_spinbox.setMaximum(appglobals.focuser.max_step())
-        self.focuser_position_spinbox.blockSignals(True)
-        self.focuser_position_spinbox.setValue(appglobals.focuser.position())
-        self.focuser_position_spinbox.blockSignals(False)
-        if appglobals.focuser.temp_comp_available():
-            if appglobals.focuser.is_temp_comp():
-                self.temp_checkbox.setChecked(True)
-            else:
-                self.temp_checkbox.setChecked(False)
-            self.temp_checkbox.setVisible(True)
-        else:
-            self.temp_checkbox.setVisible(False)
-        if not appglobals.focuser.absolute():
-            messagebox = QtWidgets.QMessageBox()
-            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-            messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
-            messagebox.exec_()
-            self.focuser_action.setChecked(False)
+    def autoguider_loop(self):
+        thread = threading.Thread(target=self.autoguider_loop_thread)
+        thread.daemon = True
+        thread.start()
 
-    def telescope_settings(self):
-        if not appglobals.telescope.canslew_eq():
-            messagebox = QtWidgets.QMessageBox()
-            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-            messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
-            messagebox.exec_()
-            self.telescope_action.setChecked(False)
-    
-    def connect_telescope(self):
-        if self.mount_group.isChecked():
-            name = "The telescope"
-            try:
-                appglobals.telescope = ascomequipment.Telescope()
-                self.telescope_settings()
-                name = appglobals.telescope.name_()
-                self.telescope_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Telescope Connected", "{0} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
-            except Exception as e:
-                print(e)
-                self.mount_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
-        elif not self.mount_group.isChecked():
-            try:
-                appglobals.telescope.disconnect()
-                appglobals.telescope.dispose()
-            except AttributeError:
-                pass
-            appglobals.telescope = None
-            self.telescope_name_label.setText('Not Connected')
+    def autoguider_loop_thread(self):
+        while self.guider_loop_button.isChecked():
+            exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
+            image = appglobals.guider.capture(exp_sec, True)
+            pix = ImageQt.toqpixmap(image)
+            self.guide_preview_label.setPixmap(pix)
+
+    # </editor-fold>
+
+    # <editor-fold desc="Imaging Camera">
 
     def connect_camera(self):
         if self.camera_group.isChecked():
@@ -664,34 +596,50 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pass
             appglobals.camera = None
             self.camera_name_label.setText('Not Connected')
-    
-    def connect_guider(self):
-        if self.autoguide_group.isChecked():
-            name = "The auto-guider"
-            try:
-                appglobals.guider = ascomequipment.Camera()
-                self.autoguider_settings()
-                name = appglobals.guider.name_()
-                self.guide_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Auto-Guider Connected", "{0} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
-            except Exception as e:
-                print(e)
-                self.autoguide_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{0} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
-        elif not self.autoguide_group.isChecked():
-            try:
-                appglobals.guider.disconnect()
-                appglobals.guider.dispose()
-            except AttributeError as e:
-                pass
-            appglobals.guider = None
-            self.guide_name_label.setText('Not Connected')
+
+    def setup_camera(self):
+        appglobals.camera.disconnect()
+        appglobals.camera.setup_dialog()
+        appglobals.camera.connect()
+        self.camera_settings()
+
+    def camera_settings(self):
+        self.camera_gain_spinbox.setMinimum(appglobals.camera.gain_min())
+        self.camera_gain_spinbox.setMaximum(appglobals.camera.gain_max())
+        self.camera_gain_slider.setMinimum(appglobals.camera.gain_min())
+        self.camera_gain_slider.setMaximum(appglobals.camera.gain_max())
+        self.camera_gain_spinbox.setValue(appglobals.camera.gain())
+        self.camera_exposure_spinbox.setMinimum(appglobals.camera.exposure_min() * 1000)
+        self.camera_exposure_spinbox.setMaximum(appglobals.camera.exposure_max() * 1000)
+        self.camera_exposure_slider.setMinimum(appglobals.camera.exposure_min() * 1000)
+        self.camera_exposure_slider.setMaximum(appglobals.camera.exposure_max() * 1000)
+
+    def camera_loop(self):
+        if self.camera_loop_button.isChecked():
+            thread = threading.Thread(target=self.camera_loop_thread)
+            thread.daemon = True
+            thread.start()
+        else:
+            self.camera_capture_button.setChecked(False)
+
+    def camera_loop_thread(self):
+        avi_name = '{}.avi'.format(str(ephem.now()).replace('/', '-').replace(':', '', 1).replace(':', '_'))
+        out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
+        while self.camera_loop_button.isChecked():
+            exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
+            image = appglobals.camera.capture(exp_sec, True)
+            if self.camera_capture_button.isChecked():
+                out.write(image)
+            image = Image.fromarray(image)
+            pix = ImageQt.toqpixmap(image)
+            self.camera_preview_label.setPixmap(pix)
+        out.release()
+        if os.path.getsize(avi_name) == 0:
+            os.remove(avi_name)
+
+    # </editor-fold>
+
+    # <editor-fold desc="Focuser">
 
     def connect_focuser(self):
         if self.focuser_group.isChecked():
@@ -723,6 +671,57 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.focuser = None
             self.focuser_name_label.setText('Not Connected')
 
+    def setup_focuser(self):
+        appglobals.focuser.disconnect()
+        appglobals.focuser.setup_dialog()
+        appglobals.focuser.connect()
+        self.focuser_settings()
+
+    def focuser_settings(self):
+        self.focuser_position_spinbox.setMaximum(appglobals.focuser.max_step())
+        self.focuser_position_spinbox.blockSignals(True)
+        self.focuser_position_spinbox.setValue(appglobals.focuser.position())
+        self.focuser_position_spinbox.blockSignals(False)
+        if appglobals.focuser.temp_comp_available():
+            if appglobals.focuser.is_temp_comp():
+                self.temp_checkbox.setChecked(True)
+            else:
+                self.temp_checkbox.setChecked(False)
+            self.temp_checkbox.setVisible(True)
+        else:
+            self.temp_checkbox.setVisible(False)
+        if not appglobals.focuser.absolute():
+            messagebox = QtWidgets.QMessageBox()
+            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
+            messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
+            messagebox.exec_()
+            self.focuser_action.setChecked(False)
+
+    def move_focuser(self):
+        if appglobals.focuser.absolute:
+            position = self.focuser_position_spinbox.text()
+            appglobals.focuser.move(position)
+        ''' Attempt at Relative Focusing
+        old_pos = app_globals.devices["Focuser"].focuser_position()
+        else:
+            position = int(self.focuser_position_spinbox.text()) - old_pos
+            print(int(self.focuser_position_spinbox.text()), old_pos, position)
+        '''
+
+    def temp_comp(self):
+        state = self.temp_checkbox.isChecked()
+        if state:
+            self.focuser_position_label.setEnabled(False)
+            self.focuser_position_spinbox.setEnabled(False)
+        else:
+            self.focuser_position_label.setEnabled(True)
+            self.focuser_position_spinbox.setEnabled(True)
+        appglobals.focuser.temp_comp(state)
+
+    # </editor-fold>
+
+    # <editor-fold desc="Filter Wheel">
+
     def connect_filters(self):
         if self.wheel_group.isChecked():
             name = "The filter wheel"
@@ -752,12 +751,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.wheel = None
             self.wheel_name_label.setText('Not Connected')
 
-    def connect_fail_dialog(self, name):
-        messagebox = QtWidgets.QMessageBox()
-        messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-        messagebox.setWindowTitle("Solar System Sequencer")
-        messagebox.setText("{0} failed to connect.".format(name))
-        messagebox.exec_()
+    def setup_filterwheel(self):
+        appglobals.wheel.disconnect()
+        appglobals.wheel.setup_dialog()
+        appglobals.wheel.connect()
+        #self.filterwheel_settings()
+
+    def change_filter(self):
+        try:
+            text = self.position_combobox.currentText()
+            appglobals.wheel.rotate_wheel(text)
+        except AttributeError:
+            pass
+
+    # </editor-fold>
 
     def close_app(self):
         appglobals.telescope = None

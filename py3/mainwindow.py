@@ -265,6 +265,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         with open('schedule.json', 'a') as f:
             json.dump(self.schedule, f, indent=4)
 
+    # Load contents of schedule.json into schedule_table
     def load_schedule(self, schedule):
         count = 0
         self.schedule_table.setRowCount(0)
@@ -384,6 +385,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         index = self.position_combobox.findText(text2)
         self.position_combobox.setCurrentIndex(index)
 
+    # Load contents of filters.json into filter_table
     def load_filters(self, filters):
         count = 0
         for f in filters:
@@ -395,6 +397,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.filter_table.cellWidget(count, 4).setValue(int(f['Upper Cutoff']))
             count += 1
 
+    # Set observing location
     def location_set(self):
         location_dialog = modifylocation.LocationDialog()
         location_dialog.exec_()
@@ -406,9 +409,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.location["Longitude"]) + u"°")
         self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
 
+    # Show window with chart of planet elevations throughout the day
     def open_target_gui(self):
         self.target_dialog.show()
 
+    # Notify users if connection to equipment fails
     def connect_fail_dialog(self, name):
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -772,6 +777,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         appglobals.wheel = None
         sys.exit()
 
+    # Override default closeEvent method
     def closeEvent(self, event):
         event.ignore()
         self.setVisible(False)
@@ -779,6 +785,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for dock in self.findChildren(QtWidgets.QDockWidget):
             dock.setVisible(False)
 
+    # Override default showEvent method
     def showEvent(self, event):
         self.setVisible(True)
         for dock in self.findChildren(QtWidgets.QDockWidget):

@@ -30,6 +30,7 @@ class LocationDialog(QtWidgets.QDialog):
         self.ui.button_box.accepted.connect(self.ok)
         self.ui.button_box.rejected.connect(self.cancel)
 
+    # Do if "OK" button is pressed
     def ok(self):
         self.accept()
         self.latitude = str(self.ui.lat_d_spin.value()) + ':' + str(self.ui.lat_m_spin.value()) + ':' + str(self.ui.lat_s_spin.value())
@@ -43,6 +44,6 @@ class LocationDialog(QtWidgets.QDialog):
         with open('location.json', 'a') as f:
             json.dump(location_dict, f, indent=0)
 
+    # Do if "Cancel" button is pressed
     def cancel(self):
         self.reject()
-

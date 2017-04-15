@@ -12,6 +12,7 @@ def switch_style(app, flag):
         palette.setColor(QtGui.QPalette.Light, QtGui.QColor(110, 110, 110))
         palette.setColor(QtGui.QPalette.Dark, QtGui.QColor(75, 75, 75))
         palette.setColor(QtGui.QPalette.Text, QtGui.QColor(255, 255, 255))
+        palette.setColor(QtGui.QPalette.Link, QtGui.QColor(255, 50, 50))
         palette.setColor(QtGui.QPalette.Base, QtGui.QColor(95, 95, 95))
         palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(200, 80, 80))
         palette.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor(255, 255, 255))

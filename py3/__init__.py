@@ -17,7 +17,8 @@ def excepthook(exc_type, exc_val, tracebackobj):
     print(message_text)
     messagebox.setWindowTitle("Exception - Py on the Sky")
     messagebox.setText("An exception occurred! Please copy the text in the details, then open a new issue at:")
-    messagebox.setInformativeText("URL")
+    messagebox.setInformativeText("<a href='https://github.com/EthanChappel/Solar-System-Sequencer/issues'>"
+                                  "https://github.com/EthanChappel/Solar-System-Sequencer/issues</a>")
     messagebox.setDetailedText(message_text)
     messagebox.setStandardButtons(QtWidgets.QMessageBox.Ok)
     messagebox.exec_()

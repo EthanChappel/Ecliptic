@@ -15,7 +15,7 @@ def excepthook(exc_type, exc_val, tracebackobj):
     message = str(''.join(traceback.format_tb(tracebackobj)))
     message_text = str(exc_type) + message + str(exc_val)
     print(message_text)
-    messagebox.setWindowTitle("Exception - Py on the Sky")
+    messagebox.setWindowTitle("Exception - Solar System Sequencer")
     messagebox.setText("An exception occurred! Please copy the text in the details, then open a new issue at:")
     messagebox.setInformativeText("<a href='https://github.com/EthanChappel/Solar-System-Sequencer/issues'>"
                                   "https://github.com/EthanChappel/Solar-System-Sequencer/issues</a>")

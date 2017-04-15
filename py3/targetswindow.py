@@ -194,7 +194,8 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         '''
         self.canvas.draw()
 
-    def compute_target(self, target, time, latitude, longitude, print_=False):
+    @staticmethod
+    def compute_target(target, time, latitude, longitude, print_=False):
         compute_alt = computetargets.ComputeTargets(time, latitude, longitude)
         alt = compute_alt.object_alt(target)
         if print_:

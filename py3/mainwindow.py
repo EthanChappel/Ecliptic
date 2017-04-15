@@ -414,7 +414,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.target_dialog.show()
 
     # Notify users if connection to equipment fails
-    def connect_fail_dialog(self, name):
+    @staticmethod
+    def connect_fail_dialog(name):
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
         messagebox.setWindowTitle("Solar System Sequencer")
@@ -500,10 +501,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 dec_decimal = int(dec_split[0]) + ((-1 * int(dec_split[1])) / 60) + (-1 * float(dec_split[2]) / 3600)
             appglobals.telescope.goto(ra_decimal, dec_decimal)
 
-    def slew(self, axis, rate):
+    @staticmethod
+    def slew(axis, rate):
         appglobals.telescope.move_axis(axis, rate)
 
-    def slew_diagonal(self, rate1, rate2):
+    @staticmethod
+    def slew_diagonal(rate1, rate2):
         appglobals.telescope.move_axis(0, rate1)
         appglobals.telescope.move_axis(1, rate2)
 
@@ -769,7 +772,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # </editor-fold>
 
-    def close_app(self):
+    @staticmethod
+    def close_app():
         appglobals.telescope = None
         appglobals.camera = None
         appglobals.guider = None

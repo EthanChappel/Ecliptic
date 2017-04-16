@@ -2,7 +2,6 @@
 import sys
 import traceback
 from PyQt5 import QtWidgets
-import appglobals
 from guistyle import switch_style
 
 sys.dont_write_bytecode = True

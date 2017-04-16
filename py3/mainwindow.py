@@ -7,7 +7,6 @@ import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PIL import Image, ImageQt
 from ui_mainwindow import Ui_MainWindow
-import res_rc
 import modifylocation
 import targetswindow
 from computetargets import ComputeTargets

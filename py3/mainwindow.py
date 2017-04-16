@@ -762,11 +762,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.wheel = None
                 self.wheel_name_label.setText("Not Connected")
 
-    def setup_filterwheel(self):
+    @staticmethod
+    def setup_filterwheel():
         appglobals.wheel.disconnect()
         appglobals.wheel.setup_dialog()
         appglobals.wheel.connect()
-        #self.filterwheel_settings()
+        # self.filterwheel_settings()
 
     def change_filter(self):
         try:

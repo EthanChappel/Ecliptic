@@ -447,8 +447,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 appglobals.telescope.disconnect()
                 appglobals.telescope.dispose()
-            except AttributeError:
-                pass
+            except AttributeError as e:
+                print(e)
             appglobals.telescope = None
             self.telescope_name_label.setText("Not Connected")
 
@@ -538,9 +538,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.guider.disconnect()
                 appglobals.guider.dispose()
             except AttributeError as e:
-                pass
-            appglobals.guider = None
-            self.guide_name_label.setText("Not Connected")
+                print(e)
+            finally:
+                appglobals.guider = None
+                self.guide_name_label.setText("Not Connected")
 
     def setup_autoguider(self):
         appglobals.guider.disconnect()
@@ -598,10 +599,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 appglobals.camera.disconnect()
                 appglobals.camera.dispose()
-            except AttributeError:
-                pass
-            appglobals.camera = None
-            self.camera_name_label.setText("Not Connected")
+            except AttributeError as e:
+                print(e)
+            finally:
+                appglobals.camera = None
+                self.camera_name_label.setText("Not Connected")
 
     def setup_camera(self):
         appglobals.camera.disconnect()
@@ -675,8 +677,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.focuser.dispose()
             except AttributeError as e:
                 print(e)
-            appglobals.focuser = None
-            self.focuser_name_label.setText("Not Connected")
+            finally:
+                appglobals.focuser = None
+                self.focuser_name_label.setText("Not Connected")
 
     def setup_focuser(self):
         appglobals.focuser.disconnect()
@@ -755,8 +758,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.wheel.dispose()
             except AttributeError as e:
                 print(e)
-            appglobals.wheel = None
-            self.wheel_name_label.setText("Not Connected")
+            finally:
+                appglobals.wheel = None
+                self.wheel_name_label.setText("Not Connected")
 
     def setup_filterwheel(self):
         appglobals.wheel.disconnect()
@@ -768,8 +772,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             text = self.position_combobox.currentText()
             appglobals.wheel.rotate_wheel(text)
-        except AttributeError:
-            pass
+        except AttributeError as e:
+            print(e)
 
     # </editor-fold>
 

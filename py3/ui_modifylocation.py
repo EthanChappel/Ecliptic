@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'modifylocation.ui'
 #
-# Created: Sun Feb 12 19:56:55 2017
+# Created: Sun Apr 16 00:21:09 2017
 #      by: PyQt5 UI code generator 5.3.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_LocationDialog(object):
     def setupUi(self, LocationDialog):
         LocationDialog.setObjectName("LocationDialog")
-        LocationDialog.resize(436, 111)
+        LocationDialog.resize(318, 79)
         self.verticalLayout = QtWidgets.QVBoxLayout(LocationDialog)
         self.verticalLayout.setContentsMargins(0, 0, 0, -1)
         self.verticalLayout.setObjectName("verticalLayout")

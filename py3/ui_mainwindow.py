@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Mon Feb 20 13:21:21 2017
+# Created: Sun Apr 16 00:20:33 2017
 #      by: PyQt5 UI code generator 5.3.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
         icon.addPixmap(QtGui.QPixmap(":/icons/logo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setDockNestingEnabled(False)
-        MainWindow.setDockOptions(QtWidgets.QMainWindow.AllowTabbedDocks|QtWidgets.QMainWindow.AnimatedDocks|QtWidgets.QMainWindow.ForceTabbedDocks)
+        MainWindow.setDockOptions(QtWidgets.QMainWindow.AllowTabbedDocks|QtWidgets.QMainWindow.AnimatedDocks|QtWidgets.QMainWindow.ForceTabbedDocks|QtWidgets.QMainWindow.GroupedDragging)
         MainWindow.setUnifiedTitleAndToolBarOnMac(True)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
@@ -1094,9 +1094,9 @@ class Ui_MainWindow(object):
         self.menu_equipment.addAction(self.camera_action)
         self.menu_equipment.addAction(self.wheel_action)
         self.menu_equipment.addAction(self.focuser_action)
+        self.menu_edit.addAction(self.menu_equipment.menuAction())
         self.menu_edit.addAction(self.filters_action)
         self.menu_edit.addAction(self.location_action)
-        self.menu_edit.addAction(self.menu_equipment.menuAction())
         self.menu_edit.addAction(self.actionSave_Location)
         self.help_menu.addAction(self.action_about)
         self.menuView.addAction(self.targets_action)

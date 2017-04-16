@@ -417,7 +417,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def connect_fail_dialog(name):
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-        messagebox.setWindowTitle("Solar System Sequencer")
+        messagebox.setWindowTitle("Solar System Sequencer - Connection Failed")
         messagebox.setText(f"{name} failed to connect.")
         messagebox.exec_()
 

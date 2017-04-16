@@ -74,6 +74,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             sun_rise = None
             sun_set = None
 
+        """
         try:
             civil_rise = twilight[1][3]+(twilight[1][4]/60)+(twilight[1][5]/3600)
             civil_set = twilight[5][3] + (twilight[5][4] / 60) + (twilight[5][5] / 3600)
@@ -95,7 +96,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             astronomical_rise = None
             astronomical_set = None
 
-        """ All statements with "+ 24" or "- 24" are slightly inaccurate.
+        # All statements with + 24 or - 24 are slightly inaccurate.
         try:
             if astronomical_rise > nautical_rise:
                 self.sched_plot.axvspan(astronomical_rise - 24, nautical_rise, color="blue", alpha=0.15)

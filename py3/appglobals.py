@@ -1,5 +1,5 @@
-import os
 import json
+from PyQt5 import QtWidgets
 
 telescope = None
 camera = None
@@ -9,9 +9,14 @@ focuser = None
 
 targets_tuple = ("Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
 
-if os.path.exists("location.json"):
+try:
     with open("location.json", "r") as f:
-        try:
             location = json.load(f)
-        except json.decoder.JSONDecodeError:
-            location = {"Latitude": 0.0, "Longitude": 0.0}
+except FileNotFoundError:
+    location = {"Latitude": 0.0, "Longitude": 0.0}
+except json.decoder.JSONDecodeError:
+    messagebox = QtWidgets.QMessageBox()
+    messagebox.setText("The location data seems to be broken. Coordinates will be set to 0°N 0°E.")
+    messagebox.setIcon(QtWidgets.QMessageBox.Information)
+    messagebox.exec_()
+    location = {"Latitude": 0.0, "Longitude": 0.0}

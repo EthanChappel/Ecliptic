@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sun Apr 16 00:20:33 2017
+# Created: Sun Apr 30 00:44:08 2017
 #      by: PyQt5 UI code generator 5.3.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -1139,6 +1139,8 @@ class Ui_MainWindow(object):
         self.filters_action.triggered.connect(self.filters_dockwidget.raise_)
         self.camera_action.toggled['bool'].connect(self.camera_dockwidget.raise_)
         self.action_closewindow.triggered.connect(MainWindow.close)
+        self.camera_capture_button.toggled['bool'].connect(self.camera_loop_button.setDisabled)
+        self.guider_start_button.toggled['bool'].connect(self.guider_loop_button.setDisabled)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.mount_group, self.scrollarea)
         MainWindow.setTabOrder(self.scrollarea, self.scope_settings_btn)

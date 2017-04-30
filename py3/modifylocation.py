@@ -7,10 +7,11 @@ import ui_modifylocation
 class LocationDialog(QtWidgets.QDialog):
     def __init__(self):
         super(LocationDialog, self).__init__()
-        self.location = {"Latitude": "00:00:00", "Longitude": "00:00:00"}
-        if os.path.exists("location.json"):
+        try:
             with open("location.json", "r") as f:
                 self.location = json.load(f)
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            self.location = {"Latitude": "00:00:00", "Longitude": "00:00:00"}
         self.lat = self.location["Latitude"].split(":")
         self.long = self.location["Longitude"].split(":")
         self.ui = ui_modifylocation.Ui_LocationDialog()

@@ -19,6 +19,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        self.camera_thread = None
+        self.guide_thread = None
+
         self.menu = QtWidgets.QMenu()
         self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
         self.was_hidden = False
@@ -125,6 +128,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_loop_button.clicked.connect(self.autoguider_loop)
         self.camera_loop_button.clicked.connect(self.camera_loop)
 
+        self.guider_start_button.clicked.connect(self.autoguider_loop)
+        self.camera_capture_button.clicked.connect(self.camera_loop)
+
         # Connect functions to addrow_button and removerow_button
         self.addrow_button.clicked.connect(self.add_schedule_row)
         self.removerow_button.clicked.connect(self.remove_schedule_row)
@@ -174,8 +180,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.load_schedule(date)
         self.load_filters(self.filters)
 
-        self.schedule_dateedit.dateChanged.connect(lambda: self.load_schedule(
-            str(self.schedule_dateedit.text())))
+        self.schedule_dateedit.dateChanged.connect(lambda: self.load_schedule(str(self.schedule_dateedit.text())))
 
         self.schedule_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
         self.filter_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
@@ -560,14 +565,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_exposure_slider.setMaximum(appglobals.guider.exposure_max() * 1000)
 
     def autoguider_loop(self):
-        thread = threading.Thread(target=self.autoguider_loop_thread)
-        thread.daemon = True
-        thread.start()
+        if self.guider_loop_button.isChecked():
+            if self.guider_start_button.isChecked():
+                self.guide_thread = threading.Thread(target=self.autoguider_loop_thread)  # To be implemented
+            else:
+                self.guide_thread = threading.Thread(target=self.autoguider_loop_thread)
+            self.guide_thread.daemon = True
+            self.guide_thread.start()
 
     def autoguider_loop_thread(self):
-        while self.guider_loop_button.isChecked():
+        while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
             exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
             image = appglobals.guider.capture(exp_sec, True)
+            image = Image.fromarray(image)
             pix = ImageQt.toqpixmap(image)
             self.guide_preview_label.setPixmap(pix)
 
@@ -623,21 +633,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_loop(self):
         if self.camera_loop_button.isChecked():
-            thread = threading.Thread(target=self.camera_loop_thread)
-            thread.daemon = True
-            thread.start()
-        else:
-            self.camera_capture_button.setChecked(False)
+            if self.camera_capture_button.isChecked():
+                self.camera_thread = threading.Thread(target=self.camera_record)
+            else:
+                self.camera_thread = threading.Thread(target=self.camera_loop_thread)
+            self.camera_thread.daemon = True
+            self.camera_thread.start()
 
     def camera_loop_thread(self):
+        while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
+            exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
+            image = appglobals.camera.capture(exp_sec, True)
+            image = Image.fromarray(image)
+            pix = ImageQt.toqpixmap(image)
+            self.camera_preview_label.setPixmap(pix)
+
+    def camera_record(self):
         name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
         avi_name = f"{name_format}.avi"
         out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
-        while self.camera_loop_button.isChecked():
+        while self.camera_capture_button.isChecked():
             exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
             image = appglobals.camera.capture(exp_sec, True)
-            if self.camera_capture_button.isChecked():
-                out.write(image)
+            out.write(image)
             image = Image.fromarray(image)
             pix = ImageQt.toqpixmap(image)
             self.camera_preview_label.setPixmap(pix)

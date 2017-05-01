@@ -2,8 +2,8 @@ import os
 import json
 import numpy as np
 import clr
-clr.AddReference("ASCOM.DriverAccess")
-clr.AddReference("ASCOM.Utilities")
+clr.AddReference("/lib/ASCOM.DriverAccess")
+clr.AddReference("/lib/ASCOM.Utilities")
 import ASCOM.DriverAccess
 import ASCOM.Utilities
 

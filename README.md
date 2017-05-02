@@ -1,18 +1,20 @@
 # Solar System Sequencer
 A work-in-progress project for automating the acquisition of planetary images.
 
+
 ## Goal
 The goal of Solar System Sequencer is to allow someone to be absent from their equipment when imaging Solar System objects, once the setup and alignment procedures of the telescope are completed.
 
 ## Getting Started
 
-
 ### Prerequisites
-* __[Python](https://www.python.org/downloads/) 3.6__ or later
-* __[PyQt](https://www.riverbankcomputing.com/software/pyqt/download5) 5.8__ or later
+* __[Python](https://www.python.org/downloads/) 3.6.0__ or later, standard library recommended
+* __[PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5)__
 * __[NumPy](https://www.scipy.org/install.html)__
 * __[SciPy](https://www.scipy.org/install.html)__
 * __[Matplotlib](https://matplotlib.org/users/installing.html)__
+* __[pythonnet](https://pypi.python.org/pypi/pythonnet)__
+* __[opencv-python](https://pypi.python.org/pypi/opencv-python)__
 * __[PyEphem](https://pypi.python.org/pypi/ephem/)__
 * __[ASCOM Platform 6](http://ascom-standards.org/Downloads/Index.htm)__
 

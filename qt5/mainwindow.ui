@@ -82,7 +82,7 @@
          <x>0</x>
          <y>0</y>
          <width>196</width>
-         <height>1082</height>
+         <height>1074</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -123,7 +123,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="scope_settings_btn">
+              <widget class="QToolButton" name="scope_settings_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -137,8 +137,8 @@
                 <iconset resource="resources/res.qrc">
                  <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
                </property>
-               <property name="autoDefault">
-                <bool>true</bool>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
                </property>
               </widget>
              </item>
@@ -568,7 +568,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="guide_settings_btn">
+              <widget class="QToolButton" name="guide_settings_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -582,8 +582,8 @@
                 <iconset resource="resources/res.qrc">
                  <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
                </property>
-               <property name="autoDefault">
-                <bool>true</bool>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
                </property>
               </widget>
              </item>
@@ -828,7 +828,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="camera_settings_btn">
+              <widget class="QToolButton" name="camera_settings_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -842,8 +842,8 @@
                 <iconset resource="resources/res.qrc">
                  <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
                </property>
-               <property name="autoDefault">
-                <bool>true</bool>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
                </property>
               </widget>
              </item>
@@ -1136,7 +1136,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="wheel_settings_btn">
+              <widget class="QToolButton" name="wheel_settings_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1150,8 +1150,8 @@
                 <iconset resource="resources/res.qrc">
                  <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
                </property>
-               <property name="autoDefault">
-                <bool>true</bool>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
                </property>
               </widget>
              </item>
@@ -1263,7 +1263,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="focuser_settings_btn">
+              <widget class="QToolButton" name="focuser_settings_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1277,8 +1277,8 @@
                 <iconset resource="resources/res.qrc">
                  <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
                </property>
-               <property name="autoDefault">
-                <bool>true</bool>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
                </property>
               </widget>
              </item>
@@ -2736,38 +2736,6 @@
     <hint type="destinationlabel">
      <x>82</x>
      <y>669</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>guider_loop_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>guide_settings_btn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>125</x>
-     <y>242</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>175</x>
-     <y>77</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>camera_loop_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_settings_btn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>125</x>
-     <y>550</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>175</x>
-     <y>307</y>
     </hint>
    </hints>
   </connection>

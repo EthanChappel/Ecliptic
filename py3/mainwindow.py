@@ -19,6 +19,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        self.firstclose = True
         self.camera_thread = None
         self.guide_thread = None
 
@@ -811,6 +812,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.target_dialog.setVisible(False)
         for dock in self.findChildren(QtWidgets.QDockWidget):
             dock.setVisible(False)
+        if self.firstclose:
+            self.firstclose = False
+            self.tray_icon.showMessage("Running in background", "Solar System Sequencer is still running in the "
+                                                                "background.", QtWidgets.QSystemTrayIcon.Information)
 
     # Override default showEvent method
     def showEvent(self, event):

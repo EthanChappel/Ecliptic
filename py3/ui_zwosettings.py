@@ -94,8 +94,8 @@ class Ui_ZWOSettings(object):
         self.blue_label.setText(_translate("ZWOSettings", "Blue"))
         self.usb_label.setText(_translate("ZWOSettings", "USB Bandwidth"))
         self.highspeed_checkbox.setText(_translate("ZWOSettings", "High Speed"))
-        self.hardwarebin_checkbox.setText(_translate("ZWOSettings", "Hardware Bin"))
-        self.monobin_checkbox.setText(_translate("ZWOSettings", "Mono Bin"))
-        self.horizontalflip_checkbox.setText(_translate("ZWOSettings", "Horizontal Flip"))
         self.verticalflip_checkbox.setText(_translate("ZWOSettings", "Vertical Flip"))
+        self.monobin_checkbox.setText(_translate("ZWOSettings", "Mono Bin"))
+        self.hardwarebin_checkbox.setText(_translate("ZWOSettings", "Hardware Bin"))
+        self.horizontalflip_checkbox.setText(_translate("ZWOSettings", "Horizontal Flip"))
 

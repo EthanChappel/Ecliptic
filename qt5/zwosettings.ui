@@ -92,41 +92,54 @@
     </widget>
    </item>
    <item>
-    <layout class="QFormLayout" name="checkbox_formlayout">
-     <item row="0" column="0" colspan="2">
+    <layout class="QGridLayout" name="checkbox_gridlayout">
+     <item row="0" column="0">
       <widget class="QCheckBox" name="highspeed_checkbox">
        <property name="text">
         <string>High Speed</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QCheckBox" name="hardwarebin_checkbox">
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="verticalflip_checkbox">
        <property name="text">
-        <string>Hardware Bin</string>
+        <string>Vertical Flip</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="2" column="0">
       <widget class="QCheckBox" name="monobin_checkbox">
        <property name="text">
         <string>Mono Bin</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="2">
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="hardwarebin_checkbox">
+       <property name="text">
+        <string>Hardware Bin</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
       <widget class="QCheckBox" name="horizontalflip_checkbox">
        <property name="text">
         <string>Horizontal Flip</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="2">
-      <widget class="QCheckBox" name="verticalflip_checkbox">
-       <property name="text">
-        <string>Vertical Flip</string>
+     <item row="5" column="0">
+      <spacer name="checkbox_spacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

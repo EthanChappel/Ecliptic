@@ -194,6 +194,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.schedule_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
         self.filter_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
 
+        self.camera_exposure_spinbox.editingFinished.connect(self.set_camera_exposure)
+        self.camera_exposure_slider.sliderReleased.connect(self.set_camera_exposure)
+        self.camera_gain_spinbox.editingFinished.connect(self.set_camera_gain)
+        self.camera_gain_slider.sliderReleased.connect(self.set_camera_gain)
+
     # Add row in schedule_table
     def add_schedule_row(self):
         self.row_count = self.schedule_table.rowCount()
@@ -766,34 +771,67 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.temperature_label.setVisible(False)
                 self.camera_settings_frame.temperature_spinbox.setVisible(False)
 
+    def set_camera_exposure(self):
+        if type(appglobals.camera) is asi.Camera:
+            exp_us = int(self.camera_exposure_spinbox.cleanText())*1000
+            appglobals.camera.set_control_value(asi.ASI_EXPOSURE, exp_us)
+
+    def set_camera_gain(self):
+        if type(appglobals.camera) is asi.Camera:
+            gain = int(self.camera_gain_spinbox.cleanText())
+            appglobals.camera.set_control_value(asi.ASI_GAIN, gain)
+
     def camera_loop(self):
         if self.camera_loop_button.isChecked():
             if self.camera_capture_button.isChecked():
                 self.camera_thread = threading.Thread(target=self.camera_record)
             else:
-                self.camera_thread = threading.Thread(target=self.camera_loop_thread)
+                self.camera_thread = threading.Thread(target=self.camera_preview)
             self.camera_thread.daemon = True
             self.camera_thread.start()
 
-    def camera_loop_thread(self):
-        while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
-            exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-            image = appglobals.camera.capture(exp_sec, True)
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.camera_preview_label.setPixmap(pix)
+    def camera_preview(self):
+        if type(appglobals.camera) is ascomequipment.Camera:
+            while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
+                exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
+                image = appglobals.camera.capture(exp_sec, True)
+                image = Image.fromarray(image)
+                pix = ImageQt.toqpixmap(image)
+                self.camera_preview_label.setPixmap(pix)
+        else:
+            appglobals.camera.start_video_capture()
+            while self.camera_loop_button.isChecked():
+                timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
+                image = appglobals.camera.capture_video_frame(timeout=timeout)
+                image = Image.fromarray(image)
+                pix = ImageQt.toqpixmap(image)
+                self.camera_preview_label.setPixmap(pix)
+        self.camera_preview_label.clear()
 
     def camera_record(self):
         name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
         avi_name = f"{name_format}.avi"
-        out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
-        while self.camera_capture_button.isChecked():
-            exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-            image = appglobals.camera.capture(exp_sec, True)
-            out.write(image)
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.camera_preview_label.setPixmap(pix)
+        if type(appglobals.camera) is ascomequipment.Camera:
+            out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
+            while self.camera_capture_button.isChecked():
+                exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
+                image = appglobals.camera.capture(exp_sec, True)
+                out.write(image)
+                image = Image.fromarray(image)
+                pix = ImageQt.toqpixmap(image)
+                self.camera_preview_label.setPixmap(pix)
+        else:
+            print(0)
+            width = appglobals.camera.get_camera_property()["MaxWidth"]
+            height = appglobals.camera.get_camera_property()["MaxHeight"]
+            out = cv2.VideoWriter(avi_name, -1, 20.0, (width, height), False)
+            while self.camera_capture_button.isChecked():
+                timeout = int(self.camera_exposure_spinbox.cleanText())*2+500
+                image = appglobals.camera.capture_video_frame(timeout=timeout)
+                out.write(image)
+                image = Image.fromarray(image)
+                pix = ImageQt.toqpixmap(image)
+                self.camera_preview_label.setPixmap(pix)
         out.release()
         if os.path.getsize(avi_name) == 0:
             os.remove(avi_name)

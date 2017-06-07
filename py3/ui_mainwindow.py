@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sun Apr 30 00:44:08 2017
-#      by: PyQt5 UI code generator 5.3.2
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -44,7 +43,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scrollarea.setObjectName("scrollarea")
         self.scroll_area_widget_contents = QtWidgets.QWidget()
-        self.scroll_area_widget_contents.setGeometry(QtCore.QRect(0, 0, 196, 1082))
+        self.scroll_area_widget_contents.setGeometry(QtCore.QRect(0, -376, 196, 1082))
         self.scroll_area_widget_contents.setObjectName("scroll_area_widget_contents")
         self.formLayout_4 = QtWidgets.QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName("formLayout_4")
@@ -827,7 +826,7 @@ class Ui_MainWindow(object):
         self.changes_label.setSizePolicy(sizePolicy)
         self.changes_label.setAlignment(QtCore.Qt.AlignCenter)
         self.changes_label.setObjectName("changes_label")
-        self.horizontallayout.addWidget(self.changes_label, QtCore.Qt.AlignRight)
+        self.horizontallayout.addWidget(self.changes_label, 0, QtCore.Qt.AlignRight)
         self.verticalLayout_7.addLayout(self.horizontallayout)
         self.schedule_dockwidget.setWidget(self.dockwidget_contents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.schedule_dockwidget)
@@ -863,7 +862,7 @@ class Ui_MainWindow(object):
         self.camera_preview_label.setText("")
         self.camera_preview_label.setAlignment(QtCore.Qt.AlignCenter)
         self.camera_preview_label.setObjectName("camera_preview_label")
-        self.verticalLayout_4.addWidget(self.camera_preview_label, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.verticalLayout_4.addWidget(self.camera_preview_label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.camera_scrollarea.setWidget(self.camera_scrollarea_contents)
         self.verticalLayout_9.addWidget(self.camera_scrollarea)
         self.horizontallayout_3 = QtWidgets.QHBoxLayout()
@@ -921,7 +920,7 @@ class Ui_MainWindow(object):
         self.guide_preview_label.setText("")
         self.guide_preview_label.setAlignment(QtCore.Qt.AlignCenter)
         self.guide_preview_label.setObjectName("guide_preview_label")
-        self.verticalLayout_6.addWidget(self.guide_preview_label, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.verticalLayout_6.addWidget(self.guide_preview_label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.camera_scrollarea_2.setWidget(self.scrollareawidgetcontents_3)
         self.verticalLayout_10.addWidget(self.camera_scrollarea_2)
         self.horizontallayout_6 = QtWidgets.QHBoxLayout()
@@ -1011,7 +1010,7 @@ class Ui_MainWindow(object):
         self.changes_label_2.setSizePolicy(sizePolicy)
         self.changes_label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.changes_label_2.setObjectName("changes_label_2")
-        self.horizontallayout_14.addWidget(self.changes_label_2, QtCore.Qt.AlignRight)
+        self.horizontallayout_14.addWidget(self.changes_label_2, 0, QtCore.Qt.AlignRight)
         self.verticalLayout_5.addLayout(self.horizontallayout_14)
         self.filters_dockwidget.setWidget(self.filters_dockwidgetcontents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.filters_dockwidget)
@@ -1141,6 +1140,12 @@ class Ui_MainWindow(object):
         self.action_closewindow.triggered.connect(MainWindow.close)
         self.camera_capture_button.toggled['bool'].connect(self.camera_loop_button.setDisabled)
         self.guider_start_button.toggled['bool'].connect(self.guider_loop_button.setDisabled)
+        self.camera_capture_button.toggled['bool'].connect(self.camera_filter_combobox.setDisabled)
+        self.camera_capture_button.toggled['bool'].connect(self.camera_filter_label.setDisabled)
+        self.camera_capture_button.toggled['bool'].connect(self.camera_format_label.setDisabled)
+        self.camera_capture_button.toggled['bool'].connect(self.camera_format_combobox.setDisabled)
+        self.wheel_group.toggled['bool'].connect(self.camera_filter_label.setHidden)
+        self.wheel_group.toggled['bool'].connect(self.camera_filter_combobox.setHidden)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.mount_group, self.scrollarea)
         MainWindow.setTabOrder(self.scrollarea, self.scope_settings_btn)

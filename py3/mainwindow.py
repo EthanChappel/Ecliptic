@@ -636,6 +636,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     appglobals.camera.disconnect()
                     appglobals.camera.dispose()
                 elif type(appglobals.camera) is asi.Camera:
+                    appglobals.camera.close()
                     appglobals.camera = None
             except AttributeError as e:
                 print(e)
@@ -668,13 +669,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_gain_spinbox.setMaximum(controls["Gain"]["MaxValue"])
                 self.camera_gain_slider.setMinimum(controls["Gain"]["MinValue"])
                 self.camera_gain_slider.setMaximum(controls["Gain"]["MaxValue"])
-                self.camera_gain_spinbox.setValue(controls["Gain"]["DefaultValue"])
+                self.camera_gain_spinbox.setValue(appglobals.camera.get_control_value(asi.ASI_GAIN)[0])
             if controls["Exposure"]["IsAutoSupported"]:
                 self.camera_exposure_spinbox.setMinimum(controls["Exposure"]["MinValue"] / 1000)
                 self.camera_exposure_spinbox.setMaximum(controls["Exposure"]["MaxValue"] / 1000)
                 self.camera_exposure_slider.setMinimum(controls["Exposure"]["MinValue"] / 1000)
                 self.camera_exposure_slider.setMaximum(controls["Exposure"]["MaxValue"] / 1000)
-                self.camera_exposure_spinbox.setValue(controls["Exposure"]["DefaultValue"] / 1000)
+                self.camera_exposure_spinbox.setValue(appglobals.camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000)
             if controls["Gamma"]["IsAutoSupported"]:
                 self.camera_settings_frame.gamma_label.setVisible(True)
                 self.camera_settings_frame.gamma_spinbox.setVisible(True)

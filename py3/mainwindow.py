@@ -194,10 +194,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.schedule_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
         self.filter_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
 
-        self.camera_exposure_spinbox.editingFinished.connect(self.set_camera_exposure)
-        self.camera_exposure_slider.sliderReleased.connect(self.set_camera_exposure)
-        self.camera_gain_spinbox.editingFinished.connect(self.set_camera_gain)
-        self.camera_gain_slider.sliderReleased.connect(self.set_camera_gain)
+        self.camera_exposure_spinbox.valueChanged.connect(self.set_camera_exposure)
+        self.camera_exposure_slider.valueChanged.connect(self.set_camera_exposure)
+        self.camera_gain_spinbox.valueChanged.connect(self.set_camera_gain)
+        self.camera_gain_slider.valueChanged.connect(self.set_camera_gain)
 
     # Add row in schedule_table
     def add_schedule_row(self):

@@ -694,24 +694,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.camera_settings_frame.brightness_label.setVisible(False)
                 self.camera_settings_frame.brightness_spinbox.setVisible(False)
-            if controls["WB_R"]["IsAutoSupported"]:
-                self.camera_settings_frame.red_label.setVisible(True)
-                self.camera_settings_frame.red_spinbox.setVisible(True)
-                self.camera_settings_frame.red_spinbox.setMinimum(controls["WB_R"]["MinValue"])
-                self.camera_settings_frame.red_spinbox.setMaximum(controls["WB_R"]["MaxValue"])
-                self.camera_settings_frame.red_spinbox.setValue(controls["WB_R"]["DefaultValue"])
-            else:
-                self.camera_settings_frame.red_label.setVisible(False)
-                self.camera_settings_frame.red_spinbox.setVisible(False)
-            if controls["WB_B"]["IsAutoSupported"]:
-                self.camera_settings_frame.blue_label.setVisible(True)
-                self.camera_settings_frame.blue_spinbox.setVisible(True)
-                self.camera_settings_frame.blue_spinbox.setMinimum(controls["WB_B"]["MinValue"])
-                self.camera_settings_frame.blue_spinbox.setMaximum(controls["WB_B"]["MaxValue"])
-                self.camera_settings_frame.blue_spinbox.setValue(controls["WB_B"]["DefaultValue"])
-            else:
-                self.camera_settings_frame.blue_label.setVisible(False)
-                self.camera_settings_frame.blue_spinbox.setVisible(False)
             if controls["BandWidth"]["IsAutoSupported"]:
                 self.camera_settings_frame.usb_label.setVisible(True)
                 self.camera_settings_frame.usb_spinbox.setVisible(True)
@@ -739,14 +721,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.camera_settings_frame.horizontalflip_checkbox.setVisible(False)
                 self.camera_settings_frame.verticalflip_checkbox.setVisible(False)
-            if controls["HardwareBin"]["IsAutoSupported"]:
-                self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
-                if controls["HardwareBin"]["DefaultValue"] == 0:
-                    self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
-                elif controls["HardwareBin"]["DefaultValue"] == 1:
-                    self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
-            else:
-                self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
             if controls["HighSpeedMode"]["IsAutoSupported"]:
                 self.camera_settings_frame.highspeed_checkbox.setVisible(True)
                 if controls["HighSpeedMode"]["DefaultValue"] == 0:
@@ -755,14 +729,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_settings_frame.highspeed_checkbox.setChecked(True)
             else:
                 self.camera_settings_frame.highspeed_checkbox.setVisible(False)
-            if controls["Mono bin"]["IsAutoSupported"]:
-                self.camera_settings_frame.monobin_checkbox.setVisible(True)
-                if controls["Mono bin"]["DefaultValue"] == 0:
-                    self.camera_settings_frame.monobin_checkbox.setChecked(False)
-                if controls["Mono bin"]["DefaultValue"] == 1:
-                    self.camera_settings_frame.monobin_checkbox.setChecked(True)
-            else:
-                self.camera_settings_frame.monobin_checkbox.setVisible(False)
             if controls["Temperature"]["IsAutoSupported"]:
                 self.camera_settings_frame.temperature_label.setVisible(True)
                 self.camera_settings_frame.temperature_spinbox.setVisible(True)
@@ -771,6 +737,54 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.camera_settings_frame.temperature_label.setVisible(False)
                 self.camera_settings_frame.temperature_spinbox.setVisible(False)
+            if appglobals.camera.get_camera_property()["IsColorCam"]:
+                if controls["WB_R"]["IsAutoSupported"]:
+                    self.camera_settings_frame.red_label.setVisible(True)
+                    self.camera_settings_frame.red_spinbox.setVisible(True)
+                    self.camera_settings_frame.red_spinbox.setMinimum(controls["WB_R"]["MinValue"])
+                    self.camera_settings_frame.red_spinbox.setMaximum(controls["WB_R"]["MaxValue"])
+                    self.camera_settings_frame.red_spinbox.setValue(controls["WB_R"]["DefaultValue"])
+                else:
+                    self.camera_settings_frame.red_label.setVisible(False)
+                    self.camera_settings_frame.red_spinbox.setVisible(False)
+                if controls["WB_B"]["IsAutoSupported"]:
+                    self.camera_settings_frame.blue_label.setVisible(True)
+                    self.camera_settings_frame.blue_spinbox.setVisible(True)
+                    self.camera_settings_frame.blue_spinbox.setMinimum(controls["WB_B"]["MinValue"])
+                    self.camera_settings_frame.blue_spinbox.setMaximum(controls["WB_B"]["MaxValue"])
+                    self.camera_settings_frame.blue_spinbox.setValue(controls["WB_B"]["DefaultValue"])
+                else:
+                    self.camera_settings_frame.blue_label.setVisible(False)
+                    self.camera_settings_frame.blue_spinbox.setVisible(False)
+            else:
+                self.camera_settings_frame.red_label.setVisible(False)
+                self.camera_settings_frame.red_spinbox.setVisible(False)
+                self.camera_settings_frame.blue_label.setVisible(False)
+                self.camera_settings_frame.blue_spinbox.setVisible(False)
+            try:
+                # TODO: Determine if HardwareBin is correlated with color cameras
+                if controls["HardwareBin"]["IsAutoSupported"]:
+                    self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
+                    if controls["HardwareBin"]["DefaultValue"] == 0:
+                        self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
+                    elif controls["HardwareBin"]["DefaultValue"] == 1:
+                        self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
+                else:
+                    self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
+            except Exception:
+                self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
+            try:
+                # TODO: Determine if Mono bin is correlated with color cameras
+                if controls["Mono bin"]["IsAutoSupported"]:
+                    self.camera_settings_frame.monobin_checkbox.setVisible(True)
+                    if controls["Mono bin"]["DefaultValue"] == 0:
+                        self.camera_settings_frame.monobin_checkbox.setChecked(False)
+                    if controls["Mono bin"]["DefaultValue"] == 1:
+                        self.camera_settings_frame.monobin_checkbox.setChecked(True)
+                else:
+                    self.camera_settings_frame.monobin_checkbox.setVisible(False)
+            except Exception:
+                self.camera_settings_frame.monobin_checkbox.setVisible(False)
 
     def set_camera_exposure(self):
         if type(appglobals.camera) is asi.Camera:

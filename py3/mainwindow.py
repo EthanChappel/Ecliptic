@@ -681,7 +681,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.gamma_spinbox.setVisible(True)
                 self.camera_settings_frame.gamma_spinbox.setMinimum(controls["Gamma"]["MinValue"])
                 self.camera_settings_frame.gamma_spinbox.setMaximum(controls["Gamma"]["MaxValue"])
-                self.camera_settings_frame.gamma_spinbox.setValue(controls["Gamma"]["DefaultValue"])
+                self.camera_settings_frame.gamma_spinbox.setValue(
+                    appglobals.camera.get_control_value(asi.ASI_GAMMA)[0])
             else:
                 self.camera_settings_frame.gamma_label.setVisible(False)
                 self.camera_settings_frame.gamma_spinbox.setVisible(False)
@@ -690,7 +691,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.brightness_spinbox.setVisible(True)
                 self.camera_settings_frame.brightness_spinbox.setMinimum(controls["Brightness"]["MinValue"])
                 self.camera_settings_frame.brightness_spinbox.setMaximum(controls["Brightness"]["MaxValue"])
-                self.camera_settings_frame.brightness_spinbox.setValue(controls["Brightness"]["DefaultValue"])
+                self.camera_settings_frame.brightness_spinbox.setValue(
+                    appglobals.camera.get_control_value(asi.ASI_BRIGHTNESS)[0])
             else:
                 self.camera_settings_frame.brightness_label.setVisible(False)
                 self.camera_settings_frame.brightness_spinbox.setVisible(False)
@@ -699,23 +701,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.usb_spinbox.setVisible(True)
                 self.camera_settings_frame.usb_spinbox.setMinimum(controls["BandWidth"]["MinValue"])
                 self.camera_settings_frame.usb_spinbox.setMaximum(controls["BandWidth"]["MaxValue"])
-                self.camera_settings_frame.usb_spinbox.setValue(controls["BandWidth"]["DefaultValue"])
+                self.camera_settings_frame.usb_spinbox.setValue(
+                    appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0])
             else:
                 self.camera_settings_frame.usb_label.setVisible(False)
                 self.camera_settings_frame.usb_spinbox.setVisible(False)
             if controls["Flip"]["IsAutoSupported"]:
                 self.camera_settings_frame.horizontalflip_checkbox.setVisible(True)
                 self.camera_settings_frame.verticalflip_checkbox.setVisible(True)
-                if controls["Flip"]["DefaultValue"] == 0:
+                if appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 0:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-                elif controls["Flip"]["DefaultValue"] == 1:
+                elif appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 1:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-                elif controls["Flip"]["DefaultValue"] == 2:
+                elif appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 2:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
-                elif controls["Flip"]["DefaultValue"] == 3:
+                elif appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 3:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
             else:
@@ -723,9 +726,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.verticalflip_checkbox.setVisible(False)
             if controls["HighSpeedMode"]["IsAutoSupported"]:
                 self.camera_settings_frame.highspeed_checkbox.setVisible(True)
-                if controls["HighSpeedMode"]["DefaultValue"] == 0:
+                if appglobals.camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 0:
                     self.camera_settings_frame.highspeed_checkbox.setChecked(False)
-                elif controls["HighSpeedMode"]["DefaultValue"] == 1:
+                elif appglobals.camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 1:
                     self.camera_settings_frame.highspeed_checkbox.setChecked(True)
             else:
                 self.camera_settings_frame.highspeed_checkbox.setVisible(False)
@@ -743,7 +746,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_settings_frame.red_spinbox.setVisible(True)
                     self.camera_settings_frame.red_spinbox.setMinimum(controls["WB_R"]["MinValue"])
                     self.camera_settings_frame.red_spinbox.setMaximum(controls["WB_R"]["MaxValue"])
-                    self.camera_settings_frame.red_spinbox.setValue(controls["WB_R"]["DefaultValue"])
+                    self.camera_settings_frame.red_spinbox.setValue(
+                        appglobals.camera.get_control_value(asi.ASI_WB_R)[0])
                 else:
                     self.camera_settings_frame.red_label.setVisible(False)
                     self.camera_settings_frame.red_spinbox.setVisible(False)
@@ -752,7 +756,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_settings_frame.blue_spinbox.setVisible(True)
                     self.camera_settings_frame.blue_spinbox.setMinimum(controls["WB_B"]["MinValue"])
                     self.camera_settings_frame.blue_spinbox.setMaximum(controls["WB_B"]["MaxValue"])
-                    self.camera_settings_frame.blue_spinbox.setValue(controls["WB_B"]["DefaultValue"])
+                    self.camera_settings_frame.blue_spinbox.setValue(
+                        appglobals.camera.get_control_value(asi.ASI_WB_B)[0])
                 else:
                     self.camera_settings_frame.blue_label.setVisible(False)
                     self.camera_settings_frame.blue_spinbox.setVisible(False)
@@ -765,9 +770,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # TODO: Determine if HardwareBin is correlated with color cameras
                 if controls["HardwareBin"]["IsAutoSupported"]:
                     self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
-                    if controls["HardwareBin"]["DefaultValue"] == 0:
+                    if appglobals.camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 0:
                         self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
-                    elif controls["HardwareBin"]["DefaultValue"] == 1:
+                    elif appglobals.camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 1:
                         self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
                 else:
                     self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
@@ -777,9 +782,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # TODO: Determine if Mono bin is correlated with color cameras
                 if controls["Mono bin"]["IsAutoSupported"]:
                     self.camera_settings_frame.monobin_checkbox.setVisible(True)
-                    if controls["Mono bin"]["DefaultValue"] == 0:
+                    if appglobals.camera.get_control_value(asi.ASI_MONO_BIN)[0] == 0:
                         self.camera_settings_frame.monobin_checkbox.setChecked(False)
-                    if controls["Mono bin"]["DefaultValue"] == 1:
+                    if appglobals.camera.get_control_value(asi.ASI_MONO_BIN)[0]:
                         self.camera_settings_frame.monobin_checkbox.setChecked(True)
                 else:
                     self.camera_settings_frame.monobin_checkbox.setVisible(False)

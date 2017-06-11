@@ -568,6 +568,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.autoguider_settings()
 
     def autoguider_settings(self):
+        # TODO: Merge this method with self.camera_settings
         self.guider_gain_spinbox.setMinimum(appglobals.guider.gain_min())
         self.guider_gain_spinbox.setMaximum(appglobals.guider.gain_max())
         self.guider_gain_slider.setMinimum(appglobals.guider.gain_min())
@@ -607,7 +608,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 if camera_dialog.ascom_radio.isChecked() and camera_dialog.accepted:
                     appglobals.camera = ascomequipment.Camera()
-                    self.camera_settings()
+                    self.camera_settings(appglobals.camera)
                     name = appglobals.camera.name_()
                     self.camera_name_label.setText(name)
                     if self.isHidden():
@@ -615,7 +616,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                    QtWidgets.QSystemTrayIcon.Information)
                 elif camera_dialog.asi_radio.isChecked() and camera_dialog.accepted:
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
-                    self.camera_settings()
+                    self.camera_settings(appglobals.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_red_action.setDefaultWidget(self.camera_settings_frame)
                     self.camera_settings_menu.addAction(self.camera_red_action)
@@ -649,40 +650,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         appglobals.camera.disconnect()
         appglobals.camera.setup_dialog()
         appglobals.camera.connect()
-        self.camera_settings()
+        self.camera_settings(appglobals.camera)
 
-    def camera_settings(self):
-        if type(appglobals.camera) is ascomequipment.Camera:
-            self.camera_gain_spinbox.setMinimum(appglobals.camera.gain_min())
-            self.camera_gain_spinbox.setMaximum(appglobals.camera.gain_max())
-            self.camera_gain_slider.setMinimum(appglobals.camera.gain_min())
-            self.camera_gain_slider.setMaximum(appglobals.camera.gain_max())
-            self.camera_gain_spinbox.setValue(appglobals.camera.gain())
-            self.camera_exposure_spinbox.setMinimum(appglobals.camera.exposure_min() * 1000)
-            self.camera_exposure_spinbox.setMaximum(appglobals.camera.exposure_max() * 1000)
-            self.camera_exposure_slider.setMinimum(appglobals.camera.exposure_min() * 1000)
-            self.camera_exposure_slider.setMaximum(appglobals.camera.exposure_max() * 1000)
-        elif type(appglobals.camera) is asi.Camera:
-            controls = appglobals.camera.get_controls()
+    def camera_settings(self, camera):
+        if type(camera) is ascomequipment.Camera:
+            self.camera_gain_spinbox.setMinimum(camera.gain_min())
+            self.camera_gain_spinbox.setMaximum(camera.gain_max())
+            self.camera_gain_slider.setMinimum(camera.gain_min())
+            self.camera_gain_slider.setMaximum(camera.gain_max())
+            self.camera_gain_spinbox.setValue(camera.gain())
+            self.camera_exposure_spinbox.setMinimum(camera.exposure_min() * 1000)
+            self.camera_exposure_spinbox.setMaximum(camera.exposure_max() * 1000)
+            self.camera_exposure_slider.setMinimum(camera.exposure_min() * 1000)
+            self.camera_exposure_slider.setMaximum(camera.exposure_max() * 1000)
+        elif type(camera) is asi.Camera:
+            controls = camera.get_controls()
             if controls["Gain"]["IsAutoSupported"]:
                 self.camera_gain_spinbox.setMinimum(controls["Gain"]["MinValue"])
                 self.camera_gain_spinbox.setMaximum(controls["Gain"]["MaxValue"])
                 self.camera_gain_slider.setMinimum(controls["Gain"]["MinValue"])
                 self.camera_gain_slider.setMaximum(controls["Gain"]["MaxValue"])
-                self.camera_gain_spinbox.setValue(appglobals.camera.get_control_value(asi.ASI_GAIN)[0])
+                self.camera_gain_spinbox.setValue(camera.get_control_value(asi.ASI_GAIN)[0])
             if controls["Exposure"]["IsAutoSupported"]:
                 self.camera_exposure_spinbox.setMinimum(controls["Exposure"]["MinValue"] / 1000)
                 self.camera_exposure_spinbox.setMaximum(controls["Exposure"]["MaxValue"] / 1000)
                 self.camera_exposure_slider.setMinimum(controls["Exposure"]["MinValue"] / 1000)
                 self.camera_exposure_slider.setMaximum(controls["Exposure"]["MaxValue"] / 1000)
-                self.camera_exposure_spinbox.setValue(appglobals.camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000)
+                self.camera_exposure_spinbox.setValue(camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000)
             if controls["Gamma"]["IsAutoSupported"]:
                 self.camera_settings_frame.gamma_label.setVisible(True)
                 self.camera_settings_frame.gamma_spinbox.setVisible(True)
                 self.camera_settings_frame.gamma_spinbox.setMinimum(controls["Gamma"]["MinValue"])
                 self.camera_settings_frame.gamma_spinbox.setMaximum(controls["Gamma"]["MaxValue"])
                 self.camera_settings_frame.gamma_spinbox.setValue(
-                    appglobals.camera.get_control_value(asi.ASI_GAMMA)[0])
+                    camera.get_control_value(asi.ASI_GAMMA)[0])
             else:
                 self.camera_settings_frame.gamma_label.setVisible(False)
                 self.camera_settings_frame.gamma_spinbox.setVisible(False)
@@ -692,7 +693,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.brightness_spinbox.setMinimum(controls["Brightness"]["MinValue"])
                 self.camera_settings_frame.brightness_spinbox.setMaximum(controls["Brightness"]["MaxValue"])
                 self.camera_settings_frame.brightness_spinbox.setValue(
-                    appglobals.camera.get_control_value(asi.ASI_BRIGHTNESS)[0])
+                    camera.get_control_value(asi.ASI_BRIGHTNESS)[0])
             else:
                 self.camera_settings_frame.brightness_label.setVisible(False)
                 self.camera_settings_frame.brightness_spinbox.setVisible(False)
@@ -702,23 +703,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.usb_spinbox.setMinimum(controls["BandWidth"]["MinValue"])
                 self.camera_settings_frame.usb_spinbox.setMaximum(controls["BandWidth"]["MaxValue"])
                 self.camera_settings_frame.usb_spinbox.setValue(
-                    appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0])
+                    camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0])
             else:
                 self.camera_settings_frame.usb_label.setVisible(False)
                 self.camera_settings_frame.usb_spinbox.setVisible(False)
             if controls["Flip"]["IsAutoSupported"]:
                 self.camera_settings_frame.horizontalflip_checkbox.setVisible(True)
                 self.camera_settings_frame.verticalflip_checkbox.setVisible(True)
-                if appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 0:
+                if camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 0:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-                elif appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 1:
+                elif camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 1:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-                elif appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 2:
+                elif camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 2:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
-                elif appglobals.camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 3:
+                elif camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 3:
                     self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
                     self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
             else:
@@ -726,9 +727,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.verticalflip_checkbox.setVisible(False)
             if controls["HighSpeedMode"]["IsAutoSupported"]:
                 self.camera_settings_frame.highspeed_checkbox.setVisible(True)
-                if appglobals.camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 0:
+                if camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 0:
                     self.camera_settings_frame.highspeed_checkbox.setChecked(False)
-                elif appglobals.camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 1:
+                elif camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 1:
                     self.camera_settings_frame.highspeed_checkbox.setChecked(True)
             else:
                 self.camera_settings_frame.highspeed_checkbox.setVisible(False)
@@ -740,14 +741,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.camera_settings_frame.temperature_label.setVisible(False)
                 self.camera_settings_frame.temperature_spinbox.setVisible(False)
-            if appglobals.camera.get_camera_property()["IsColorCam"]:
+            if camera.get_camera_property()["IsColorCam"]:
                 if controls["WB_R"]["IsAutoSupported"]:
                     self.camera_settings_frame.red_label.setVisible(True)
                     self.camera_settings_frame.red_spinbox.setVisible(True)
                     self.camera_settings_frame.red_spinbox.setMinimum(controls["WB_R"]["MinValue"])
                     self.camera_settings_frame.red_spinbox.setMaximum(controls["WB_R"]["MaxValue"])
                     self.camera_settings_frame.red_spinbox.setValue(
-                        appglobals.camera.get_control_value(asi.ASI_WB_R)[0])
+                        camera.get_control_value(asi.ASI_WB_R)[0])
                 else:
                     self.camera_settings_frame.red_label.setVisible(False)
                     self.camera_settings_frame.red_spinbox.setVisible(False)
@@ -757,7 +758,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_settings_frame.blue_spinbox.setMinimum(controls["WB_B"]["MinValue"])
                     self.camera_settings_frame.blue_spinbox.setMaximum(controls["WB_B"]["MaxValue"])
                     self.camera_settings_frame.blue_spinbox.setValue(
-                        appglobals.camera.get_control_value(asi.ASI_WB_B)[0])
+                        camera.get_control_value(asi.ASI_WB_B)[0])
                 else:
                     self.camera_settings_frame.blue_label.setVisible(False)
                     self.camera_settings_frame.blue_spinbox.setVisible(False)
@@ -770,9 +771,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # TODO: Determine if HardwareBin is correlated with color cameras
                 if controls["HardwareBin"]["IsAutoSupported"]:
                     self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
-                    if appglobals.camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 0:
+                    if camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 0:
                         self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
-                    elif appglobals.camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 1:
+                    elif camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 1:
                         self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
                 else:
                     self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
@@ -782,9 +783,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # TODO: Determine if Mono bin is correlated with color cameras
                 if controls["Mono bin"]["IsAutoSupported"]:
                     self.camera_settings_frame.monobin_checkbox.setVisible(True)
-                    if appglobals.camera.get_control_value(asi.ASI_MONO_BIN)[0] == 0:
+                    if camera.get_control_value(asi.ASI_MONO_BIN)[0] == 0:
                         self.camera_settings_frame.monobin_checkbox.setChecked(False)
-                    if appglobals.camera.get_control_value(asi.ASI_MONO_BIN)[0]:
+                    if camera.get_control_value(asi.ASI_MONO_BIN)[0]:
                         self.camera_settings_frame.monobin_checkbox.setChecked(True)
                 else:
                     self.camera_settings_frame.monobin_checkbox.setVisible(False)

@@ -14,6 +14,7 @@ import targetswindow
 import connectcamera
 from computetargets import ComputeTargets
 import appglobals
+
 if sys.platform.startswith("win"):
     import ascomequipment
 
@@ -537,12 +538,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "The auto-guider"
             try:
                 appglobals.guider = ascomequipment.Camera()
-                self.autoguider_settings()
+                values = self.camera_settings(appglobals.guider)
                 name = appglobals.guider.name_()
                 self.guide_name_label.setText(name)
                 if self.isHidden():
                     self.tray_icon.showMessage("Auto-Guider Connected", f"{name} has been connected.",
                                                QtWidgets.QSystemTrayIcon.Information)
+                self.setup_guider_controls(values)
             except Exception as e:
                 print(e)
                 self.autoguide_group.setChecked(False)
@@ -565,19 +567,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         appglobals.guider.disconnect()
         appglobals.guider.setup_dialog()
         appglobals.guider.connect()
-        self.autoguider_settings()
+        self.setup_guider_controls(self.camera_settings(appglobals.guider))
 
-    def autoguider_settings(self):
-        # TODO: Merge this method with self.camera_settings
-        self.guider_gain_spinbox.setMinimum(appglobals.guider.gain_min())
-        self.guider_gain_spinbox.setMaximum(appglobals.guider.gain_max())
-        self.guider_gain_slider.setMinimum(appglobals.guider.gain_min())
-        self.guider_gain_slider.setMaximum(appglobals.guider.gain_max())
-        self.guider_gain_spinbox.setValue(appglobals.guider.gain())
-        self.guider_exposure_spinbox.setMinimum(appglobals.guider.exposure_min() * 1000)
-        self.guider_exposure_spinbox.setMaximum(appglobals.guider.exposure_max() * 1000)
-        self.guider_exposure_slider.setMinimum(appglobals.guider.exposure_min() * 1000)
-        self.guider_exposure_slider.setMaximum(appglobals.guider.exposure_max() * 1000)
+    def setup_guider_controls(self, values):
+        if "Gain" in values:
+            self.guider_gain_spinbox.setMinimum(values["Gain"]["Min"])
+            self.guider_gain_spinbox.setMaximum(values["Gain"]["Max"])
+            self.guider_gain_slider.setMinimum(values["Gain"]["Min"])
+            self.guider_gain_slider.setMaximum(values["Gain"]["Max"])
+            self.guider_gain_spinbox.setValue(values["Gain"]["Current"])
+        else:
+            self.guider_gain_label.setEnabled(False)
+            self.guider_gain_spinbox.setEnabled(False)
+            self.guider_gain_slider.setEnabled(False)
+
+        if "Exposure" in values:
+            self.guider_exposure_spinbox.setMinimum(values["Exposure"]["Min"])
+            self.guider_exposure_spinbox.setMaximum(values["Exposure"]["Max"])
+            self.guider_exposure_slider.setMinimum(values["Exposure"]["Min"])
+            self.guider_exposure_slider.setMaximum(values["Exposure"]["Max"])
+            self.guider_exposure_spinbox.setValue(values["Exposure"]["Current"])
+        else:
+            self.guider_exposure_label.setEnabled(False)
+            self.guider_exposure_spinbox.setEnabled(False)
+            self.guider_exposure_slider.setEnabled(False)
 
     def autoguider_loop(self):
         if self.guider_loop_button.isChecked():
@@ -608,7 +621,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 if camera_dialog.ascom_radio.isChecked() and camera_dialog.accepted:
                     appglobals.camera = ascomequipment.Camera()
-                    self.camera_settings(appglobals.camera)
+                    values = self.camera_settings(appglobals.camera)
                     name = appglobals.camera.name_()
                     self.camera_name_label.setText(name)
                     if self.isHidden():
@@ -616,13 +629,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                    QtWidgets.QSystemTrayIcon.Information)
                 elif camera_dialog.asi_radio.isChecked() and camera_dialog.accepted:
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
-                    self.camera_settings(appglobals.camera)
+                    values = self.camera_settings(appglobals.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_red_action.setDefaultWidget(self.camera_settings_frame)
                     self.camera_settings_menu.addAction(self.camera_red_action)
                     self.camera_settings_btn.setMenu(self.camera_settings_menu)
                 else:
                     raise Exception
+                self.setup_camera_controls(values)
             except Exception as e:
                 print(e)
                 self.camera_group.setChecked(False)
@@ -631,6 +645,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 elif self.isHidden() and camera_dialog.accepted:
                     self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
                                                QtWidgets.QSystemTrayIcon.Warning)
+
         elif not self.camera_group.isChecked():
             try:
                 if type(appglobals.camera) is ascomequipment.Camera:
@@ -646,155 +661,222 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_name_label.setText("Not Connected")
                 self.camera_settings_btn.setMenu(None)
 
+    def setup_camera_controls(self, values):
+        # TODO: Test these statements with more cameras that support different features
+        if "Gain" in values:
+            self.camera_gain_spinbox.setMinimum(values["Gain"]["Min"])
+            self.camera_gain_spinbox.setMaximum(values["Gain"]["Max"])
+            self.camera_gain_slider.setMinimum(values["Gain"]["Min"])
+            self.camera_gain_slider.setMaximum(values["Gain"]["Max"])
+            self.camera_gain_spinbox.setValue(values["Gain"]["Current"])
+        else:
+            self.camera_gain_label.setEnabled(False)
+            self.camera_gain_spinbox.setEnabled(False)
+            self.camera_gain_slider.setEnabled(False)
+
+        if "Exposure" in values:
+            self.camera_exposure_spinbox.setMinimum(values["Exposure"]["Min"])
+            self.camera_exposure_spinbox.setMaximum(values["Exposure"]["Max"])
+            self.camera_exposure_slider.setMinimum(values["Exposure"]["Min"])
+            self.camera_exposure_slider.setMaximum(values["Exposure"]["Max"])
+            self.camera_exposure_spinbox.setValue(values["Exposure"]["Current"])
+        else:
+            self.camera_exposure_label.setEnabled(False)
+            self.camera_exposure_spinbox.setEnabled(False)
+            self.camera_exposure_slider.setEnabled(False)
+
+        if "Gamma" in values:
+            self.camera_settings_frame.gamma_label.setVisible(True)
+            self.camera_settings_frame.gamma_spinbox.setVisible(True)
+            self.camera_settings_frame.gamma_spinbox.setMinimum(values["Gamma"]["Min"])
+            self.camera_settings_frame.gamma_spinbox.setMaximum(values["Gamma"]["Max"])
+            self.camera_settings_frame.gamma_spinbox.setValue(values["Gamma"]["Current"])
+        else:
+            self.camera_settings_frame.gamma_label.setVisible(False)
+            self.camera_settings_frame.gamma_spinbox.setVisible(False)
+
+        if "Brightness" in values:
+            self.camera_settings_frame.brightness_label.setVisible(True)
+            self.camera_settings_frame.brightness_spinbox.setVisible(True)
+            self.camera_settings_frame.brightness_spinbox.setMinimum(values["Brightness"]["Min"])
+            self.camera_settings_frame.brightness_spinbox.setMaximum(values["Brightness"]["Max"])
+            self.camera_settings_frame.brightness_spinbox.setValue(values["Brightness"]["Current"])
+        else:
+            self.camera_settings_frame.brightness_label.setVisible(False)
+            self.camera_settings_frame.brightness_spinbox.setVisible(False)
+
+        if "Bandwidth" in values:
+            self.camera_settings_frame.usb_label.setVisible(True)
+            self.camera_settings_frame.usb_spinbox.setVisible(True)
+            self.camera_settings_frame.usb_spinbox.setMinimum(values["Bandwidth"]["Min"])
+            self.camera_settings_frame.usb_spinbox.setMaximum(values["Bandwidth"]["Max"])
+            self.camera_settings_frame.usb_spinbox.setValue(values["Bandwidth"]["Current"])
+        else:
+            self.camera_settings_frame.usb_label.setVisible(False)
+            self.camera_settings_frame.usb_spinbox.setVisible(False)
+
+        if "Flip" in values:
+            self.camera_settings_frame.horizontalflip_checkbox.setVisible(True)
+            self.camera_settings_frame.verticalflip_checkbox.setVisible(True)
+            if values["Flip"]["Current"] == 0:
+                self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
+                self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
+            elif values["Flip"]["Current"] == 1:
+                self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
+                self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
+            elif values["Flip"]["Current"] == 2:
+                self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
+                self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
+            elif values["Flip"]["Current"] == 3:
+                self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
+                self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
+        else:
+            self.camera_settings_frame.horizontalflip_checkbox.setVisible(False)
+            self.camera_settings_frame.verticalflip_checkbox.setVisible(False)
+
+        if "High Speed" in values:
+            self.camera_settings_frame.highspeed_checkbox.setVisible(True)
+            if values["High Speed"]["Current"] == 0:
+                self.camera_settings_frame.highspeed_checkbox.setChecked(False)
+            elif values["High Speed"]["Current"] == 1:
+                self.camera_settings_frame.highspeed_checkbox.setChecked(True)
+        else:
+            self.camera_settings_frame.highspeed_checkbox.setVisible(False)
+
+        if "Temperature" in values:
+            self.camera_settings_frame.temperature_label.setVisible(True)
+            self.camera_settings_frame.temperature_spinbox.setVisible(True)
+            self.camera_settings_frame.temperature_spinbox.setMinimum(values["Temperature"]["Min"])
+            self.camera_settings_frame.temperature_spinbox.setMaximum(values["Temperature"]["Max"])
+            self.camera_settings_frame.temperature_spinbox.setValue(values["Temperature"]["Current"])
+        else:
+            self.camera_settings_frame.temperature_label.setVisible(False)
+            self.camera_settings_frame.temperature_spinbox.setVisible(False)
+
+        if "Red" in values:
+            self.camera_settings_frame.red_label.setVisible(True)
+            self.camera_settings_frame.red_spinbox.setVisible(True)
+            self.camera_settings_frame.red_spinbox.setMinimum(values["Red"]["Min"])
+            self.camera_settings_frame.red_spinbox.setMaximum(values["Red"]["Max"])
+            self.camera_settings_frame.red_spinbox.setValue(values["Red"]["Current"])
+        else:
+            self.camera_settings_frame.red_label.setVisible(False)
+            self.camera_settings_frame.red_spinbox.setVisible(False)
+
+        if "Blue" in values:
+            self.camera_settings_frame.blue_label.setVisible(True)
+            self.camera_settings_frame.blue_spinbox.setVisible(True)
+            self.camera_settings_frame.blue_spinbox.setMinimum(values["Blues"]["Min"])
+            self.camera_settings_frame.blue_spinbox.setMaximum(values["Blues"]["Max"])
+            self.camera_settings_frame.blue_spinbox.setValue(values["Blues"]["Current"])
+        else:
+            self.camera_settings_frame.blue_label.setVisible(False)
+            self.camera_settings_frame.blue_spinbox.setVisible(False)
+
+        if "Hardware Bin" in values:
+            self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
+            if values["Hardware Bin"]["Current"] == 0:
+                self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
+            elif values["Hardware Bin"]["Current"] == 1:
+                self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
+        else:
+            self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
+
+        if "Mono Bin" in values:
+            self.camera_settings_frame.monobin_checkbox.setVisible(True)
+            if values["Mono Bin"]["Current"] == 0:
+                self.camera_settings_frame.monobin_checkbox.setChecked(False)
+            if values["Mono Bin"]["Current"] == 1:
+                self.camera_settings_frame.monobin_checkbox.setChecked(True)
+        else:
+            self.camera_settings_frame.monobin_checkbox.setVisible(False)
+
     def setup_camera(self):
         appglobals.camera.disconnect()
         appglobals.camera.setup_dialog()
         appglobals.camera.connect()
-        self.camera_settings(appglobals.camera)
+        self.setup_camera_controls(self.camera_settings(appglobals.camera))
 
     def camera_settings(self, camera):
+        values = {}
         if type(camera) is ascomequipment.Camera:
-            self.camera_gain_spinbox.setMinimum(camera.gain_min())
-            self.camera_gain_spinbox.setMaximum(camera.gain_max())
-            self.camera_gain_slider.setMinimum(camera.gain_min())
-            self.camera_gain_slider.setMaximum(camera.gain_max())
-            self.camera_gain_spinbox.setValue(camera.gain())
-            self.camera_exposure_spinbox.setMinimum(camera.exposure_min() * 1000)
-            self.camera_exposure_spinbox.setMaximum(camera.exposure_max() * 1000)
-            self.camera_exposure_slider.setMinimum(camera.exposure_min() * 1000)
-            self.camera_exposure_slider.setMaximum(camera.exposure_max() * 1000)
+            values.update({"Gain": {"Min": camera.gain_min(), "Max": camera.gain_max(), "Current": camera.gain()}})
+            values.update({"Exposure": {"Min": camera.exposure_min() * 1000,
+                                        "Max": camera.exposure_max() * 1000,
+                                        "Current": camera.exposure_min() * 1000}})  # No current value in ASCOM
+
         elif type(camera) is asi.Camera:
             controls = camera.get_controls()
             if controls["Gain"]["IsAutoSupported"]:
-                self.camera_gain_spinbox.setMinimum(controls["Gain"]["MinValue"])
-                self.camera_gain_spinbox.setMaximum(controls["Gain"]["MaxValue"])
-                self.camera_gain_slider.setMinimum(controls["Gain"]["MinValue"])
-                self.camera_gain_slider.setMaximum(controls["Gain"]["MaxValue"])
-                self.camera_gain_spinbox.setValue(camera.get_control_value(asi.ASI_GAIN)[0])
+                values.update({"Gain": {"Min": controls["Gain"]["MinValue"],
+                                        "Max": controls["Gain"]["MaxValue"],
+                                        "Current": camera.get_control_value(asi.ASI_GAIN)[0]}})
+
             if controls["Exposure"]["IsAutoSupported"]:
-                self.camera_exposure_spinbox.setMinimum(controls["Exposure"]["MinValue"] / 1000)
-                self.camera_exposure_spinbox.setMaximum(controls["Exposure"]["MaxValue"] / 1000)
-                self.camera_exposure_slider.setMinimum(controls["Exposure"]["MinValue"] / 1000)
-                self.camera_exposure_slider.setMaximum(controls["Exposure"]["MaxValue"] / 1000)
-                self.camera_exposure_spinbox.setValue(camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000)
+                values.update({"Exposure": {"Min": controls["Exposure"]["MinValue"] / 1000,
+                                            "Max": controls["Exposure"]["MaxValue"] / 1000,
+                                            "Current": camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000}})
+
             if controls["Gamma"]["IsAutoSupported"]:
-                self.camera_settings_frame.gamma_label.setVisible(True)
-                self.camera_settings_frame.gamma_spinbox.setVisible(True)
-                self.camera_settings_frame.gamma_spinbox.setMinimum(controls["Gamma"]["MinValue"])
-                self.camera_settings_frame.gamma_spinbox.setMaximum(controls["Gamma"]["MaxValue"])
-                self.camera_settings_frame.gamma_spinbox.setValue(
-                    camera.get_control_value(asi.ASI_GAMMA)[0])
-            else:
-                self.camera_settings_frame.gamma_label.setVisible(False)
-                self.camera_settings_frame.gamma_spinbox.setVisible(False)
+                values.update({"Gamma": {"Min": controls["Gamma"]["MinValue"],
+                                         "Max": controls["Gamma"]["MaxValue"],
+                                         "Current": camera.get_control_value(asi.ASI_GAMMA)[0]}})
+
             if controls["Brightness"]["IsAutoSupported"]:
-                self.camera_settings_frame.brightness_label.setVisible(True)
-                self.camera_settings_frame.brightness_spinbox.setVisible(True)
-                self.camera_settings_frame.brightness_spinbox.setMinimum(controls["Brightness"]["MinValue"])
-                self.camera_settings_frame.brightness_spinbox.setMaximum(controls["Brightness"]["MaxValue"])
-                self.camera_settings_frame.brightness_spinbox.setValue(
-                    camera.get_control_value(asi.ASI_BRIGHTNESS)[0])
-            else:
-                self.camera_settings_frame.brightness_label.setVisible(False)
-                self.camera_settings_frame.brightness_spinbox.setVisible(False)
+                values.update({"Brightness": {"Min": controls["Brightness"]["MinValue"],
+                                              "Max": controls["Brightness"]["MaxValue"],
+                                              "Current": camera.get_control_value(asi.ASI_BRIGHTNESS)[0]}})
+
             if controls["BandWidth"]["IsAutoSupported"]:
-                self.camera_settings_frame.usb_label.setVisible(True)
-                self.camera_settings_frame.usb_spinbox.setVisible(True)
-                self.camera_settings_frame.usb_spinbox.setMinimum(controls["BandWidth"]["MinValue"])
-                self.camera_settings_frame.usb_spinbox.setMaximum(controls["BandWidth"]["MaxValue"])
-                self.camera_settings_frame.usb_spinbox.setValue(
-                    camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0])
-            else:
-                self.camera_settings_frame.usb_label.setVisible(False)
-                self.camera_settings_frame.usb_spinbox.setVisible(False)
+                values.update({"Bandwidth": {"Min": controls["BandWidth"]["MinValue"],
+                                             "Max": controls["BandWidth"]["MaxValue"],
+                                             "Current": camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0]}})
+
             if controls["Flip"]["IsAutoSupported"]:
-                self.camera_settings_frame.horizontalflip_checkbox.setVisible(True)
-                self.camera_settings_frame.verticalflip_checkbox.setVisible(True)
-                if camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 0:
-                    self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
-                    self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-                elif camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 1:
-                    self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
-                    self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-                elif camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 2:
-                    self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
-                    self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
-                elif camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0] == 3:
-                    self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
-                    self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
-            else:
-                self.camera_settings_frame.horizontalflip_checkbox.setVisible(False)
-                self.camera_settings_frame.verticalflip_checkbox.setVisible(False)
+                values.update({"Flip": {"Min": controls["Flip"]["MinValue"],
+                                        "Max": controls["Flip"]["MaxValue"],
+                                        "Current": camera.get_control_value(asi.ASI_FLIP)[0]}})
+
             if controls["HighSpeedMode"]["IsAutoSupported"]:
-                self.camera_settings_frame.highspeed_checkbox.setVisible(True)
-                if camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 0:
-                    self.camera_settings_frame.highspeed_checkbox.setChecked(False)
-                elif camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0] == 1:
-                    self.camera_settings_frame.highspeed_checkbox.setChecked(True)
-            else:
-                self.camera_settings_frame.highspeed_checkbox.setVisible(False)
+                values.update({"High Speed": {"Min": controls["HighSpeedMode"]["MinValue"],
+                                              "Max": controls["HighSpeedMode"]["MaxValue"],
+                                              "Current": camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0]}})
+
             if controls["Temperature"]["IsAutoSupported"]:
-                self.camera_settings_frame.temperature_label.setVisible(True)
-                self.camera_settings_frame.temperature_spinbox.setVisible(True)
-                self.camera_settings_frame.temperature_spinbox.setMinimum(controls["Temperature"]["MinValue"])
-                self.camera_settings_frame.temperature_spinbox.setMaximum(controls["Temperature"]["MaxValue"])
-            else:
-                self.camera_settings_frame.temperature_label.setVisible(False)
-                self.camera_settings_frame.temperature_spinbox.setVisible(False)
+                values.update({"Temperature": {"Min": controls["Temperature"]["MinValue"],
+                                               "Max": controls["Temperature"]["MaxValue"],
+                                               "Current": camera.get_control_value(asi.ASI_TARGET_TEMP)[0]}})
+
             if camera.get_camera_property()["IsColorCam"]:
                 if controls["WB_R"]["IsAutoSupported"]:
-                    self.camera_settings_frame.red_label.setVisible(True)
-                    self.camera_settings_frame.red_spinbox.setVisible(True)
-                    self.camera_settings_frame.red_spinbox.setMinimum(controls["WB_R"]["MinValue"])
-                    self.camera_settings_frame.red_spinbox.setMaximum(controls["WB_R"]["MaxValue"])
-                    self.camera_settings_frame.red_spinbox.setValue(
-                        camera.get_control_value(asi.ASI_WB_R)[0])
-                else:
-                    self.camera_settings_frame.red_label.setVisible(False)
-                    self.camera_settings_frame.red_spinbox.setVisible(False)
+                    values.update({"Red": {"Min": controls["WB_R"]["MinValue"],
+                                           "Max": controls["WB_R"]["MaxValue"],
+                                           "Current": camera.get_control_value(asi.ASI_WB_R)[0]}})
+
                 if controls["WB_B"]["IsAutoSupported"]:
-                    self.camera_settings_frame.blue_label.setVisible(True)
-                    self.camera_settings_frame.blue_spinbox.setVisible(True)
-                    self.camera_settings_frame.blue_spinbox.setMinimum(controls["WB_B"]["MinValue"])
-                    self.camera_settings_frame.blue_spinbox.setMaximum(controls["WB_B"]["MaxValue"])
-                    self.camera_settings_frame.blue_spinbox.setValue(
-                        camera.get_control_value(asi.ASI_WB_B)[0])
-                else:
-                    self.camera_settings_frame.blue_label.setVisible(False)
-                    self.camera_settings_frame.blue_spinbox.setVisible(False)
-            else:
-                self.camera_settings_frame.red_label.setVisible(False)
-                self.camera_settings_frame.red_spinbox.setVisible(False)
-                self.camera_settings_frame.blue_label.setVisible(False)
-                self.camera_settings_frame.blue_spinbox.setVisible(False)
-            try:
+                    values.update({"Blue": {"Min": controls["WB_B"]["MinValue"],
+                                            "Max": controls["WB_B"]["MaxValue"],
+                                            "Current": camera.get_control_value(asi.ASI_WB_B)[0]}})
+
+            if "HardwareBin" in controls:
                 # TODO: Determine if HardwareBin is correlated with color cameras
                 if controls["HardwareBin"]["IsAutoSupported"]:
-                    self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
-                    if camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 0:
-                        self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
-                    elif camera.get_control_value(asi.ASI_HARDWARE_BIN)[0] == 1:
-                        self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
-                else:
-                    self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
-            except Exception:
-                self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
-            try:
+                    values.update({"Hardware Bin": {"Min": controls["HardwareBin"]["MinValue"],
+                                                    "Max": controls["HardwareBin"]["MaxValue"],
+                                                    "Current": camera.get_control_value(asi.ASI_HARDWARE_BIN)[0]}})
+
+            if "Mono bin" in controls:
                 # TODO: Determine if Mono bin is correlated with color cameras
                 if controls["Mono bin"]["IsAutoSupported"]:
-                    self.camera_settings_frame.monobin_checkbox.setVisible(True)
-                    if camera.get_control_value(asi.ASI_MONO_BIN)[0] == 0:
-                        self.camera_settings_frame.monobin_checkbox.setChecked(False)
-                    if camera.get_control_value(asi.ASI_MONO_BIN)[0]:
-                        self.camera_settings_frame.monobin_checkbox.setChecked(True)
-                else:
-                    self.camera_settings_frame.monobin_checkbox.setVisible(False)
-            except Exception:
-                self.camera_settings_frame.monobin_checkbox.setVisible(False)
+                    values.update({"Mono Bin": {"Min": controls["Mono bin"]["MinValue"],
+                                                "Max": controls["Mono bin"]["MaxValue"],
+                                                "Current": camera.get_control_value(asi.ASI_MONO_BIN)[0]}})
+
+        return values
 
     def set_camera_exposure(self):
         if type(appglobals.camera) is asi.Camera:
-            exp_us = int(self.camera_exposure_spinbox.cleanText())*1000
+            exp_us = int(self.camera_exposure_spinbox.cleanText()) * 1000
             appglobals.camera.set_control_value(asi.ASI_EXPOSURE, exp_us)
 
     def set_camera_gain(self):
@@ -847,7 +929,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             height = appglobals.camera.get_camera_property()["MaxHeight"]
             out = cv2.VideoWriter(avi_name, -1, 20.0, (width, height), False)
             while self.camera_capture_button.isChecked():
-                timeout = int(self.camera_exposure_spinbox.cleanText())*2+500
+                timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
                 image = appglobals.camera.capture_video_frame(timeout=timeout)
                 out.write(image)
                 image = Image.fromarray(image)

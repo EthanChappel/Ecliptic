@@ -24,8 +24,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
 
         self.camera_settings_frame = zwosettings.ZWOSettings()
-        self.camera_red_action = QtWidgets.QWidgetAction(None)
+        self.camera_settings_action = QtWidgets.QWidgetAction(None)
         self.camera_settings_menu = QtWidgets.QMenu()
+
+        self.guider_settings_frame = zwosettings.ZWOSettings()
+        self.guider_settings_action = QtWidgets.QWidgetAction(None)
+        self.guider_settings_menu = QtWidgets.QMenu()
+
         self.camera_thread = None
         self.guide_thread = None
 
@@ -631,8 +636,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
                     values = self.camera_settings(appglobals.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
-                    self.camera_red_action.setDefaultWidget(self.camera_settings_frame)
-                    self.camera_settings_menu.addAction(self.camera_red_action)
+                    self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
+                    self.camera_settings_menu.addAction(self.camera_settings_action)
                     self.camera_settings_btn.setMenu(self.camera_settings_menu)
                 else:
                     raise Exception

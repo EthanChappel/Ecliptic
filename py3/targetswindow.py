@@ -40,12 +40,12 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             lambda: self.generate(appglobals.location["Latitude"], appglobals.location["Longitude"]))
         self.today_btn.clicked.connect(self.set_today)
 
-    # Set graph date to current date
     def set_today(self):
+        """Set graph date to current date."""
         self.schedule_dateedit.setDateTime(QtCore.QDateTime.currentDateTime())
 
-    # Generate graph when date is changed
     def generate(self, latitude, longitude):
+        """Generate graph whenever date is changed."""
         self.sched_plot.lines = []
         self.sched_plot.patches = []
         for t in appglobals.targets_tuple:
@@ -213,8 +213,8 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             print(alt)
         return alt
 
-    # Show QToolTip when line is hovered over in graph
     def on_plot_hover(self, event):
+        """Show QToolTip when line is hovered over in graph."""
         for curve in self.sched_plot.get_lines():
             if curve.contains(event)[0]:
                 QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), curve.get_gid())

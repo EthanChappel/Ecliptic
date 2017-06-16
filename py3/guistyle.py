@@ -2,7 +2,7 @@ from PyQt5 import QtGui
 
 
 def switch_style(app, flag):
-    # Set palette of QApplication
+    """Set style of QApplication."""
     if flag:
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Window, QtGui.QColor(85, 85, 85))

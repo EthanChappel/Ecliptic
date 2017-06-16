@@ -1,8 +1,9 @@
+from typing import Dict, Tuple, Optional, Any
 import ephem
 
 
 class ComputeTargets:
-    def __init__(self, time, latitude, longitude):
+    def __init__(self, time: str, latitude: str, longitude: str):
         self.observer = ephem.Observer()
         self.observer.date = time
         self.observer.lat = latitude
@@ -17,7 +18,7 @@ class ComputeTargets:
         self.uranus = ephem.Uranus()
         self.neptune = ephem.Neptune()
 
-    def compute_targets(self, obj):
+    def compute_targets(self, obj: str):
         if obj == "Sun":
             self.sun.compute(self.observer)
         elif obj == "Mercury":
@@ -35,7 +36,7 @@ class ComputeTargets:
         elif obj == "Neptune":
             self.neptune.compute(self.observer)
 
-    def object_alt(self, obj):
+    def object_alt(self, obj: str) -> Dict[str, Any]:
         self.compute_targets(obj)
         if obj == "Mercury":
             rascension = self.mercury.ra
@@ -79,7 +80,9 @@ class ComputeTargets:
             altitude = 0
         return {"ra": rascension, "dec": declination, "az": azimuth, "alt": altitude, "date": self.observer.date}
 
-    def twilight(self):
+    def twilight(self) -> Tuple[
+                          Optional[int], Optional[int], Optional[int], Optional[int], Optional[int], Optional[int],
+                          Optional[int], Optional[int], Optional[int], Optional[int], Optional[int], Optional[int]]:
         sun_error = None
         civil_error = None
         nautical_error = None

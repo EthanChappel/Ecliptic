@@ -2,6 +2,7 @@
 import sys
 import json
 import threading
+from typing import List, Dict
 import ephem
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -38,9 +39,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 try:
                     self.filters = json.load(f)
                 except json.decoder.JSONDecodeError:
-                    self.filters = {}
+                    self.filters = []
         else:
-            self.filters = {}
+            self.filters = []
 
         if os.path.exists("schedule.json"):
             with open("schedule.json", "r") as f:
@@ -270,7 +271,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         with open("schedule.json", "a") as f:
             json.dump(self.schedule, f, indent=4)
 
-    def load_schedule(self, schedule):
+    def load_schedule(self, schedule: str):
         """Load contents of schedule.json into schedule_table."""
         count = 0
         self.schedule_table.setRowCount(0)
@@ -390,7 +391,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         index = self.position_combobox.findText(text2)
         self.position_combobox.setCurrentIndex(index)
 
-    def load_filters(self, filters):
+    def load_filters(self, filters: List[Dict[str, str]]):
         """Load contents of filters.json into filter_table."""
         count = 0
         for f in filters:
@@ -419,7 +420,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.target_dialog.show()
 
     @staticmethod
-    def connect_fail_dialog(name):
+    def connect_fail_dialog(name: str):
         """Notify users if connection to equipment fails."""
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -471,10 +472,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             messagebox.exec_()
             self.telescope_action.setChecked(False)
 
-    def compute_target(self, target, time, print_=False):
+    def compute_target(self, target: str, time: ephem.Date, print_: bool=False) -> Dict[str, float]:
         if target == "Stop" or target == "Home" or target == "":
             self.goto_target()
         else:
+            print(type(time), time)
             compute_alt = ComputeTargets(time, appglobals.location["Latitude"], appglobals.location["Longitude"])
             alt = compute_alt.object_alt(target)
             if print_:
@@ -507,11 +509,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.telescope.goto(ra_decimal, dec_decimal)
 
     @staticmethod
-    def slew(axis, rate):
+    def slew(axis: int, rate: float):
         appglobals.telescope.move_axis(axis, rate)
 
     @staticmethod
-    def slew_diagonal(rate1, rate2):
+    def slew_diagonal(rate1: float, rate2: float):
         appglobals.telescope.move_axis(0, rate1)
         appglobals.telescope.move_axis(1, rate2)
 
@@ -805,7 +807,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         appglobals.wheel = None
         sys.exit()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QtGui.QCloseEvent):
         """Override default closeEvent method."""
         event.ignore()
         self.setVisible(False)
@@ -817,7 +819,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.tray_icon.showMessage("Running in background", "Solar System Sequencer is still running in the "
                                                                 "background.", QtWidgets.QSystemTrayIcon.Information)
 
-    def showEvent(self, event):
+    def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""
         self.setVisible(True)
         for dock in self.findChildren(QtWidgets.QDockWidget):

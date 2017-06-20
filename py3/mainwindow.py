@@ -205,6 +205,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_gain_spinbox.valueChanged.connect(self.set_camera_gain)
         self.camera_gain_slider.valueChanged.connect(self.set_camera_gain)
 
+        self.guider_exposure_spinbox.valueChanged.connect(self.set_guider_exposure)
+        self.guider_exposure_slider.valueChanged.connect(self.set_guider_exposure)
+        self.guider_gain_spinbox.valueChanged.connect(self.set_guider_gain)
+        self.guider_gain_slider.valueChanged.connect(self.set_guider_gain)
+
     # Add row in schedule_table
     def add_schedule_row(self):
         self.row_count = self.schedule_table.rowCount()
@@ -540,15 +545,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def connect_autoguider(self):
         if self.autoguide_group.isChecked():
+            guider_dialog = connectcamera.ConnectCamera()
+            guider_dialog.exec_()
             name = "The auto-guider"
             try:
-                appglobals.guider = ascomequipment.Camera()
-                values = self.camera_settings(appglobals.guider)
-                name = appglobals.guider.name_()
-                self.guide_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Auto-Guider Connected", f"{name} has been connected.",
-                                               QtWidgets.QSystemTrayIcon.Information)
+                if guider_dialog.ascom_radio.isChecked() and guider_dialog.accepted:
+                    appglobals.guider = ascomequipment.Camera()
+                    values = self.camera_settings(appglobals.guider)
+                    name = appglobals.guider.name_()
+                    self.guide_name_label.setText(name)
+                    if self.isHidden():
+                        self.tray_icon.showMessage("Auto-Guider Connected", f"{name} has been connected.",
+                                                   QtWidgets.QSystemTrayIcon.Information)
+                elif guider_dialog.asi_radio.isChecked() and guider_dialog.accepted:
+                    appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
+                    values = self.camera_settings(appglobals.guider)
+                    self.guider_name_label.setText(guider_dialog.asi_camera)
+                    self.guider_settings_action.setDefaultWidget(self.guider_settings_frame)
+                    self.guider_settings_menu.addAction(self.guider_settings_action)
+                    self.guide_settings_btn.setMenu(self.guider_settings_menu)
+                else:
+                    raise Exception
                 self.setup_guider_controls(values)
             except Exception as e:
                 print(e)
@@ -560,19 +577,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.autoguide_group.isChecked():
             try:
-                appglobals.guider.disconnect()
-                appglobals.guider.dispose()
+                if type(appglobals.camera) is ascomequipment.Camera:
+                    appglobals.guider.disconnect()
+                    appglobals.guider.dispose()
+                elif type(appglobals.camera) is asi.Camera:
+                    appglobals.guider.close()
             except AttributeError as e:
                 print(e)
             finally:
                 appglobals.guider = None
-                self.guide_name_label.setText("Not Connected")
+                self.guider_name_label.setText("Not Connected")
 
     def setup_autoguider(self):
         appglobals.guider.disconnect()
         appglobals.guider.setup_dialog()
         appglobals.guider.connect()
         self.setup_guider_controls(self.camera_settings(appglobals.guider))
+
+    def set_guider_exposure(self):
+        if type(appglobals.guider) is asi.Camera:
+            exp_us = int(self.guider_exposure_spinbox.cleanText()) * 1000
+            appglobals.guider.set_control_value(asi.ASI_EXPOSURE, exp_us)
+
+    def set_guider_gain(self):
+        if type(appglobals.guider) is asi.Camera:
+            gain = int(self.guider_gain_spinbox.cleanText())
+            appglobals.guider.set_control_value(asi.ASI_GAIN, gain)
 
     def setup_guider_controls(self, values):
         if "Gain" in values:
@@ -596,23 +626,139 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_exposure_label.setEnabled(False)
             self.guider_exposure_spinbox.setEnabled(False)
             self.guider_exposure_slider.setEnabled(False)
+        
+        if "Gamma" in values:
+            self.guider_settings_frame.gamma_label.setVisible(True)
+            self.guider_settings_frame.gamma_spinbox.setVisible(True)
+            self.guider_settings_frame.gamma_spinbox.setMinimum(values["Gamma"]["Min"])
+            self.guider_settings_frame.gamma_spinbox.setMaximum(values["Gamma"]["Max"])
+            self.guider_settings_frame.gamma_spinbox.setValue(values["Gamma"]["Current"])
+        else:
+            self.guider_settings_frame.gamma_label.setVisible(False)
+            self.guider_settings_frame.gamma_spinbox.setVisible(False)
+
+        if "Brightness" in values:
+            self.guider_settings_frame.brightness_label.setVisible(True)
+            self.guider_settings_frame.brightness_spinbox.setVisible(True)
+            self.guider_settings_frame.brightness_spinbox.setMinimum(values["Brightness"]["Min"])
+            self.guider_settings_frame.brightness_spinbox.setMaximum(values["Brightness"]["Max"])
+            self.guider_settings_frame.brightness_spinbox.setValue(values["Brightness"]["Current"])
+        else:
+            self.guider_settings_frame.brightness_label.setVisible(False)
+            self.guider_settings_frame.brightness_spinbox.setVisible(False)
+
+        if "Bandwidth" in values:
+            self.guider_settings_frame.usb_label.setVisible(True)
+            self.guider_settings_frame.usb_spinbox.setVisible(True)
+            self.guider_settings_frame.usb_spinbox.setMinimum(values["Bandwidth"]["Min"])
+            self.guider_settings_frame.usb_spinbox.setMaximum(values["Bandwidth"]["Max"])
+            self.guider_settings_frame.usb_spinbox.setValue(values["Bandwidth"]["Current"])
+        else:
+            self.guider_settings_frame.usb_label.setVisible(False)
+            self.guider_settings_frame.usb_spinbox.setVisible(False)
+
+        if "Flip" in values:
+            self.guider_settings_frame.horizontalflip_checkbox.setVisible(True)
+            self.guider_settings_frame.verticalflip_checkbox.setVisible(True)
+            if values["Flip"]["Current"] == 0:
+                self.guider_settings_frame.horizontalflip_checkbox.setChecked(False)
+                self.guider_settings_frame.verticalflip_checkbox.setChecked(False)
+            elif values["Flip"]["Current"] == 1:
+                self.guider_settings_frame.horizontalflip_checkbox.setChecked(True)
+                self.guider_settings_frame.verticalflip_checkbox.setChecked(False)
+            elif values["Flip"]["Current"] == 2:
+                self.guider_settings_frame.horizontalflip_checkbox.setChecked(False)
+                self.guider_settings_frame.verticalflip_checkbox.setChecked(True)
+            elif values["Flip"]["Current"] == 3:
+                self.guider_settings_frame.horizontalflip_checkbox.setChecked(True)
+                self.guider_settings_frame.verticalflip_checkbox.setChecked(True)
+        else:
+            self.guider_settings_frame.horizontalflip_checkbox.setVisible(False)
+            self.guider_settings_frame.verticalflip_checkbox.setVisible(False)
+
+        if "High Speed" in values:
+            self.guider_settings_frame.highspeed_checkbox.setVisible(True)
+            if values["High Speed"]["Current"] == 0:
+                self.guider_settings_frame.highspeed_checkbox.setChecked(False)
+            elif values["High Speed"]["Current"] == 1:
+                self.guider_settings_frame.highspeed_checkbox.setChecked(True)
+        else:
+            self.guider_settings_frame.highspeed_checkbox.setVisible(False)
+
+        if "Temperature" in values:
+            self.guider_settings_frame.temperature_label.setVisible(True)
+            self.guider_settings_frame.temperature_spinbox.setVisible(True)
+            self.guider_settings_frame.temperature_spinbox.setMinimum(values["Temperature"]["Min"])
+            self.guider_settings_frame.temperature_spinbox.setMaximum(values["Temperature"]["Max"])
+            self.guider_settings_frame.temperature_spinbox.setValue(values["Temperature"]["Current"])
+        else:
+            self.guider_settings_frame.temperature_label.setVisible(False)
+            self.guider_settings_frame.temperature_spinbox.setVisible(False)
+
+        if "Red" in values:
+            self.guider_settings_frame.red_label.setVisible(True)
+            self.guider_settings_frame.red_spinbox.setVisible(True)
+            self.guider_settings_frame.red_spinbox.setMinimum(values["Red"]["Min"])
+            self.guider_settings_frame.red_spinbox.setMaximum(values["Red"]["Max"])
+            self.guider_settings_frame.red_spinbox.setValue(values["Red"]["Current"])
+        else:
+            self.guider_settings_frame.red_label.setVisible(False)
+            self.guider_settings_frame.red_spinbox.setVisible(False)
+
+        if "Blue" in values:
+            self.guider_settings_frame.blue_label.setVisible(True)
+            self.guider_settings_frame.blue_spinbox.setVisible(True)
+            self.guider_settings_frame.blue_spinbox.setMinimum(values["Blues"]["Min"])
+            self.guider_settings_frame.blue_spinbox.setMaximum(values["Blues"]["Max"])
+            self.guider_settings_frame.blue_spinbox.setValue(values["Blues"]["Current"])
+        else:
+            self.guider_settings_frame.blue_label.setVisible(False)
+            self.guider_settings_frame.blue_spinbox.setVisible(False)
+
+        if "Hardware Bin" in values:
+            self.guider_settings_frame.hardwarebin_checkbox.setVisible(True)
+            if values["Hardware Bin"]["Current"] == 0:
+                self.guider_settings_frame.hardwarebin_checkbox.setChecked(False)
+            elif values["Hardware Bin"]["Current"] == 1:
+                self.guider_settings_frame.hardwarebin_checkbox.setChecked(True)
+        else:
+            self.guider_settings_frame.hardwarebin_checkbox.setVisible(False)
+
+        if "Mono Bin" in values:
+            self.guider_settings_frame.monobin_checkbox.setVisible(True)
+            if values["Mono Bin"]["Current"] == 0:
+                self.guider_settings_frame.monobin_checkbox.setChecked(False)
+            if values["Mono Bin"]["Current"] == 1:
+                self.guider_settings_frame.monobin_checkbox.setChecked(True)
+        else:
+            self.guider_settings_frame.monobin_checkbox.setVisible(False)
 
     def autoguider_loop(self):
         if self.guider_loop_button.isChecked():
             if self.guider_start_button.isChecked():
-                self.guide_thread = threading.Thread(target=self.autoguider_loop_thread)  # To be implemented
+                self.guide_thread = threading.Thread(target=self.autoguider_preview)  # To be implemented
             else:
-                self.guide_thread = threading.Thread(target=self.autoguider_loop_thread)
+                self.guide_thread = threading.Thread(target=self.autoguider_preview)
             self.guide_thread.daemon = True
             self.guide_thread.start()
 
-    def autoguider_loop_thread(self):
-        while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
-            exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
-            image = appglobals.guider.capture(exp_sec, True)
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.guide_preview_label.setPixmap(pix)
+    def autoguider_preview(self):
+        if type(appglobals.camera) is ascomequipment.Camera:
+            while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
+                exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
+                image = appglobals.guider.capture(exp_sec, True)
+                image = Image.fromarray(image)
+                pix = ImageQt.toqpixmap(image)
+                self.guide_preview_label.setPixmap(pix)
+        else:
+            appglobals.guider.start_video_capture()
+            while self.guider_loop_button.isChecked():
+                timeout = int(self.guider_exposure_spinbox.cleanText()) * 2 + 500
+                image = appglobals.guider.capture_video_frame(timeout=timeout)
+                image = Image.fromarray(image)
+                pix = ImageQt.toqpixmap(image)
+                self.guide_preview_label.setPixmap(pix)
+        self.guide_preview_label.clear()
 
     # </editor-fold>
 
@@ -658,7 +804,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     appglobals.camera.dispose()
                 elif type(appglobals.camera) is asi.Camera:
                     appglobals.camera.close()
-                    appglobals.camera = None
             except AttributeError as e:
                 print(e)
             finally:
@@ -1009,7 +1154,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if appglobals.focuser.absolute:
             position = self.focuser_position_spinbox.text()
             appglobals.focuser.move(position)
-        """ Attempt at Relative Focusing
+        # TODO: Implement relative focusing
+        """
         old_pos = app_globals.devices["Focuser"].focuser_position()
         else:
             position = int(self.focuser_position_spinbox.text()) - old_pos

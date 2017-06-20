@@ -80,7 +80,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-270</y>
+         <y>0</y>
          <width>196</width>
          <height>1074</height>
         </rect>
@@ -552,7 +552,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontallayout_10">
              <item>
-              <widget class="QLabel" name="guide_name_label">
+              <widget class="QLabel" name="guider_name_label">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -1814,7 +1814,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QScrollArea" name="camera_scrollarea_2">
+      <widget class="QScrollArea" name="guider_scrollarea">
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>
@@ -2284,7 +2284,7 @@
   <tabstop>removerow_button</tabstop>
   <tabstop>camera_scrollarea</tabstop>
   <tabstop>camera_zoom_slider</tabstop>
-  <tabstop>camera_scrollarea_2</tabstop>
+  <tabstop>guider_scrollarea</tabstop>
   <tabstop>camera_zoom_slider_2</tabstop>
  </tabstops>
  <resources>

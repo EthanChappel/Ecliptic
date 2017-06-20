@@ -2,6 +2,7 @@
 import sys
 import json
 import threading
+from typing import List, Dict
 import ephem
 import cv2
 import zwoasi as asi
@@ -31,6 +32,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_settings_action = QtWidgets.QWidgetAction(None)
         self.guider_settings_menu = QtWidgets.QMenu()
 
+        self.firstclose = True
         self.camera_thread = None
         self.guide_thread = None
 
@@ -49,9 +51,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 try:
                     self.filters = json.load(f)
                 except json.decoder.JSONDecodeError:
-                    self.filters = {}
+                    self.filters = []
         else:
-            self.filters = {}
+            self.filters = []
 
         if os.path.exists("schedule.json"):
             with open("schedule.json", "r") as f:
@@ -210,8 +212,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_gain_spinbox.valueChanged.connect(self.set_guider_gain)
         self.guider_gain_slider.valueChanged.connect(self.set_guider_gain)
 
-    # Add row in schedule_table
     def add_schedule_row(self):
+        """Add row in schedule_table."""
         self.row_count = self.schedule_table.rowCount()
         self.schedule_table.insertRow(self.row_count)
 
@@ -260,8 +262,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.save_schedule()
 
-    # Remove selected rows from schedule_table
     def remove_schedule_row(self):
+        """Remove selected rows from schedule_table."""
         index_list = []
         date = self.schedule_dateedit.text()
         for model_index in self.schedule_table.selectionModel().selectedRows():
@@ -272,8 +274,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             del self.schedule[date][index.row()]
         self.save_schedule()
 
-    # Save contents of schedule_table into schedule.json
     def save_schedule(self):
+        """Save contents of schedule_table into schedule.json."""
         if os.path.exists("schedule.json"):
             os.remove("schedule.json")
         schedule_list = []
@@ -294,8 +296,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         with open("schedule.json", "a") as f:
             json.dump(self.schedule, f, indent=4)
 
-    # Load contents of schedule.json into schedule_table
-    def load_schedule(self, schedule):
+    def load_schedule(self, schedule: str):
+        """Load contents of schedule.json into schedule_table."""
         count = 0
         self.schedule_table.setRowCount(0)
         try:
@@ -330,8 +332,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pass
         count += 1
 
-    # Add row in filter_table
     def add_filter_row(self):
+        """Add row in filter_table."""
         self.row_count = self.filter_table.rowCount()
         self.filter_table.insertRow(self.row_count)
 
@@ -363,8 +365,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filter_table.setCellWidget(self.row_count, 3, lower_spinbox)
         self.filter_table.setCellWidget(self.row_count, 4, upper_spinbox)
 
-    # Remove selected rows from filter_table
     def remove_filter_row(self):
+        """Remove selected rows from filter_table."""
         index_list = []
         for model_index in self.filter_table.selectionModel().selectedRows():
             index = QtCore.QPersistentModelIndex(model_index)
@@ -372,8 +374,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for index in index_list:
             self.filter_table.removeRow(index.row())
 
-    # Save contents of filter_table into filters.json
     def save_filters(self):
+        """Save contents of filter_table into filters.json."""
         if os.path.exists("filters.json"):
             os.remove("filters.json")
         filter_list = []
@@ -414,8 +416,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         index = self.position_combobox.findText(text2)
         self.position_combobox.setCurrentIndex(index)
 
-    # Load contents of filters.json into filter_table
-    def load_filters(self, filters):
+    def load_filters(self, filters: List[Dict[str, str]]):
+        """Load contents of filters.json into filter_table."""
         count = 0
         for f in filters:
             self.add_filter_row()
@@ -426,8 +428,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.filter_table.cellWidget(count, 4).setValue(int(f["Upper Cutoff"]))
             count += 1
 
-    # Set observing location
     def location_set(self):
+        """Set observing location."""
         location_dialog = modifylocation.LocationDialog()
         location_dialog.exec_()
         if os.path.exists("location.json"):
@@ -438,13 +440,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.location["Longitude"]) + u"°")
         self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
 
-    # Show window with chart of planet elevations throughout the day
     def open_target_gui(self):
+        """Show window with chart of planet elevations throughout the day."""
         self.target_dialog.show()
 
-    # Notify users if connection to equipment fails
     @staticmethod
-    def connect_fail_dialog(name):
+    def connect_fail_dialog(name: str):
+        """Notify users if connection to equipment fails."""
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
         messagebox.setWindowTitle("Solar System Sequencer - Connection Failed")
@@ -495,7 +497,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             messagebox.exec_()
             self.telescope_action.setChecked(False)
 
-    def compute_target(self, target, time, print_=False):
+    def compute_target(self, target: str, time: ephem.Date, print_: bool=False) -> Dict[str, float]:
         if target == "Stop" or target == "Home" or target == "":
             self.goto_target()
         else:
@@ -531,11 +533,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.telescope.goto(ra_decimal, dec_decimal)
 
     @staticmethod
-    def slew(axis, rate):
+    def slew(axis: int, rate: float):
         appglobals.telescope.move_axis(axis, rate)
 
     @staticmethod
-    def slew_diagonal(rate1, rate2):
+    def slew_diagonal(rate1: float, rate2: float):
         appglobals.telescope.move_axis(0, rate1)
         appglobals.telescope.move_axis(1, rate2)
 
@@ -626,7 +628,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_exposure_label.setEnabled(False)
             self.guider_exposure_spinbox.setEnabled(False)
             self.guider_exposure_slider.setEnabled(False)
-        
+
         if "Gamma" in values:
             self.guider_settings_frame.gamma_label.setVisible(True)
             self.guider_settings_frame.gamma_spinbox.setVisible(True)
@@ -1231,16 +1233,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         appglobals.wheel = None
         sys.exit()
 
-    # Override default closeEvent method
-    def closeEvent(self, event):
+    def closeEvent(self, event: QtGui.QCloseEvent):
+        """Override default closeEvent method."""
         event.ignore()
         self.setVisible(False)
         self.target_dialog.setVisible(False)
         for dock in self.findChildren(QtWidgets.QDockWidget):
             dock.setVisible(False)
+        if self.firstclose:
+            self.firstclose = False
+            self.tray_icon.showMessage("Running in background", "Solar System Sequencer is still running in the "
+                                                                "background.", QtWidgets.QSystemTrayIcon.Information)
 
-    # Override default showEvent method
-    def showEvent(self, event):
+    def showEvent(self, event: QtGui.QShowEvent):
+        """Override default showEvent method."""
         self.setVisible(True)
         for dock in self.findChildren(QtWidgets.QDockWidget):
             dock.setVisible(True)

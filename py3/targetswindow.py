@@ -1,3 +1,4 @@
+from typing import Dict, Tuple, Optional
 import ephem
 import numpy as np
 from scipy.interpolate import spline
@@ -40,12 +41,12 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             lambda: self.generate(appglobals.location["Latitude"], appglobals.location["Longitude"]))
         self.today_btn.clicked.connect(self.set_today)
 
-    # Set graph date to current date
     def set_today(self):
+        """Set graph date to current date."""
         self.schedule_dateedit.setDateTime(QtCore.QDateTime.currentDateTime())
 
-    # Generate graph when date is changed
-    def generate(self, latitude, longitude):
+    def generate(self, latitude: str, longitude: str):
+        """Generate graph whenever date is changed."""
         self.sched_plot.lines = []
         self.sched_plot.patches = []
         for t in appglobals.targets_tuple:
@@ -196,25 +197,23 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.canvas.draw()
 
     @staticmethod
-    def compute_target(target, time, latitude, longitude, print_=False):
+    def compute_target(target: str, time: str, latitude: str, longitude: str) -> Dict[str, ephem.Angle]:
         compute_alt = computetargets.ComputeTargets(time, latitude, longitude)
         alt = compute_alt.object_alt(target)
-        if print_:
-            print("Target: %-5s, Time: %-19s, RA: %-11s, Dec°: %-11s, Az: %-11s, Alt°: %-11s"
-                  % (target, str(time), str(ephem.hours(alt["ra"])), str(ephem.degrees(alt["dec"])),
-                     str(ephem.degrees(alt["az"])), str(ephem.degrees(alt["alt"]))))
         return alt
 
-    def compute_twilight(self, latitude, longitude, print_=False):
+    def compute_twilight(self, latitude: str, longitude: str) -> Tuple[
+                                                                 Optional[int], Optional[int], Optional[int],
+                                                                 Optional[int], Optional[int], Optional[int],
+                                                                 Optional[int], Optional[int], Optional[int],
+                                                                 Optional[int], Optional[int], Optional[int]]:
         time = str(self.schedule_dateedit.text()) + " 12:00"
         twi = computetargets.ComputeTargets(time, latitude, longitude)
         alt = twi.twilight()
-        if print_:
-            print(alt)
         return alt
 
-    # Show QToolTip when line is hovered over in graph
     def on_plot_hover(self, event):
+        """Show QToolTip when line is hovered over in graph."""
         for curve in self.sched_plot.get_lines():
             if curve.contains(event)[0]:
                 QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), curve.get_gid())

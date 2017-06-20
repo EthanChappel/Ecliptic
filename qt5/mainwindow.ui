@@ -80,7 +80,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-376</y>
          <width>196</width>
          <height>1074</height>
         </rect>
@@ -2427,7 +2427,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
-     <y>550</y>
+     <y>445</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2443,7 +2443,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>550</y>
+     <y>445</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2459,7 +2459,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
-     <y>242</y>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2475,7 +2475,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>242</y>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2555,11 +2555,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>242</y>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
-     <y>242</y>
+     <y>134</y>
     </hint>
    </hints>
   </connection>
@@ -2571,11 +2571,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>550</y>
+     <y>445</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
-     <y>550</y>
+     <y>445</y>
     </hint>
    </hints>
   </connection>
@@ -2618,8 +2618,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
-     <y>556</y>
+     <x>85</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -2718,8 +2718,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>86</x>
-     <y>556</y>
+     <x>85</x>
+     <y>200</y>
     </hint>
    </hints>
   </connection>
@@ -2734,8 +2734,40 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>81</x>
-     <y>697</y>
+     <x>82</x>
+     <y>669</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>guider_loop_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>guide_settings_btn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>175</x>
+     <y>-15</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_loop_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_settings_btn</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>445</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>175</x>
+     <y>215</y>
     </hint>
    </hints>
   </connection>
@@ -2816,6 +2848,102 @@
     <hint type="destinationlabel">
      <x>125</x>
      <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_capture_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_filter_combobox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>464</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>130</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_capture_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_filter_label</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>476</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>43</x>
+     <y>395</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_capture_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_format_label</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>148</x>
+     <y>475</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>37</x>
+     <y>426</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_capture_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_format_combobox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>147</x>
+     <y>457</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>126</x>
+     <y>430</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wheel_group</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_filter_label</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>39</x>
+     <y>504</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>31</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wheel_group</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_filter_combobox</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>106</x>
+     <y>402</y>
     </hint>
    </hints>
   </connection>

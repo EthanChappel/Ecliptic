@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import sys
 import traceback
+from typing import Any
 from PyQt5 import QtWidgets
 from guistyle import switch_style
 
 sys.dont_write_bytecode = True
 
 
-def excepthook(exc_type, exc_val, tracebackobj):
+def excepthook(exc_type: tuple, exc_val: Any, tracebackobj: traceback):
     messagebox = QtWidgets.QMessageBox()
     messagebox.setIcon(QtWidgets.QMessageBox.Critical)
 

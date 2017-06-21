@@ -589,6 +589,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 print(e)
             finally:
                 appglobals.guider = None
+                self.guider_settings_frame.set_camera(appglobals.guider)
                 self.guider_name_label.setText("Not Connected")
 
     def setup_autoguider(self):
@@ -630,111 +631,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_exposure_spinbox.setEnabled(False)
             self.guider_exposure_slider.setEnabled(False)
 
-        if "Gamma" in values:
-            self.guider_settings_frame.gamma_label.setVisible(True)
-            self.guider_settings_frame.gamma_spinbox.setVisible(True)
-            self.guider_settings_frame.gamma_spinbox.setMinimum(values["Gamma"]["Min"])
-            self.guider_settings_frame.gamma_spinbox.setMaximum(values["Gamma"]["Max"])
-            self.guider_settings_frame.gamma_spinbox.setValue(values["Gamma"]["Current"])
-        else:
-            self.guider_settings_frame.gamma_label.setVisible(False)
-            self.guider_settings_frame.gamma_spinbox.setVisible(False)
-
-        if "Brightness" in values:
-            self.guider_settings_frame.brightness_label.setVisible(True)
-            self.guider_settings_frame.brightness_spinbox.setVisible(True)
-            self.guider_settings_frame.brightness_spinbox.setMinimum(values["Brightness"]["Min"])
-            self.guider_settings_frame.brightness_spinbox.setMaximum(values["Brightness"]["Max"])
-            self.guider_settings_frame.brightness_spinbox.setValue(values["Brightness"]["Current"])
-        else:
-            self.guider_settings_frame.brightness_label.setVisible(False)
-            self.guider_settings_frame.brightness_spinbox.setVisible(False)
-
-        if "Bandwidth" in values:
-            self.guider_settings_frame.usb_label.setVisible(True)
-            self.guider_settings_frame.usb_spinbox.setVisible(True)
-            self.guider_settings_frame.usb_spinbox.setMinimum(values["Bandwidth"]["Min"])
-            self.guider_settings_frame.usb_spinbox.setMaximum(values["Bandwidth"]["Max"])
-            self.guider_settings_frame.usb_spinbox.setValue(values["Bandwidth"]["Current"])
-        else:
-            self.guider_settings_frame.usb_label.setVisible(False)
-            self.guider_settings_frame.usb_spinbox.setVisible(False)
-
-        if "Flip" in values:
-            self.guider_settings_frame.horizontalflip_checkbox.setVisible(True)
-            self.guider_settings_frame.verticalflip_checkbox.setVisible(True)
-            if values["Flip"]["Current"] == 0:
-                self.guider_settings_frame.horizontalflip_checkbox.setChecked(False)
-                self.guider_settings_frame.verticalflip_checkbox.setChecked(False)
-            elif values["Flip"]["Current"] == 1:
-                self.guider_settings_frame.horizontalflip_checkbox.setChecked(True)
-                self.guider_settings_frame.verticalflip_checkbox.setChecked(False)
-            elif values["Flip"]["Current"] == 2:
-                self.guider_settings_frame.horizontalflip_checkbox.setChecked(False)
-                self.guider_settings_frame.verticalflip_checkbox.setChecked(True)
-            elif values["Flip"]["Current"] == 3:
-                self.guider_settings_frame.horizontalflip_checkbox.setChecked(True)
-                self.guider_settings_frame.verticalflip_checkbox.setChecked(True)
-        else:
-            self.guider_settings_frame.horizontalflip_checkbox.setVisible(False)
-            self.guider_settings_frame.verticalflip_checkbox.setVisible(False)
-
-        if "High Speed" in values:
-            self.guider_settings_frame.highspeed_checkbox.setVisible(True)
-            if values["High Speed"]["Current"] == 0:
-                self.guider_settings_frame.highspeed_checkbox.setChecked(False)
-            elif values["High Speed"]["Current"] == 1:
-                self.guider_settings_frame.highspeed_checkbox.setChecked(True)
-        else:
-            self.guider_settings_frame.highspeed_checkbox.setVisible(False)
-
-        if "Temperature" in values:
-            self.guider_settings_frame.temperature_label.setVisible(True)
-            self.guider_settings_frame.temperature_spinbox.setVisible(True)
-            self.guider_settings_frame.temperature_spinbox.setMinimum(values["Temperature"]["Min"])
-            self.guider_settings_frame.temperature_spinbox.setMaximum(values["Temperature"]["Max"])
-            self.guider_settings_frame.temperature_spinbox.setValue(values["Temperature"]["Current"])
-        else:
-            self.guider_settings_frame.temperature_label.setVisible(False)
-            self.guider_settings_frame.temperature_spinbox.setVisible(False)
-
-        if "Red" in values:
-            self.guider_settings_frame.red_label.setVisible(True)
-            self.guider_settings_frame.red_spinbox.setVisible(True)
-            self.guider_settings_frame.red_spinbox.setMinimum(values["Red"]["Min"])
-            self.guider_settings_frame.red_spinbox.setMaximum(values["Red"]["Max"])
-            self.guider_settings_frame.red_spinbox.setValue(values["Red"]["Current"])
-        else:
-            self.guider_settings_frame.red_label.setVisible(False)
-            self.guider_settings_frame.red_spinbox.setVisible(False)
-
-        if "Blue" in values:
-            self.guider_settings_frame.blue_label.setVisible(True)
-            self.guider_settings_frame.blue_spinbox.setVisible(True)
-            self.guider_settings_frame.blue_spinbox.setMinimum(values["Blues"]["Min"])
-            self.guider_settings_frame.blue_spinbox.setMaximum(values["Blues"]["Max"])
-            self.guider_settings_frame.blue_spinbox.setValue(values["Blues"]["Current"])
-        else:
-            self.guider_settings_frame.blue_label.setVisible(False)
-            self.guider_settings_frame.blue_spinbox.setVisible(False)
-
-        if "Hardware Bin" in values:
-            self.guider_settings_frame.hardwarebin_checkbox.setVisible(True)
-            if values["Hardware Bin"]["Current"] == 0:
-                self.guider_settings_frame.hardwarebin_checkbox.setChecked(False)
-            elif values["Hardware Bin"]["Current"] == 1:
-                self.guider_settings_frame.hardwarebin_checkbox.setChecked(True)
-        else:
-            self.guider_settings_frame.hardwarebin_checkbox.setVisible(False)
-
-        if "Mono Bin" in values:
-            self.guider_settings_frame.monobin_checkbox.setVisible(True)
-            if values["Mono Bin"]["Current"] == 0:
-                self.guider_settings_frame.monobin_checkbox.setChecked(False)
-            if values["Mono Bin"]["Current"] == 1:
-                self.guider_settings_frame.monobin_checkbox.setChecked(True)
-        else:
-            self.guider_settings_frame.monobin_checkbox.setVisible(False)
+        self.guider_settings_frame.setup_controls(values)
 
     def autoguider_loop(self):
         if self.guider_loop_button.isChecked():
@@ -812,6 +709,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 print(e)
             finally:
                 appglobals.camera = None
+                self.camera_settings_frame.set_camera(appglobals.camera)
                 self.camera_name_label.setText("Not Connected")
                 self.camera_settings_btn.setMenu(None)
 
@@ -839,111 +737,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_exposure_spinbox.setEnabled(False)
             self.camera_exposure_slider.setEnabled(False)
 
-        if "Gamma" in values:
-            self.camera_settings_frame.gamma_label.setVisible(True)
-            self.camera_settings_frame.gamma_spinbox.setVisible(True)
-            self.camera_settings_frame.gamma_spinbox.setMinimum(values["Gamma"]["Min"])
-            self.camera_settings_frame.gamma_spinbox.setMaximum(values["Gamma"]["Max"])
-            self.camera_settings_frame.gamma_spinbox.setValue(values["Gamma"]["Current"])
-        else:
-            self.camera_settings_frame.gamma_label.setVisible(False)
-            self.camera_settings_frame.gamma_spinbox.setVisible(False)
-
-        if "Brightness" in values:
-            self.camera_settings_frame.brightness_label.setVisible(True)
-            self.camera_settings_frame.brightness_spinbox.setVisible(True)
-            self.camera_settings_frame.brightness_spinbox.setMinimum(values["Brightness"]["Min"])
-            self.camera_settings_frame.brightness_spinbox.setMaximum(values["Brightness"]["Max"])
-            self.camera_settings_frame.brightness_spinbox.setValue(values["Brightness"]["Current"])
-        else:
-            self.camera_settings_frame.brightness_label.setVisible(False)
-            self.camera_settings_frame.brightness_spinbox.setVisible(False)
-
-        if "Bandwidth" in values:
-            self.camera_settings_frame.usb_label.setVisible(True)
-            self.camera_settings_frame.usb_spinbox.setVisible(True)
-            self.camera_settings_frame.usb_spinbox.setMinimum(values["Bandwidth"]["Min"])
-            self.camera_settings_frame.usb_spinbox.setMaximum(values["Bandwidth"]["Max"])
-            self.camera_settings_frame.usb_spinbox.setValue(values["Bandwidth"]["Current"])
-        else:
-            self.camera_settings_frame.usb_label.setVisible(False)
-            self.camera_settings_frame.usb_spinbox.setVisible(False)
-
-        if "Flip" in values:
-            self.camera_settings_frame.horizontalflip_checkbox.setVisible(True)
-            self.camera_settings_frame.verticalflip_checkbox.setVisible(True)
-            if values["Flip"]["Current"] == 0:
-                self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
-                self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-            elif values["Flip"]["Current"] == 1:
-                self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
-                self.camera_settings_frame.verticalflip_checkbox.setChecked(False)
-            elif values["Flip"]["Current"] == 2:
-                self.camera_settings_frame.horizontalflip_checkbox.setChecked(False)
-                self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
-            elif values["Flip"]["Current"] == 3:
-                self.camera_settings_frame.horizontalflip_checkbox.setChecked(True)
-                self.camera_settings_frame.verticalflip_checkbox.setChecked(True)
-        else:
-            self.camera_settings_frame.horizontalflip_checkbox.setVisible(False)
-            self.camera_settings_frame.verticalflip_checkbox.setVisible(False)
-
-        if "High Speed" in values:
-            self.camera_settings_frame.highspeed_checkbox.setVisible(True)
-            if values["High Speed"]["Current"] == 0:
-                self.camera_settings_frame.highspeed_checkbox.setChecked(False)
-            elif values["High Speed"]["Current"] == 1:
-                self.camera_settings_frame.highspeed_checkbox.setChecked(True)
-        else:
-            self.camera_settings_frame.highspeed_checkbox.setVisible(False)
-
-        if "Temperature" in values:
-            self.camera_settings_frame.temperature_label.setVisible(True)
-            self.camera_settings_frame.temperature_spinbox.setVisible(True)
-            self.camera_settings_frame.temperature_spinbox.setMinimum(values["Temperature"]["Min"])
-            self.camera_settings_frame.temperature_spinbox.setMaximum(values["Temperature"]["Max"])
-            self.camera_settings_frame.temperature_spinbox.setValue(values["Temperature"]["Current"])
-        else:
-            self.camera_settings_frame.temperature_label.setVisible(False)
-            self.camera_settings_frame.temperature_spinbox.setVisible(False)
-
-        if "Red" in values:
-            self.camera_settings_frame.red_label.setVisible(True)
-            self.camera_settings_frame.red_spinbox.setVisible(True)
-            self.camera_settings_frame.red_spinbox.setMinimum(values["Red"]["Min"])
-            self.camera_settings_frame.red_spinbox.setMaximum(values["Red"]["Max"])
-            self.camera_settings_frame.red_spinbox.setValue(values["Red"]["Current"])
-        else:
-            self.camera_settings_frame.red_label.setVisible(False)
-            self.camera_settings_frame.red_spinbox.setVisible(False)
-
-        if "Blue" in values:
-            self.camera_settings_frame.blue_label.setVisible(True)
-            self.camera_settings_frame.blue_spinbox.setVisible(True)
-            self.camera_settings_frame.blue_spinbox.setMinimum(values["Blues"]["Min"])
-            self.camera_settings_frame.blue_spinbox.setMaximum(values["Blues"]["Max"])
-            self.camera_settings_frame.blue_spinbox.setValue(values["Blues"]["Current"])
-        else:
-            self.camera_settings_frame.blue_label.setVisible(False)
-            self.camera_settings_frame.blue_spinbox.setVisible(False)
-
-        if "Hardware Bin" in values:
-            self.camera_settings_frame.hardwarebin_checkbox.setVisible(True)
-            if values["Hardware Bin"]["Current"] == 0:
-                self.camera_settings_frame.hardwarebin_checkbox.setChecked(False)
-            elif values["Hardware Bin"]["Current"] == 1:
-                self.camera_settings_frame.hardwarebin_checkbox.setChecked(True)
-        else:
-            self.camera_settings_frame.hardwarebin_checkbox.setVisible(False)
-
-        if "Mono Bin" in values:
-            self.camera_settings_frame.monobin_checkbox.setVisible(True)
-            if values["Mono Bin"]["Current"] == 0:
-                self.camera_settings_frame.monobin_checkbox.setChecked(False)
-            if values["Mono Bin"]["Current"] == 1:
-                self.camera_settings_frame.monobin_checkbox.setChecked(True)
-        else:
-            self.camera_settings_frame.monobin_checkbox.setVisible(False)
+        self.camera_settings_frame.setup_controls(values)
 
     def setup_camera(self):
         appglobals.camera.disconnect()

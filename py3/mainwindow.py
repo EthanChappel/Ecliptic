@@ -562,6 +562,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 elif guider_dialog.asi_radio.isChecked() and guider_dialog.accepted:
                     appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
                     values = self.camera_settings(appglobals.guider)
+                    self.guider_settings_frame.set_camera(appglobals.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
                     self.guider_settings_action.setDefaultWidget(self.guider_settings_frame)
                     self.guider_settings_menu.addAction(self.guider_settings_action)
@@ -783,6 +784,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 elif camera_dialog.asi_radio.isChecked() and camera_dialog.accepted:
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
                     values = self.camera_settings(appglobals.camera)
+                    self.camera_settings_frame.set_camera(appglobals.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
                     self.camera_settings_menu.addAction(self.camera_settings_action)

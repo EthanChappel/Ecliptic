@@ -81,14 +81,12 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             sun_rise = None
             sun_set = None
 
-        """
         try:
             civil_rise = twilight[1][3]+(twilight[1][4]/60)+(twilight[1][5]/3600)
             civil_set = twilight[5][3] + (twilight[5][4] / 60) + (twilight[5][5] / 3600)
         except TypeError:
             civil_rise = None
             civil_set = None
-
         try:
             nautical_rise = twilight[2][3] + (twilight[2][4] / 60) + (twilight[2][5] / 3600)
             nautical_set = twilight[6][3] + (twilight[6][4] / 60) + (twilight[6][5] / 3600)
@@ -103,7 +101,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             astronomical_rise = None
             astronomical_set = None
 
-        # All statements with + 24 or - 24 are slightly inaccurate.
+        # FIXME: Shades can act weird when location is set to high latitudes
         try:
             if astronomical_rise > nautical_rise:
                 self.sched_plot.axvspan(astronomical_rise - 24, nautical_rise, color="blue", alpha=0.15)
@@ -119,13 +117,8 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 self.sched_plot.axvspan(astronomical_rise, astronomical_set, color="blue", alpha=0.15)
                 print(astronomical_rise, astronomical_set, twilight[11])
             except TypeError:
-                if nautical_set > nautical_rise:
-                    self.sched_plot.axvspan(nautical_set - 24, nautical_rise, color="blue", alpha=0.15)
-                    self.sched_plot.axvspan(nautical_set, nautical_rise + 24, color="blue", alpha=0.15)
-                else:
-                    self.sched_plot.axvspan(nautical_set, nautical_rise - 24, color="blue", alpha=0.15)
-                    self.sched_plot.axvspan(nautical_set + 24, nautical_rise, color="blue", alpha=0.15)
-                print(astronomical_rise, astronomical_set, twilight[11])
+                pass
+        print(astronomical_rise, astronomical_set, twilight[11])
 
         try:
             if civil_rise < nautical_rise:
@@ -154,7 +147,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 self.sched_plot.axvspan(civil_rise, civil_set, color="orange", alpha=0.25)
             except TypeError:
                 pass
-        """
+
         try:
             if sun_rise > sun_set:
                 self.sched_plot.axvspan(sun_rise - 24, sun_set, color="yellow", alpha=0.25)
@@ -165,7 +158,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         except TypeError:
             if "above" in str(twilight[8]):
                 self.sched_plot.axvspan(0, 24, color="yellow", alpha=0.25)
-        """
+
         try:
             if sun_set > civil_set:
                 self.sched_plot.axvspan(sun_set - 24, civil_set, color="orange", alpha=0.25)
@@ -175,8 +168,8 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 self.sched_plot.axvspan(sun_set - 24, civil_set - 24, color="orange", alpha=0.25)
         except TypeError:
             try:
-                self.sched_plot.axvspan(civil_rise - 24, civil_set - 24, color="orange", alpha=0.25)
-                self.sched_plot.axvspan(civil_rise, civil_set, color="orange", alpha=0.25)
+                self.sched_plot.axvspan(sun_set - 24, sun_rise - 24, color="orange", alpha=0.25)
+                self.sched_plot.axvspan(sun_set, sun_rise, color="orange", alpha=0.25)
             except TypeError:
                 pass
 
@@ -188,7 +181,11 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 self.sched_plot.axvspan(civil_set, nautical_set, color="purple", alpha=0.3)
                 self.sched_plot.axvspan(civil_set - 24, nautical_set - 24, color="purple", alpha=0.3)
         except TypeError:
-            pass
+            try:
+                self.sched_plot.axvspan(civil_set, civil_rise, color="purple", alpha=0.3)
+                self.sched_plot.axvspan(civil_set - 24, civil_rise - 24, color="purple", alpha=0.3)
+            except TypeError:
+                pass
 
         try:
             if nautical_set > astronomical_set:
@@ -198,8 +195,12 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 self.sched_plot.axvspan(nautical_set, astronomical_set, color="blue", alpha=0.15)
                 self.sched_plot.axvspan(nautical_set - 24, astronomical_set - 24, color="blue", alpha=0.15)
         except TypeError:
-            pass
-        """
+            try:
+                self.sched_plot.axvspan(nautical_set, nautical_rise, color="blue", alpha=0.15)
+                self.sched_plot.axvspan(nautical_set - 24, nautical_rise - 24, color="blue", alpha=0.15)
+            except TypeError:
+                pass
+
         self.canvas.draw()
 
     @staticmethod

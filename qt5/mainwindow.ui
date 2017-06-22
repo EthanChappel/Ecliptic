@@ -80,7 +80,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-268</y>
          <width>196</width>
          <height>1074</height>
         </rect>
@@ -1069,13 +1069,6 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="camera_integration_label">
-                <property name="text">
-                 <string>Integration</string>
-                </property>
-               </widget>
-              </item>
               <item row="7" column="0">
                <widget class="QLabel" name="camera_format_label">
                 <property name="text">
@@ -1085,11 +1078,21 @@
               </item>
               <item row="5" column="1">
                <widget class="QSpinBox" name="camera_integration_spinbox">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="focusPolicy">
                  <enum>Qt::StrongFocus</enum>
                 </property>
                 <property name="suffix">
                  <string>s</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QCheckBox" name="camera_integration_checkbox">
+                <property name="text">
+                 <string>Integration</string>
                 </property>
                </widget>
               </item>
@@ -1405,7 +1408,6 @@
     <addaction name="menu_equipment"/>
     <addaction name="filters_action"/>
     <addaction name="location_action"/>
-    <addaction name="actionSave_Location"/>
    </widget>
    <widget class="QMenu" name="help_menu">
     <property name="title">
@@ -2211,7 +2213,7 @@
     <string>Filters</string>
    </property>
   </action>
-  <action name="actionSave_Location">
+  <action name="savelocation_action">
    <property name="icon">
     <iconset resource="resources/res.qrc">
      <normaloff>:/icons/ic_folder_white_48px.svg</normaloff>:/icons/ic_folder_white_48px.svg</iconset>
@@ -2240,6 +2242,15 @@
   <action name="actionSchedule">
    <property name="text">
     <string>Schedule</string>
+   </property>
+  </action>
+  <action name="ascomcamerasettings_action">
+   <property name="icon">
+    <iconset resource="resources/res.qrc">
+     <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
+   </property>
+   <property name="text">
+    <string>ASCOM Settings</string>
    </property>
   </action>
  </widget>
@@ -2303,11 +2314,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>153</y>
+     <y>155</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>127</y>
+     <y>129</y>
     </hint>
    </hints>
   </connection>
@@ -2319,11 +2330,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>207</y>
+     <y>209</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>181</y>
+     <y>183</y>
     </hint>
    </hints>
   </connection>
@@ -2335,11 +2346,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>435</y>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>409</y>
+     <y>411</y>
     </hint>
    </hints>
   </connection>
@@ -2351,11 +2362,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>381</y>
+     <y>383</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>355</y>
+     <y>357</y>
     </hint>
    </hints>
   </connection>
@@ -2367,11 +2378,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>127</y>
+     <y>129</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>153</y>
+     <y>155</y>
     </hint>
    </hints>
   </connection>
@@ -2383,11 +2394,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>409</y>
+     <y>411</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>435</y>
+     <y>437</y>
     </hint>
    </hints>
   </connection>
@@ -2399,11 +2410,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>181</y>
+     <y>183</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>207</y>
+     <y>209</y>
     </hint>
    </hints>
   </connection>
@@ -2415,11 +2426,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>355</y>
+     <y>357</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
-     <y>381</y>
+     <y>383</y>
     </hint>
    </hints>
   </connection>
@@ -2431,7 +2442,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
-     <y>445</y>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2447,7 +2458,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>445</y>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2463,7 +2474,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
-     <y>134</y>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2479,7 +2490,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>134</y>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2495,7 +2506,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>127</y>
+     <y>129</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2511,7 +2522,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>181</y>
+     <y>183</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2527,7 +2538,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>355</y>
+     <y>357</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2543,7 +2554,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>176</x>
-     <y>409</y>
+     <y>411</y>
     </hint>
     <hint type="destinationlabel">
      <x>668</x>
@@ -2559,11 +2570,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>134</y>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
-     <y>134</y>
+     <y>238</y>
     </hint>
    </hints>
   </connection>
@@ -2575,11 +2586,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>445</y>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
-     <y>445</y>
+     <y>544</y>
     </hint>
    </hints>
   </connection>
@@ -2590,8 +2601,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>-240</y>
+     <x>84</x>
+     <y>-238</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -2606,8 +2617,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>65</y>
+     <x>84</x>
+     <y>67</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -2622,8 +2633,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>200</y>
+     <x>84</x>
+     <y>295</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -2638,8 +2649,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>81</x>
-     <y>697</y>
+     <x>80</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -2654,8 +2665,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>81</x>
-     <y>599</y>
+     <x>80</x>
+     <y>601</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -2674,8 +2685,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>84</x>
-     <y>-240</y>
+     <x>83</x>
+     <y>-238</y>
     </hint>
    </hints>
   </connection>
@@ -2690,8 +2701,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>84</x>
-     <y>65</y>
+     <x>83</x>
+     <y>67</y>
     </hint>
    </hints>
   </connection>
@@ -2706,8 +2717,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>81</x>
-     <y>599</y>
+     <x>80</x>
+     <y>601</y>
     </hint>
    </hints>
   </connection>
@@ -2722,8 +2733,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>85</x>
-     <y>200</y>
+     <x>84</x>
+     <y>295</y>
     </hint>
    </hints>
   </connection>
@@ -2738,8 +2749,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>82</x>
-     <y>669</y>
+     <x>81</x>
+     <y>699</y>
     </hint>
    </hints>
   </connection>
@@ -2751,11 +2762,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>134</y>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
-     <y>-15</y>
+     <y>91</y>
     </hint>
    </hints>
   </connection>
@@ -2767,11 +2778,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>445</y>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
      <x>175</x>
-     <y>215</y>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
@@ -2831,11 +2842,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
-     <y>542</y>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
      <x>125</x>
-     <y>542</y>
+     <y>544</y>
     </hint>
    </hints>
   </connection>
@@ -2847,11 +2858,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
-     <y>236</y>
+     <y>238</y>
     </hint>
     <hint type="destinationlabel">
      <x>125</x>
-     <y>236</y>
+     <y>238</y>
     </hint>
    </hints>
   </connection>
@@ -2862,12 +2873,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>464</y>
+     <x>175</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>130</x>
-     <y>403</y>
+     <x>176</x>
+     <y>491</y>
     </hint>
    </hints>
   </connection>
@@ -2878,12 +2889,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>157</x>
-     <y>476</y>
+     <x>175</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>43</x>
-     <y>395</y>
+     <x>52</x>
+     <y>491</y>
     </hint>
    </hints>
   </connection>
@@ -2894,12 +2905,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>148</x>
-     <y>475</y>
+     <x>175</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>37</x>
-     <y>426</y>
+     <x>46</x>
+     <y>517</y>
     </hint>
    </hints>
   </connection>
@@ -2910,12 +2921,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>147</x>
-     <y>457</y>
+     <x>175</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>126</x>
-     <y>430</y>
+     <x>176</x>
+     <y>517</y>
     </hint>
    </hints>
   </connection>
@@ -2926,12 +2937,12 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>39</x>
-     <y>504</y>
+     <x>38</x>
+     <y>601</y>
     </hint>
     <hint type="destinationlabel">
-     <x>31</x>
-     <y>405</y>
+     <x>40</x>
+     <y>491</y>
     </hint>
    </hints>
   </connection>
@@ -2942,12 +2953,28 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>74</x>
-     <y>509</y>
+     <x>73</x>
+     <y>601</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>402</y>
+     <x>176</x>
+     <y>491</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_integration_checkbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>camera_integration_spinbox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>471</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>119</x>
+     <y>470</y>
     </hint>
    </hints>
   </connection>

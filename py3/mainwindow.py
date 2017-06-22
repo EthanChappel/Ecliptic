@@ -24,9 +24,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.camera_settings_frame = zwosettings.ZWOSettings()
-        self.camera_settings_action = QtWidgets.QWidgetAction(None)
-        self.camera_settings_menu = QtWidgets.QMenu()
 
         self.guider_settings_frame = zwosettings.ZWOSettings()
         self.guider_settings_action = QtWidgets.QWidgetAction(None)
@@ -41,6 +38,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.was_hidden = False
         self.status_coords_label = QtWidgets.QLabel()
         self.setupUi(self)
+
+        self.camera_settings_frame = zwosettings.ZWOSettings()
+        self.camera_settings_action = QtWidgets.QWidgetAction(None)
+        self.camera_settings_menu = QtWidgets.QMenu()
+        self.camera_settings_menu.addAction(self.savelocation_action)
+        self.camera_settings_btn.setMenu(self.camera_settings_menu)
 
         self.row_count = self.schedule_table.rowCount()
 
@@ -104,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.wheel_action.toggled.connect(self.connect_filters)
 
         self.scope_settings_btn.clicked.connect(self.setup_telescope)
-        self.camera_settings_btn.clicked.connect(self.setup_camera)
+        self.ascomcamerasettings_action.triggered.connect(self.setup_camera)
         self.guide_settings_btn.clicked.connect(self.setup_autoguider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
@@ -675,6 +678,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     values = self.camera_settings(appglobals.camera)
                     name = appglobals.camera.name_()
                     self.camera_name_label.setText(name)
+                    self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                     if self.isHidden():
                         self.tray_icon.showMessage("Camera Connected", f"{name} has been connected.",
                                                    QtWidgets.QSystemTrayIcon.Information)
@@ -684,8 +688,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_settings_frame.set_camera(appglobals.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
-                    self.camera_settings_menu.addAction(self.camera_settings_action)
-                    self.camera_settings_btn.setMenu(self.camera_settings_menu)
+                    self.camera_settings_menu.insertAction(self.savelocation_action, self.camera_settings_action)
                 else:
                     raise Exception
                 self.setup_camera_controls(values)
@@ -701,9 +704,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif not self.camera_group.isChecked():
             try:
                 if type(appglobals.camera) is ascomequipment.Camera:
+                    self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
                     appglobals.camera.disconnect()
                     appglobals.camera.dispose()
                 elif type(appglobals.camera) is asi.Camera:
+                    self.camera_settings_menu.removeAction(self.camera_settings_action)
                     appglobals.camera.close()
             except AttributeError as e:
                 print(e)
@@ -711,7 +716,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.camera = None
                 self.camera_settings_frame.set_camera(appglobals.camera)
                 self.camera_name_label.setText("Not Connected")
-                self.camera_settings_btn.setMenu(None)
 
     def setup_camera_controls(self, values):
         # TODO: Test these statements with more cameras that support different features

@@ -19,10 +19,10 @@
     <normaloff>:/icons/logo.svg</normaloff>:/icons/logo.svg</iconset>
   </property>
   <property name="dockNestingEnabled">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks|QMainWindow::ForceTabbedDocks</set>
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
@@ -81,8 +81,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>174</width>
-         <height>864</height>
+         <width>196</width>
+         <height>1074</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -1361,7 +1361,7 @@
      <x>0</x>
      <y>0</y>
      <width>795</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1697,8 +1697,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>605</width>
-          <height>52</height>
+          <width>578</width>
+          <height>69</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1838,8 +1838,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>605</width>
-          <height>52</height>
+          <width>578</width>
+          <height>69</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">

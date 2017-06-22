@@ -8,15 +8,17 @@ class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
         super(ZWOSettings, self).__init__()
         self.camera = None
         self.setupUi(self)
+        self.setup_gui()
 
-    def setup_controls(self, values):
+    def setup_gui(self):
         self.temperature_spinbox.valueChanged.connect(self.set_temperature)
         self.brightness_spinbox.valueChanged.connect(self.set_brightness)
         self.gamma_spinbox.valueChanged.connect(self.set_gamma)
         self.red_spinbox.valueChanged.connect(self.set_red)
         self.blue_spinbox.valueChanged.connect(self.set_blue)
         self.usb_spinbox.valueChanged.connect(self.set_usb)
-        
+
+    def setup_controls(self, values):
         if "Gamma" in values:
             self.gamma_label.setVisible(True)
             self.gamma_spinbox.setVisible(True)

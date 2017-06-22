@@ -80,9 +80,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-376</y>
-         <width>196</width>
-         <height>1074</height>
+         <y>0</y>
+         <width>174</width>
+         <height>864</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -1361,7 +1361,7 @@
      <x>0</x>
      <y>0</y>
      <width>795</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1697,8 +1697,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>578</width>
-          <height>69</height>
+          <width>605</width>
+          <height>52</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1838,8 +1838,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>578</width>
-          <height>69</height>
+          <width>605</width>
+          <height>52</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2083,7 +2083,7 @@
   <action name="exit_action">
    <property name="icon">
     <iconset resource="resources/res.qrc">
-     <normaloff>:/icons/ic_close_white_48px.svg</normaloff>:/icons/ic_close_white_48px.svg</iconset>
+     <normaloff>:/icons/ic_power_settings_new_white_48px.svg</normaloff>:/icons/ic_power_settings_new_white_48px.svg</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -2221,6 +2221,10 @@
    </property>
   </action>
   <action name="action_closewindow">
+   <property name="icon">
+    <iconset resource="resources/res.qrc">
+     <normaloff>:/icons/ic_close_white_48px.svg</normaloff>:/icons/ic_close_white_48px.svg</iconset>
+   </property>
    <property name="text">
     <string>Close Window</string>
    </property>

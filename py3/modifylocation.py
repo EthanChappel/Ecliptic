@@ -37,12 +37,12 @@ class LocationDialog(QtWidgets.QDialog):
         self.ui.lat_s_spin.setValue(int(self.lat[2]))
         self.ui.long_s_spin.setValue(int(self.lon[2]))
 
-        self.ui.lat_d_spin.valueChanged.connect(lambda: self.generate_map())
-        self.ui.long_d_spin.valueChanged.connect(lambda: self.generate_map())
-        self.ui.lat_m_spin.valueChanged.connect(lambda: self.generate_map())
-        self.ui.long_m_spin.valueChanged.connect(lambda: self.generate_map())
-        self.ui.lat_s_spin.valueChanged.connect(lambda: self.generate_map())
-        self.ui.long_s_spin.valueChanged.connect(lambda: self.generate_map())
+        self.ui.lat_d_spin.valueChanged.connect(self.generate_map)
+        self.ui.long_d_spin.valueChanged.connect(self.generate_map)
+        self.ui.lat_m_spin.valueChanged.connect(self.generate_map)
+        self.ui.long_m_spin.valueChanged.connect(self.generate_map)
+        self.ui.lat_s_spin.valueChanged.connect(self.generate_map)
+        self.ui.long_s_spin.valueChanged.connect(self.generate_map)
         self.ui.button_box.accepted.connect(self.ok)
         self.ui.button_box.rejected.connect(self.cancel)
 

@@ -9,7 +9,7 @@ import cartopy.feature as cfeature
 import ui_modifylocation
 
 
-class LocationDialog(QtWidgets.QDialog):
+class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
     def __init__(self):
         super(LocationDialog, self).__init__()
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
@@ -25,29 +25,28 @@ class LocationDialog(QtWidgets.QDialog):
         self.earth_figure = plt.figure(facecolor=(0.333, 0.333, 0.333))
         self.earth_canvas = FigureCanvas(self.earth_figure)
 
-        self.ui = ui_modifylocation.Ui_LocationDialog()
-        self.ui.setupUi(self)
+        self.setupUi(self)
         self.setup_gui()
 
     def setup_gui(self):
-        self.ui.lat_d_spin.setValue(int(self.lat[0]))
-        self.ui.long_d_spin.setValue(int(self.lon[0]))
-        self.ui.lat_m_spin.setValue(int(self.lat[1]))
-        self.ui.long_m_spin.setValue(int(self.lon[1]))
-        self.ui.lat_s_spin.setValue(int(self.lat[2]))
-        self.ui.long_s_spin.setValue(int(self.lon[2]))
+        self.lat_d_spin.setValue(int(self.lat[0]))
+        self.long_d_spin.setValue(int(self.lon[0]))
+        self.lat_m_spin.setValue(int(self.lat[1]))
+        self.long_m_spin.setValue(int(self.lon[1]))
+        self.lat_s_spin.setValue(int(self.lat[2]))
+        self.long_s_spin.setValue(int(self.lon[2]))
 
-        self.ui.lat_d_spin.valueChanged.connect(self.generate_map)
-        self.ui.long_d_spin.valueChanged.connect(self.generate_map)
-        self.ui.lat_m_spin.valueChanged.connect(self.generate_map)
-        self.ui.long_m_spin.valueChanged.connect(self.generate_map)
-        self.ui.lat_s_spin.valueChanged.connect(self.generate_map)
-        self.ui.long_s_spin.valueChanged.connect(self.generate_map)
-        self.ui.button_box.accepted.connect(self.ok)
-        self.ui.button_box.rejected.connect(self.cancel)
+        self.lat_d_spin.valueChanged.connect(self.generate_map)
+        self.long_d_spin.valueChanged.connect(self.generate_map)
+        self.lat_m_spin.valueChanged.connect(self.generate_map)
+        self.long_m_spin.valueChanged.connect(self.generate_map)
+        self.lat_s_spin.valueChanged.connect(self.generate_map)
+        self.long_s_spin.valueChanged.connect(self.generate_map)
+        self.button_box.accepted.connect(self.ok)
+        self.button_box.rejected.connect(self.cancel)
 
         self.generate_map()
-        self.ui.earth_layout.addWidget(self.earth_canvas)
+        self.earth_layout.addWidget(self.earth_canvas)
 
     def decimal_coordinates(self, lat: List[int], lon: List[int]) -> Tuple[float, float]:
         """Convert coordinates in ###:##:## format to floats."""
@@ -65,8 +64,8 @@ class LocationDialog(QtWidgets.QDialog):
         """Generate map to display in window."""
         # TODO: Fix map shrinking on first change
         self.earth_figure.clf()
-        self.lat = [self.ui.lat_d_spin.value(), self.ui.lat_m_spin.value(), self.ui.lat_s_spin.value()]
-        self.lon = [self.ui.long_d_spin.value(), self.ui.long_m_spin.value(), self.ui.long_s_spin.value()]
+        self.lat = [self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()]
+        self.lon = [self.long_d_spin.value(), self.long_m_spin.value(), self.long_s_spin.value()]
         self.dec_lat, self.dec_lon = self.decimal_coordinates([int(i) for i in self.lat], [int(i) for i in self.lon])
         earth_axes = plt.axes(projection=ccrs.Orthographic(self.dec_lon, self.dec_lat))
         earth_axes.add_feature(cfeature.LAND, facecolor="white")
@@ -83,10 +82,10 @@ class LocationDialog(QtWidgets.QDialog):
     def ok(self):
         """Do if "OK" button is pressed"""
         self.accept()
-        self.latitude = str(self.ui.lat_d_spin.value()) + ":" + str(self.ui.lat_m_spin.value()) + ":" + str(
-            self.ui.lat_s_spin.value())
-        self.longitude = str(self.ui.long_d_spin.value()) + ":" + str(self.ui.long_m_spin.value()) + ":" + str(
-            self.ui.long_s_spin.value())
+        self.latitude = str(self.lat_d_spin.value()) + ":" + str(self.lat_m_spin.value()) + ":" + str(
+            self.lat_s_spin.value())
+        self.longitude = str(self.long_d_spin.value()) + ":" + str(self.long_m_spin.value()) + ":" + str(
+            self.long_s_spin.value())
 
         if os.path.exists("location.json"):
             os.remove("location.json")

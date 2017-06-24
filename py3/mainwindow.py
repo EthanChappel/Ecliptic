@@ -1,20 +1,20 @@
-﻿import os
+﻿import json
+import os
 import sys
-import json
 import threading
 from typing import List, Dict
-import ephem
 import cv2
+import ephem
 import zwoasi as asi
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PIL import Image, ImageQt
-from ui_mainwindow import Ui_MainWindow
-import zwosettings
+from PyQt5 import QtCore, QtGui, QtWidgets
+import appglobals
+import connectcamera
 import modifylocation
 import targetswindow
-import connectcamera
+import zwosettings
 from computetargets import ComputeTargets
-import appglobals
+from ui.ui_mainwindow import Ui_MainWindow
 
 if sys.platform.startswith("win"):
     from equipment import ascom

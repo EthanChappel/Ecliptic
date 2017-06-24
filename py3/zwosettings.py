@@ -1,6 +1,6 @@
-from PyQt5 import QtWidgets
 import zwoasi as asi
-import ui_zwosettings
+from PyQt5 import QtWidgets
+from ui import ui_zwosettings
 
 
 class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):

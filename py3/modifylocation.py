@@ -1,13 +1,13 @@
-import os
 import json
-from PyQt5 import QtCore, QtWidgets
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import os
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-from conversions import coordinates
-import ui_modifylocation
+import matplotlib.pyplot as plt
+from PyQt5 import QtCore, QtWidgets
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import appglobals
+from conversions import coordinates
+from ui import ui_modifylocation
 
 
 class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):

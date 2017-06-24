@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from cycler import cycler
-from ui_targetswindow import Ui_Dialog
+from ui.ui_targetswindow import Ui_Dialog
 import computetargets
 import appglobals
 

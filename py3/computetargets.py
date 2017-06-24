@@ -1,13 +1,13 @@
-from typing import Dict, Tuple, Optional, Any
+from typing import Dict, Tuple, Optional, Any, List
 import ephem
 
 
 class ComputeTargets:
-    def __init__(self, time: str, latitude: str, longitude: str):
+    def __init__(self, time: str, latitude: List[int], longitude: List[int]):
         self.observer = ephem.Observer()
         self.observer.date = time
-        self.observer.lat = latitude
-        self.observer.lon = longitude
+        self.observer.lat = str(latitude[0]) + ":" + str(latitude[1]) + ":" + str(latitude[2])
+        self.observer.lon = str(longitude[0]) + ":" + str(longitude[1]) + ":" + str(longitude[2])
 
         self.sun = ephem.Sun()
         self.mercury = ephem.Mercury()

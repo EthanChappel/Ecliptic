@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, List
 import ephem
 import numpy as np
 from scipy.interpolate import spline
@@ -51,7 +51,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         """Set graph date to current date."""
         self.schedule_dateedit.setDateTime(QtCore.QDateTime.currentDateTime())
 
-    def generate(self, latitude: str, longitude: str):
+    def generate(self, latitude: List[int], longitude: List[int]):
         """Generate graph whenever date is changed."""
         self.sched_plot.lines = []
         self.sched_plot.patches = []
@@ -204,12 +204,12 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.canvas.draw()
 
     @staticmethod
-    def compute_target(target: str, time: str, latitude: str, longitude: str) -> Dict[str, ephem.Angle]:
+    def compute_target(target: str, time: str, latitude: List[int], longitude: List[int]) -> Dict[str, ephem.Angle]:
         compute_alt = computetargets.ComputeTargets(time, latitude, longitude)
         alt = compute_alt.object_alt(target)
         return alt
 
-    def compute_twilight(self, latitude: str, longitude: str) -> Tuple[
+    def compute_twilight(self, latitude: List[int], longitude: List[int]) -> Tuple[
                                                                  Optional[int], Optional[int], Optional[int],
                                                                  Optional[int], Optional[int], Optional[int],
                                                                  Optional[int], Optional[int], Optional[int],

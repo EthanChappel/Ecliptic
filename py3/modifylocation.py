@@ -7,20 +7,16 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import ui_modifylocation
+import appglobals
 
 
 class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
     def __init__(self):
         super(LocationDialog, self).__init__()
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
-        try:
-            with open("location.json", "r") as f:
-                self.location = json.load(f)
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            self.location = {"Latitude": "00:00:00", "Longitude": "00:00:00"}
-        self.lat = self.location["Latitude"].split(":")
-        self.lon = self.location["Longitude"].split(":")
-        self.dec_lat, self.dec_lon = self.decimal_coordinates([int(i) for i in self.lat], [int(i) for i in self.lon])
+
+        self.dec_lat, self.dec_lon = self.decimal_coordinates(appglobals.location["Latitude"],
+                                                              appglobals.location["Longitude"])
 
         self.earth_figure = plt.figure(facecolor=(0.333, 0.333, 0.333))
         self.earth_canvas = FigureCanvas(self.earth_figure)
@@ -29,12 +25,12 @@ class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
         self.setup_gui()
 
     def setup_gui(self):
-        self.lat_d_spin.setValue(int(self.lat[0]))
-        self.long_d_spin.setValue(int(self.lon[0]))
-        self.lat_m_spin.setValue(int(self.lat[1]))
-        self.long_m_spin.setValue(int(self.lon[1]))
-        self.lat_s_spin.setValue(int(self.lat[2]))
-        self.long_s_spin.setValue(int(self.lon[2]))
+        self.lat_d_spin.setValue(appglobals.location["Latitude"][0])
+        self.long_d_spin.setValue(appglobals.location["Longitude"][0])
+        self.lat_m_spin.setValue(appglobals.location["Latitude"][1])
+        self.long_m_spin.setValue(appglobals.location["Longitude"][1])
+        self.lat_s_spin.setValue(appglobals.location["Latitude"][2])
+        self.long_s_spin.setValue(appglobals.location["Longitude"][2])
 
         self.lat_d_spin.valueChanged.connect(self.generate_map)
         self.long_d_spin.valueChanged.connect(self.generate_map)
@@ -64,9 +60,10 @@ class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
         """Generate map to display in window."""
         # TODO: Fix map shrinking on first change
         self.earth_figure.clf()
-        self.lat = [self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()]
-        self.lon = [self.long_d_spin.value(), self.long_m_spin.value(), self.long_s_spin.value()]
-        self.dec_lat, self.dec_lon = self.decimal_coordinates([int(i) for i in self.lat], [int(i) for i in self.lon])
+        appglobals.location["Latitude"] = [self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()]
+        appglobals.location["Longitude"] = [self.long_d_spin.value(), self.long_m_spin.value(), self.long_s_spin.value()]
+        self.dec_lat, self.dec_lon = self.decimal_coordinates(appglobals.location["Latitude"],
+                                                              appglobals.location["Longitude"])
         earth_axes = plt.axes(projection=ccrs.Orthographic(self.dec_lon, self.dec_lat))
         earth_axes.add_feature(cfeature.LAND, facecolor="white")
         earth_axes.add_feature(cfeature.LAKES, edgecolor="black", facecolor="white")
@@ -82,18 +79,14 @@ class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
     def ok(self):
         """Do if "OK" button is pressed"""
         self.accept()
-        self.latitude = str(self.lat_d_spin.value()) + ":" + str(self.lat_m_spin.value()) + ":" + str(
-            self.lat_s_spin.value())
-        self.longitude = str(self.long_d_spin.value()) + ":" + str(self.long_m_spin.value()) + ":" + str(
-            self.long_s_spin.value())
+        appglobals.location["Latitude"] = [self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()]
+        appglobals.location["Longitude"] = [self.long_d_spin.value(), self.long_m_spin.value(),
+                                            self.long_s_spin.value()]
 
         if os.path.exists("location.json"):
             os.remove("location.json")
-        location_dict = {}
-        location_dict.update({"Latitude": self.latitude})
-        location_dict.update({"Longitude": self.longitude})
         with open("location.json", "a") as f:
-            json.dump(location_dict, f, indent=0)
+            json.dump(appglobals.location, f, indent=0)
         self.earth_figure.clf()
 
     def cancel(self):

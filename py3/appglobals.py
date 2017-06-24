@@ -13,10 +13,10 @@ try:
     with open("location.json", "r") as f:
             location = json.load(f)
 except FileNotFoundError:
-    location = {"Latitude": 0.0, "Longitude": 0.0}
+    location = {"Latitude": [0, 0, 0], "Longitude": [0, 0, 0]}
 except json.decoder.JSONDecodeError:
     messagebox = QtWidgets.QMessageBox()
     messagebox.setText("The location data seems to be broken. Coordinates will be set to 0°N 0°E.")
     messagebox.setIcon(QtWidgets.QMessageBox.Information)
     messagebox.exec_()
-    location = {"Latitude": 0.0, "Longitude": 0.0}
+    location = {"Latitude": [0, 0, 0], "Longitude": [0, 0, 0]}

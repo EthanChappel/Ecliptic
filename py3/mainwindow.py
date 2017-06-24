@@ -24,7 +24,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-
         self.guider_settings_frame = zwosettings.ZWOSettings()
         self.guider_settings_action = QtWidgets.QWidgetAction(None)
         self.guider_settings_menu = QtWidgets.QMenu()
@@ -166,8 +165,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set label to show latitude and longitude and show it on status bar
         self.status_coords_label.setText(
-            "Latitude: " + str(appglobals.location["Latitude"]) + "°,  Longitude: " +
-            str(appglobals.location["Longitude"]) + "°")
+            "Latitude: " + str(appglobals.location["Latitude"][0]) + "°" +
+            str(appglobals.location["Latitude"][1]) + "\'" +
+            str(appglobals.location["Latitude"][2]) + "\"" +
+            ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
+            str(appglobals.location["Longitude"][1]) + "\'" +
+            str(appglobals.location["Longitude"][2]) + "\"")
         self.statusbar.addWidget(self.status_coords_label)
 
         # Allow table headers to fit schedule_table
@@ -439,8 +442,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             with open("location.json", "r") as f:
                 appglobals.location = json.load(f)
         self.status_coords_label.setText(
-            "Latitude: " + str(appglobals.location["Latitude"]) + u"°,  Longitude: " + str(
-                appglobals.location["Longitude"]) + u"°")
+            "Latitude: " + str(appglobals.location["Latitude"][0]) + "°" +
+            str(appglobals.location["Latitude"][1]) + "\'" +
+            str(appglobals.location["Latitude"][2]) + "\"" +
+            ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
+            str(appglobals.location["Longitude"][1]) + "\'" +
+            str(appglobals.location["Longitude"][2]) + "\"")
         self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
 
     def open_target_gui(self):

@@ -362,6 +362,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             index_list.append(index)
         for index in index_list:
             self.filter_table.removeRow(index.row())
+        self.save_filters()
 
     def save_filters(self):
         """Save contents of filter_table into filters.json."""

@@ -48,24 +48,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.mountmodes_tuple = ("Stop", "Home")
 
-        if os.path.exists("filters.json"):
-            with open("filters.json", "r") as f:
-                try:
-                    self.filters = json.load(f)
-                except json.decoder.JSONDecodeError:
-                    self.filters = []
-        else:
-            self.filters = []
-
-        if os.path.exists("schedule.json"):
-            with open("schedule.json", "r") as f:
-                try:
-                    self.schedule = json.load(f)
-                except json.decoder.JSONDecodeError:
-                    self.schedule = {}
-        else:
-            self.schedule = {}
-
         if sys.platform.startswith("win"):
             asi.init(os.path.dirname(os.getcwd()).replace("\\", "/") + "/lib/ASICamera2.dll")
 
@@ -187,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Add targets to position_combobox
         self.camera_filter_combobox.addItem("None")
-        for f in self.filters:
+        for f in appglobals.filters:
             self.position_combobox.addItem(f.get("Name"))
             self.camera_filter_combobox.addItem(f["Name"])
 
@@ -201,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         date = self.schedule_dateedit.text()
         self.load_schedule(date)
-        self.load_filters(self.filters)
+        self.load_filters(appglobals.filters)
 
         self.schedule_dateedit.dateChanged.connect(lambda: self.load_schedule(str(self.schedule_dateedit.text())))
 
@@ -235,7 +217,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Create QComboBox for Filter Column
         filter_combobox = QtWidgets.QComboBox()
-        for f in self.filters:
+        for f in appglobals.filters:
             filter_combobox.addItem(f.get("Name"))
         filter_combobox.setCurrentIndex(-1)
 
@@ -277,7 +259,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             index_list.append(index)
         for index in index_list:
             self.schedule_table.removeRow(index.row())
-            del self.schedule[date][index.row()]
+            del appglobals.schedule[date][index.row()]
         self.save_schedule()
 
     def save_schedule(self):
@@ -298,16 +280,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         value = str(self.schedule_table.cellWidget(row, col).text())
                 schedule_dict.update({header: value})
             schedule_list.append(schedule_dict)
-            self.schedule.update({self.schedule_dateedit.text(): schedule_list})
+            appglobals.schedule.update({self.schedule_dateedit.text(): schedule_list})
+        print(sys._getframe(1).f_code.co_name)
         with open("schedule.json", "a") as f:
-            json.dump(self.schedule, f, indent=4)
+            json.dump(appglobals.schedule, f, indent=4)
 
     def load_schedule(self, schedule: str):
         """Load contents of schedule.json into schedule_table."""
         count = 0
         self.schedule_table.setRowCount(0)
         try:
-            for f in self.schedule[schedule]:
+            for f in appglobals.schedule[schedule]:
                 self.add_schedule_row()
                 time = QtCore.QTime.fromString(f["Time"])
                 target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
@@ -398,14 +381,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         with open("filters.json", "a") as f:
             json.dump(filter_list, f, indent=0)
         with open("filters.json", "r") as f:
-            self.filters = json.load(f)
+            appglobals.filters = json.load(f)
         for row in range(self.schedule_table.rowCount()):
-            text = self.schedule_table.cellWidget(row, 2).currentText()
             cbox = self.schedule_table.cellWidget(row, 2)
+            text = cbox.currentText()
+            cbox.blockSignals(True)
             cbox.clear()
-            for f in self.filters:
+            for f in appglobals.filters:
                 cbox.addItem(f["Name"])
             index = cbox.findText(text)
+            cbox.blockSignals(False)
             cbox.setCurrentIndex(index)
         self.position_combobox.blockSignals(True)
         text = self.position_combobox.currentText()
@@ -413,7 +398,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.position_combobox.clear()
         self.camera_filter_combobox.clear()
         self.camera_filter_combobox.addItem("None")
-        for f in self.filters:
+        for f in appglobals.filters:
             self.camera_filter_combobox.addItem(f["Name"])
             self.position_combobox.addItem(f["Name"])
         index = self.position_combobox.findText(text)

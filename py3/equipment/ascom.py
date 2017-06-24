@@ -2,6 +2,7 @@ import os
 import json
 from typing import List, Union
 import numpy as np
+import appglobals
 import clr
 clr.AddReference("/lib/ASCOM.DriverAccess")
 clr.AddReference("/lib/ASCOM.Utilities")
@@ -127,9 +128,6 @@ class FilterWheel(Device):
         super(FilterWheel, self).__init__("FilterWheel")
         self.device = ASCOM.DriverAccess.FilterWheel(self.choose)
         self.connect()
-        if os.path.exists("filters.json"):
-            with open("filters.json", "r") as f:
-                self.filters = json.load(f)
 
     def wheel_position(self, pos: int):
         self.device.Position = pos
@@ -138,7 +136,7 @@ class FilterWheel(Device):
         try:
             self.device.Position = text
         except Exception:
-            for f in self.filters:
+            for f in appglobals.filters:
                 if f["Name"] == text:
                     wheel_pos = f["Wheel Position"]
                     try:

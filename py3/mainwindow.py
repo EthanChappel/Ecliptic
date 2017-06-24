@@ -17,7 +17,7 @@ from computetargets import ComputeTargets
 import appglobals
 
 if sys.platform.startswith("win"):
-    import ascom
+    from equipment import ascom
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):

@@ -17,7 +17,7 @@ from computetargets import ComputeTargets
 import appglobals
 
 if sys.platform.startswith("win"):
-    import ascomequipment
+    import ascom
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -469,7 +469,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.mount_group.isChecked():
             name = "The telescope"
             try:
-                appglobals.telescope = ascomequipment.Telescope()
+                appglobals.telescope = ascom.Telescope()
                 self.telescope_settings()
                 name = appglobals.telescope.name_()
                 self.telescope_name_label.setText(name)
@@ -562,10 +562,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "The auto-guider"
             try:
                 if guider_dialog.ascom_radio.isChecked() and guider_dialog.accepted:
-                    appglobals.guider = ascomequipment.Camera()
+                    appglobals.guider = ascom.Camera()
                     values = self.camera_settings(appglobals.guider)
                     name = appglobals.guider.name_()
-                    self.guide_name_label.setText(name)
+                    self.guider_name_label.setText(name)
                     if self.isHidden():
                         self.tray_icon.showMessage("Auto-Guider Connected", f"{name} has been connected.",
                                                    QtWidgets.QSystemTrayIcon.Information)
@@ -590,7 +590,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.autoguide_group.isChecked():
             try:
-                if type(appglobals.camera) is ascomequipment.Camera:
+                if type(appglobals.camera) is ascom.Camera:
                     appglobals.guider.disconnect()
                     appglobals.guider.dispose()
                 elif type(appglobals.camera) is asi.Camera:
@@ -653,7 +653,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guide_thread.start()
 
     def autoguider_preview(self):
-        if type(appglobals.camera) is ascomequipment.Camera:
+        if type(appglobals.camera) is ascom.Camera:
             while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
                 image = appglobals.guider.capture(exp_sec, True)
@@ -681,7 +681,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             camera_dialog.exec_()
             try:
                 if camera_dialog.ascom_radio.isChecked() and camera_dialog.accepted:
-                    appglobals.camera = ascomequipment.Camera()
+                    appglobals.camera = ascom.Camera()
                     values = self.camera_settings(appglobals.camera)
                     name = appglobals.camera.name_()
                     self.camera_name_label.setText(name)
@@ -710,7 +710,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif not self.camera_group.isChecked():
             try:
-                if type(appglobals.camera) is ascomequipment.Camera:
+                if type(appglobals.camera) is ascom.Camera:
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
                     appglobals.camera.disconnect()
                     appglobals.camera.dispose()
@@ -758,7 +758,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_settings(self, camera):
         values = {}
-        if type(camera) is ascomequipment.Camera:
+        if type(camera) is ascom.Camera:
             values.update({"Gain": {"Min": camera.gain_min(), "Max": camera.gain_max(), "Current": camera.gain()}})
             values.update({"Exposure": {"Min": camera.exposure_min() * 1000,
                                         "Max": camera.exposure_max() * 1000,
@@ -853,7 +853,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_thread.start()
 
     def camera_preview(self):
-        if type(appglobals.camera) is ascomequipment.Camera:
+        if type(appglobals.camera) is ascom.Camera:
             while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
                 image = appglobals.camera.capture(exp_sec, True)
@@ -873,7 +873,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def camera_record(self):
         name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
         avi_name = f"{name_format}.avi"
-        if type(appglobals.camera) is ascomequipment.Camera:
+        if type(appglobals.camera) is ascom.Camera:
             out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
             while self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
@@ -906,7 +906,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.focuser_group.isChecked():
             name = "The focuser"
             try:
-                appglobals.focuser = ascomequipment.Focuser()
+                appglobals.focuser = ascom.Focuser()
                 self.focuser_settings()
                 name = appglobals.focuser.name_()
                 self.focuser_name_label.setText(name)
@@ -989,7 +989,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.wheel_group.isChecked():
             name = "The filter wheel"
             try:
-                appglobals.wheel = ascomequipment.FilterWheel()
+                appglobals.wheel = ascom.FilterWheel()
                 name = appglobals.wheel.name_()
                 self.wheel_name_label.setText(name)
                 if self.isHidden():

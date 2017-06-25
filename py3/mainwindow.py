@@ -248,8 +248,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.schedule_table.setCellWidget(self.row_count, 4, gain_spinbox)
         self.schedule_table.setCellWidget(self.row_count, 5, integration_spinbox)
 
-        self.save_schedule()
-
     def remove_schedule_row(self):
         """Remove selected rows from schedule_table."""
         index_list = []
@@ -285,41 +283,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         with open("schedule.json", "a") as f:
             json.dump(appglobals.schedule, f, indent=4)
 
-    def load_schedule(self, schedule: str):
+    def load_schedule(self, date: str):
         """Load contents of schedule.json into schedule_table."""
         count = 0
         self.schedule_table.setRowCount(0)
-        try:
-            for f in appglobals.schedule[schedule]:
-                self.add_schedule_row()
-                time = QtCore.QTime.fromString(f["Time"])
-                target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
-                set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
+        for f in appglobals.schedule[date]:
+            self.add_schedule_row()
 
-                self.schedule_table.cellWidget(count, 0).blockSignals(True)
-                self.schedule_table.cellWidget(count, 1).blockSignals(True)
-                self.schedule_table.cellWidget(count, 2).blockSignals(True)
-                self.schedule_table.cellWidget(count, 3).blockSignals(True)
-                self.schedule_table.cellWidget(count, 4).blockSignals(True)
-                self.schedule_table.cellWidget(count, 5).blockSignals(True)
+            self.schedule_table.cellWidget(count, 0).blockSignals(True)
+            self.schedule_table.cellWidget(count, 1).blockSignals(True)
+            self.schedule_table.cellWidget(count, 2).blockSignals(True)
+            self.schedule_table.cellWidget(count, 3).blockSignals(True)
+            self.schedule_table.cellWidget(count, 4).blockSignals(True)
+            self.schedule_table.cellWidget(count, 5).blockSignals(True)
 
-                self.schedule_table.cellWidget(count, 0).setTime(time)
-                self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
-                self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
-                self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
-                self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
-                self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
+            time = QtCore.QTime.fromString(f["Time"])
+            target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
+            set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
 
-                self.schedule_table.cellWidget(count, 0).blockSignals(False)
-                self.schedule_table.cellWidget(count, 1).blockSignals(False)
-                self.schedule_table.cellWidget(count, 2).blockSignals(False)
-                self.schedule_table.cellWidget(count, 3).blockSignals(False)
-                self.schedule_table.cellWidget(count, 4).blockSignals(False)
-                self.schedule_table.cellWidget(count, 5).blockSignals(False)
+            print(time.toString(), target, set_filter, int(f["Exposure"]), int(f["Gain"]), int(f["Integration"]))
 
-        except KeyError:
-            pass
-        count += 1
+            self.schedule_table.cellWidget(count, 0).setTime(time)
+            self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
+            self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
+            self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
+            self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
+            self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
+
+            self.schedule_table.cellWidget(count, 0).blockSignals(False)
+            self.schedule_table.cellWidget(count, 1).blockSignals(False)
+            self.schedule_table.cellWidget(count, 2).blockSignals(False)
+            self.schedule_table.cellWidget(count, 3).blockSignals(False)
+            self.schedule_table.cellWidget(count, 4).blockSignals(False)
+            self.schedule_table.cellWidget(count, 5).blockSignals(False)
+            count += 1
 
     def add_filter_row(self):
         """Add row in filter_table."""
@@ -413,11 +410,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         count = 0
         for f in filters:
             self.add_filter_row()
+
+            self.filter_table.cellWidget(count, 0).blockSignals(True)
+            self.filter_table.cellWidget(count, 1).blockSignals(True)
+            self.filter_table.cellWidget(count, 2).blockSignals(True)
+            self.filter_table.cellWidget(count, 3).blockSignals(True)
+            self.filter_table.cellWidget(count, 4).blockSignals(True)
+
             self.filter_table.cellWidget(count, 0).setText(f["Name"])
             self.filter_table.cellWidget(count, 1).setText(f["Brand"])
             self.filter_table.cellWidget(count, 2).setValue(int(f["Wheel Position"]))
             self.filter_table.cellWidget(count, 3).setValue(int(f["Lower Cutoff"]))
             self.filter_table.cellWidget(count, 4).setValue(int(f["Upper Cutoff"]))
+
+            self.filter_table.cellWidget(count, 0).blockSignals(False)
+            self.filter_table.cellWidget(count, 1).blockSignals(False)
+            self.filter_table.cellWidget(count, 2).blockSignals(False)
+            self.filter_table.cellWidget(count, 3).blockSignals(False)
+            self.filter_table.cellWidget(count, 4).blockSignals(False)
             count += 1
 
     def location_set(self):

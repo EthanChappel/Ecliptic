@@ -13,6 +13,7 @@ The goal of Solar System Sequencer is to allow someone to be absent from their e
 * __[NumPy](https://www.scipy.org/install.html)__
 * __[SciPy](https://www.scipy.org/install.html)__
 * __[Matplotlib](https://matplotlib.org/users/installing.html)__
+* __[Cartopy](http://scitools.org.uk/cartopy/download.html)__
 * __[pythonnet](https://pypi.python.org/pypi/pythonnet)__
 * __[opencv-python](https://pypi.python.org/pypi/opencv-python)__
 * __[zwoasi](https://pypi.python.org/pypi/zwoasi/)__

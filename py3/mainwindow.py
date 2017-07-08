@@ -285,38 +285,39 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def load_schedule(self, date: str):
         """Load contents of schedule.json into schedule_table."""
-        count = 0
         self.schedule_table.setRowCount(0)
-        for f in appglobals.schedule[date]:
-            self.add_schedule_row()
+        if date in appglobals.schedule:
+            count = 0
+            for f in appglobals.schedule[date]:
+                self.add_schedule_row()
 
-            self.schedule_table.cellWidget(count, 0).blockSignals(True)
-            self.schedule_table.cellWidget(count, 1).blockSignals(True)
-            self.schedule_table.cellWidget(count, 2).blockSignals(True)
-            self.schedule_table.cellWidget(count, 3).blockSignals(True)
-            self.schedule_table.cellWidget(count, 4).blockSignals(True)
-            self.schedule_table.cellWidget(count, 5).blockSignals(True)
+                self.schedule_table.cellWidget(count, 0).blockSignals(True)
+                self.schedule_table.cellWidget(count, 1).blockSignals(True)
+                self.schedule_table.cellWidget(count, 2).blockSignals(True)
+                self.schedule_table.cellWidget(count, 3).blockSignals(True)
+                self.schedule_table.cellWidget(count, 4).blockSignals(True)
+                self.schedule_table.cellWidget(count, 5).blockSignals(True)
 
-            time = QtCore.QTime.fromString(f["Time"])
-            target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
-            set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
+                time = QtCore.QTime.fromString(f["Time"])
+                target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
+                set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
 
-            print(time.toString(), target, set_filter, int(f["Exposure"]), int(f["Gain"]), int(f["Integration"]))
+                print(time.toString(), target, set_filter, int(f["Exposure"]), int(f["Gain"]), int(f["Integration"]))
 
-            self.schedule_table.cellWidget(count, 0).setTime(time)
-            self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
-            self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
-            self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
-            self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
-            self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
+                self.schedule_table.cellWidget(count, 0).setTime(time)
+                self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
+                self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
+                self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
+                self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
+                self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
 
-            self.schedule_table.cellWidget(count, 0).blockSignals(False)
-            self.schedule_table.cellWidget(count, 1).blockSignals(False)
-            self.schedule_table.cellWidget(count, 2).blockSignals(False)
-            self.schedule_table.cellWidget(count, 3).blockSignals(False)
-            self.schedule_table.cellWidget(count, 4).blockSignals(False)
-            self.schedule_table.cellWidget(count, 5).blockSignals(False)
-            count += 1
+                self.schedule_table.cellWidget(count, 0).blockSignals(False)
+                self.schedule_table.cellWidget(count, 1).blockSignals(False)
+                self.schedule_table.cellWidget(count, 2).blockSignals(False)
+                self.schedule_table.cellWidget(count, 3).blockSignals(False)
+                self.schedule_table.cellWidget(count, 4).blockSignals(False)
+                self.schedule_table.cellWidget(count, 5).blockSignals(False)
+                count += 1
 
     def add_filter_row(self):
         """Add row in filter_table."""

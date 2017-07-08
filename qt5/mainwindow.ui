@@ -1731,24 +1731,40 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontallayout_3">
-       <property name="leftMargin">
-        <number>9</number>
-       </property>
-       <property name="rightMargin">
-        <number>9</number>
-       </property>
-       <item>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
         <widget class="QLabel" name="camera_zoom_label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Zoom</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="camera_zoom_spinbox">
+         <property name="suffix">
+          <string>%</string>
+         </property>
+         <property name="minimum">
+          <number>20</number>
+         </property>
+         <property name="maximum">
+          <number>300</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
         <widget class="QSlider" name="camera_zoom_slider">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1757,7 +1773,7 @@
           <number>20</number>
          </property>
          <property name="maximum">
-          <number>200</number>
+          <number>300</number>
          </property>
          <property name="value">
           <number>100</number>
@@ -1767,7 +1783,7 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="2" rowspan="2">
         <spacer name="camera_spacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1841,7 +1857,7 @@
           <x>0</x>
           <y>0</y>
           <width>605</width>
-          <height>52</height>
+          <height>97</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1872,24 +1888,40 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontallayout_6">
-       <property name="leftMargin">
-        <number>9</number>
-       </property>
-       <property name="rightMargin">
-        <number>9</number>
-       </property>
-       <item>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
         <widget class="QLabel" name="guider_zoom_label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Zoom</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="spinBox">
+         <property name="suffix">
+          <string>%</string>
+         </property>
+         <property name="minimum">
+          <number>20</number>
+         </property>
+         <property name="maximum">
+          <number>300</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
         <widget class="QSlider" name="guider_zoom_slider">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1898,7 +1930,7 @@
           <number>20</number>
          </property>
          <property name="maximum">
-          <number>200</number>
+          <number>300</number>
          </property>
          <property name="value">
           <number>100</number>
@@ -1908,17 +1940,23 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="Line" name="line_8">
+       <item row="0" column="2" rowspan="2">
+        <widget class="Line" name="guider_zoom_spinbox">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="3" rowspan="2">
         <widget class="QPushButton" name="guider_setref_button">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="toolTip">
           <string>Replace guide reference</string>
@@ -1930,6 +1968,12 @@
           <iconset resource="resources/res.qrc">
            <normaloff>:/icons/target.svg</normaloff>:/icons/target.svg</iconset>
          </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
          <property name="autoDefault">
           <bool>true</bool>
          </property>
@@ -1938,7 +1982,7 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="4" rowspan="2">
         <spacer name="guider_spacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -2328,9 +2372,7 @@
   <tabstop>addrow_button</tabstop>
   <tabstop>removerow_button</tabstop>
   <tabstop>camera_scrollarea</tabstop>
-  <tabstop>camera_zoom_slider</tabstop>
   <tabstop>guider_scrollarea</tabstop>
-  <tabstop>guider_zoom_slider</tabstop>
  </tabstops>
  <resources>
   <include location="resources/res.qrc"/>
@@ -2843,8 +2885,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>483</x>
-     <y>322</y>
+     <x>673</x>
+     <y>300</y>
     </hint>
    </hints>
   </connection>
@@ -3009,18 +3051,66 @@
    </hints>
   </connection>
   <connection>
-   <sender>guider_loop_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>guider_setref_button</receiver>
-   <slot>setEnabled(bool)</slot>
+   <sender>camera_zoom_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>camera_zoom_spinbox</receiver>
+   <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>94</x>
-     <y>436</y>
+     <x>203</x>
+     <y>285</y>
     </hint>
     <hint type="destinationlabel">
-     <x>328</x>
-     <y>410</y>
+     <x>235</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>camera_zoom_spinbox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>camera_zoom_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>270</x>
+     <y>263</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>guider_zoom_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>450</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>433</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>guider_zoom_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>271</x>
+     <y>431</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>454</y>
     </hint>
    </hints>
   </connection>

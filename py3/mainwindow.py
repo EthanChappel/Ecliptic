@@ -1027,13 +1027,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # </editor-fold>
 
-    @staticmethod
-    def close_app():
-        appglobals.telescope = None
-        appglobals.camera = None
-        appglobals.guider = None
-        appglobals.focuser = None
-        appglobals.wheel = None
+    def close_app(self):
+        self.mount_group.setChecked(False)
+        self.autoguide_group.setChecked(False)
+        self.camera_group.setChecked(False)
+        self.focuser_group.setChecked(False)
+        self.wheel_group.setChecked(False)
         sys.exit()
 
     def closeEvent(self, event: QtGui.QCloseEvent):

@@ -8,7 +8,7 @@ The goal of Solar System Sequencer is to allow someone to be absent from their e
 ## Getting Started
 
 ### Prerequisites
-* __[Python](https://www.python.org/downloads/) 3.6.0__ or later, standard library recommended
+* __[Python 3](https://www.python.org/downloads/)__
 * __[PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5)__
 * __[NumPy](https://www.scipy.org/install.html)__
 * __[SciPy](https://www.scipy.org/install.html)__

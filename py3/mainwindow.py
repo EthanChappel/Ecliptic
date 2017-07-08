@@ -456,7 +456,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
         messagebox.setWindowTitle("Solar System Sequencer - Connection Failed")
-        messagebox.setText(f"{name} failed to connect.")
+        messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
 
     # <editor-fold desc="Telescope">
@@ -470,7 +470,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.telescope.name_()
                 self.telescope_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Telescope Connected", f"{name} has been connected.",
+                    self.tray_icon.showMessage("Telescope Connected", "{} has been connected.".format(name),
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -478,7 +478,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
+                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.mount_group.isChecked():
             try:
@@ -563,7 +563,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     name = appglobals.guider.name_()
                     self.guider_name_label.setText(name)
                     if self.isHidden():
-                        self.tray_icon.showMessage("Auto-Guider Connected", f"{name} has been connected.",
+                        self.tray_icon.showMessage("Auto-Guider Connected", "{} has been connected.".format(name),
                                                    QtWidgets.QSystemTrayIcon.Information)
                 elif guider_dialog.asi_radio.isChecked() and guider_dialog.accepted:
                     appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
@@ -582,7 +582,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
+                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.autoguide_group.isChecked():
             try:
@@ -683,7 +683,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                     if self.isHidden():
-                        self.tray_icon.showMessage("Camera Connected", f"{name} has been connected.",
+                        self.tray_icon.showMessage("Camera Connected", "{} has been connected.".format(name),
                                                    QtWidgets.QSystemTrayIcon.Information)
                 elif camera_dialog.asi_radio.isChecked() and camera_dialog.accepted:
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
@@ -701,7 +701,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible() and camera_dialog.accepted:
                     self.connect_fail_dialog(name)
                 elif self.isHidden() and camera_dialog.accepted:
-                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
+                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
                                                QtWidgets.QSystemTrayIcon.Warning)
 
         elif not self.camera_group.isChecked():
@@ -868,7 +868,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_record(self):
         name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
-        avi_name = f"{name_format}.avi"
+        avi_name = "{}.avi".format(name_format)
         if type(appglobals.camera) is ascom.Camera:
             out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
             while self.camera_capture_button.isChecked():
@@ -907,7 +907,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.focuser.name_()
                 self.focuser_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Focuser Connected", f"{name} has been connected.",
+                    self.tray_icon.showMessage("Focuser Connected", "{} has been connected.".format(name),
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -915,7 +915,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
+                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.focuser_group.isChecked():
             try:
@@ -989,7 +989,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 name = appglobals.wheel.name_()
                 self.wheel_name_label.setText(name)
                 if self.isHidden():
-                    self.tray_icon.showMessage("Filter Wheel Connected", f"{name} has been connected.",
+                    self.tray_icon.showMessage("Filter Wheel Connected", "{} has been connected.".format(name),
                                                QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
@@ -997,7 +997,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
-                    self.tray_icon.showMessage("Connection Failed", f"{name} failed to connect.",
+                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.wheel_group.isChecked():
             try:

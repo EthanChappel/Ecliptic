@@ -32,6 +32,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_thread = None
         self.guider_thread = None
 
+        self.camera_save_dir = None
+
         self.menu = QtWidgets.QMenu()
         self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
         self.was_hidden = False
@@ -199,6 +201,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_exposure_slider.valueChanged.connect(self.set_guider_exposure)
         self.guider_gain_spinbox.valueChanged.connect(self.set_guider_gain)
         self.guider_gain_slider.valueChanged.connect(self.set_guider_gain)
+
+        self.savelocation_action.triggered.connect(self.change_camera_save_dir)
 
     def add_schedule_row(self):
         """Add row in schedule_table."""
@@ -556,7 +560,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.guider_group.isChecked():
             guider_dialog = connectcamera.ConnectCamera()
             guider_dialog.exec_()
-            name = "The Guider"
+            name = "The guider"
             try:
                 if guider_dialog.ascom_radio.isChecked() and guider_dialog.accepted:
                     appglobals.guider = ascom.Camera()
@@ -669,7 +673,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # </editor-fold>
 
-    # <editor-fold desc="Imaging Camera">
+    # <editor-fold desc="Camera">
 
     def connect_camera(self):
         if self.camera_group.isChecked():
@@ -869,7 +873,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_record(self):
         name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
-        avi_name = "{}.avi".format(name_format)
+        avi_name = "{}/{}.avi".format(self.camera_save_dir, name_format)
         if type(appglobals.camera) is ascom.Camera:
             out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
             while self.camera_capture_button.isChecked():
@@ -894,6 +898,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         out.release()
         if os.path.getsize(avi_name) == 0:
             os.remove(avi_name)
+
+    # TODO: Save directory to data file to persist after exiting
+    def change_camera_save_dir(self):
+        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory")
+        if str(camera_dir_dialog) == "":
+            pass
+        else:
+            self.camera_save_dir = str(camera_dir_dialog)
 
     # </editor-fold>
 

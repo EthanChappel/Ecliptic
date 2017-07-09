@@ -13,6 +13,7 @@ import connectcamera
 import modifylocation
 import targetswindow
 import zwosettings
+import guiderparameters
 from computetargets import ComputeTargets
 from ui.ui_mainwindow import Ui_MainWindow
 
@@ -23,10 +24,6 @@ if sys.platform.startswith("win"):
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-
-        self.guider_settings_frame = zwosettings.ZWOSettings()
-        self.guider_settings_action = QtWidgets.QWidgetAction(None)
-        self.guider_settings_menu = QtWidgets.QMenu()
 
         self.firstclose = True
         self.camera_thread = None
@@ -45,6 +42,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_settings_menu = QtWidgets.QMenu()
         self.camera_settings_menu.addAction(self.savelocation_action)
         self.camera_settings_btn.setMenu(self.camera_settings_menu)
+
+        self.guider_settings_frame = zwosettings.ZWOSettings()
+        self.guider_parameters_frame = guiderparameters.GuiderParameters()
+        self.guider_settings_action = QtWidgets.QWidgetAction(None)
+        self.guider_settings_action.setDefaultWidget(self.guider_settings_frame)
+        self.guider_parameters_action = QtWidgets.QWidgetAction(None)
+        self.guider_parameters_action.setDefaultWidget(self.guider_parameters_frame)
+        self.guider_menu = QtWidgets.QMenu()
+        self.guider_menu.addAction(self.guider_parameters_action)
+        self.guider_settings_btn.setMenu(self.guider_menu)
 
         self.row_count = self.schedule_table.rowCount()
 
@@ -91,7 +98,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.scope_settings_btn.clicked.connect(self.setup_telescope)
         self.ascomcamerasettings_action.triggered.connect(self.setup_camera)
-        self.guider_settings_btn.clicked.connect(self.setup_guider)
+        self.ascomguidersettings_action.triggered.connect(self.setup_guider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
 
@@ -567,6 +574,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     values = self.camera_settings(appglobals.guider)
                     name = appglobals.guider.name_()
                     self.guider_name_label.setText(name)
+                    self.guider_menu.addAction(self.ascomguidersettings_action)
                     if self.isHidden():
                         self.tray_icon.showMessage("Guider Connected", "{} has been connected.".format(name),
                                                    QtWidgets.QSystemTrayIcon.Information)
@@ -575,9 +583,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     values = self.camera_settings(appglobals.guider)
                     self.guider_settings_frame.set_camera(appglobals.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
-                    self.guider_settings_action.setDefaultWidget(self.guider_settings_frame)
-                    self.guider_settings_menu.addAction(self.guider_settings_action)
-                    self.guider_settings_btn.setMenu(self.guider_settings_menu)
+                    self.guider_menu.addAction(self.guider_settings_action)
                 else:
                     raise Exception
                 self.setup_guider_controls(values)
@@ -591,10 +597,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                QtWidgets.QSystemTrayIcon.Warning)
         elif not self.guider_group.isChecked():
             try:
-                if type(appglobals.camera) is ascom.Camera:
+                if type(appglobals.guider) is ascom.Camera:
+                    self.guider_menu.removeAction(self.ascomguidersettings_action)
                     appglobals.guider.disconnect()
                     appglobals.guider.dispose()
-                elif type(appglobals.camera) is asi.Camera:
+                elif type(appglobals.guider) is asi.Camera:
+                    self.guider_menu.removeAction(self.guider_settings_action)
                     appglobals.guider.close()
             except AttributeError as e:
                 print(e)

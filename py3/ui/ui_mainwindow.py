@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sat Jul  8 19:05:14 2017
+# Created: Sat Jul  8 23:28:01 2017
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -923,7 +923,7 @@ class Ui_MainWindow(object):
         self.guider_scrollarea.setAlignment(QtCore.Qt.AlignCenter)
         self.guider_scrollarea.setObjectName("guider_scrollarea")
         self.guiderscrollareawidgetcontents = QtWidgets.QWidget()
-        self.guiderscrollareawidgetcontents.setGeometry(QtCore.QRect(0, 0, 605, 97))
+        self.guiderscrollareawidgetcontents.setGeometry(QtCore.QRect(0, 0, 605, 52))
         self.guiderscrollareawidgetcontents.setObjectName("guiderscrollareawidgetcontents")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.guiderscrollareawidgetcontents)
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -1128,6 +1128,9 @@ class Ui_MainWindow(object):
         self.ascomcamerasettings_action = QtWidgets.QAction(MainWindow)
         self.ascomcamerasettings_action.setIcon(icon1)
         self.ascomcamerasettings_action.setObjectName("ascomcamerasettings_action")
+        self.ascomguidersettings_action = QtWidgets.QAction(MainWindow)
+        self.ascomguidersettings_action.setIcon(icon1)
+        self.ascomguidersettings_action.setObjectName("ascomguidersettings_action")
         self.import_menu.addAction(self.importfilters_action)
         self.import_menu.addAction(self.importschedule_action)
         self.menuExport.addAction(self.actionFilters)
@@ -1367,5 +1370,6 @@ class Ui_MainWindow(object):
         self.actionFilters.setText(_translate("MainWindow", "Filters"))
         self.actionSchedule.setText(_translate("MainWindow", "Schedule"))
         self.ascomcamerasettings_action.setText(_translate("MainWindow", "ASCOM Settings"))
+        self.ascomguidersettings_action.setText(_translate("MainWindow", "ASCOM Settings"))
 
 import res_rc

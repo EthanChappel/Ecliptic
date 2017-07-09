@@ -1857,7 +1857,7 @@
           <x>0</x>
           <y>0</y>
           <width>605</width>
-          <height>97</height>
+          <height>52</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2319,6 +2319,15 @@
    </property>
   </action>
   <action name="ascomcamerasettings_action">
+   <property name="icon">
+    <iconset resource="resources/res.qrc">
+     <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
+   </property>
+   <property name="text">
+    <string>ASCOM Settings</string>
+   </property>
+  </action>
+  <action name="ascomguidersettings_action">
    <property name="icon">
     <iconset resource="resources/res.qrc">
      <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>

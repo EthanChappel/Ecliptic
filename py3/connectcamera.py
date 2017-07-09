@@ -13,8 +13,11 @@ class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
         self.setFixedSize(self.size())
         self.accepted = False
         self.asi_camera = None
+        self.buttonbox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(False)
         self.buttonbox.accepted.connect(self.ok)
         self.buttonbox.rejected.connect(self.cancel)
+        self.ascom_radio.clicked.connect(lambda: self.buttonbox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True))
+        self.asi_radio.clicked.connect(lambda: self.buttonbox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True))
         self.refresh_asilist()
         self.asi_sync_button.clicked.connect(self.refresh_asilist)
 

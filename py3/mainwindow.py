@@ -30,7 +30,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.firstclose = True
         self.camera_thread = None
-        self.guide_thread = None
+        self.guider_thread = None
 
         self.menu = QtWidgets.QMenu()
         self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
@@ -73,23 +73,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tray_icon.show()
 
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
-        self.tabifyDockWidget(self.schedule_dockwidget, self.autoguide_dockwidget)
-        self.tabifyDockWidget(self.autoguide_dockwidget, self.camera_dockwidget)
+        self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
+        self.tabifyDockWidget(self.guider_dockwidget, self.camera_dockwidget)
         self.tabifyDockWidget(self.camera_dockwidget, self.filters_dockwidget)
         self.schedule_dockwidget.raise_()
         self.camera_dockwidget.setVisible(False)
-        self.autoguide_dockwidget.setVisible(False)
+        self.guider_dockwidget.setVisible(False)
 
         self.slewstop_button.clicked.connect(self.goto_target)
         self.telescope_action.toggled.connect(self.connect_telescope)
         self.camera_action.toggled.connect(self.connect_camera)
-        self.guide_action.toggled.connect(self.connect_autoguider)
+        self.guider_action.toggled.connect(self.connect_guider)
         self.focuser_action.toggled.connect(self.connect_focuser)
         self.wheel_action.toggled.connect(self.connect_filters)
 
         self.scope_settings_btn.clicked.connect(self.setup_telescope)
         self.ascomcamerasettings_action.triggered.connect(self.setup_camera)
-        self.guide_settings_btn.clicked.connect(self.setup_autoguider)
+        self.guider_settings_btn.clicked.connect(self.setup_guider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
 
@@ -126,10 +126,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.goto_button.clicked.connect(self.goto_target)
 
-        self.guider_loop_button.clicked.connect(self.autoguider_loop)
+        self.guider_loop_button.clicked.connect(self.guider_loop)
         self.camera_loop_button.clicked.connect(self.camera_loop)
 
-        self.guider_start_button.clicked.connect(self.autoguider_loop)
+        self.guider_start_button.clicked.connect(self.guider_loop)
         self.camera_capture_button.clicked.connect(self.camera_loop)
 
         # Connect functions to addrow_button and removerow_button
@@ -550,13 +550,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # </editor-fold>
 
-    # <editor-fold desc="Auto-guider">
+    # <editor-fold desc="Guider">
 
-    def connect_autoguider(self):
-        if self.autoguide_group.isChecked():
+    def connect_guider(self):
+        if self.guider_group.isChecked():
             guider_dialog = connectcamera.ConnectCamera()
             guider_dialog.exec_()
-            name = "The auto-guider"
+            name = "The Guider"
             try:
                 if guider_dialog.ascom_radio.isChecked() and guider_dialog.accepted:
                     appglobals.guider = ascom.Camera()
@@ -564,7 +564,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     name = appglobals.guider.name_()
                     self.guider_name_label.setText(name)
                     if self.isHidden():
-                        self.tray_icon.showMessage("Auto-Guider Connected", "{} has been connected.".format(name),
+                        self.tray_icon.showMessage("Guider Connected", "{} has been connected.".format(name),
                                                    QtWidgets.QSystemTrayIcon.Information)
                 elif guider_dialog.asi_radio.isChecked() and guider_dialog.accepted:
                     appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
@@ -573,19 +573,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.guider_name_label.setText(guider_dialog.asi_camera)
                     self.guider_settings_action.setDefaultWidget(self.guider_settings_frame)
                     self.guider_settings_menu.addAction(self.guider_settings_action)
-                    self.guide_settings_btn.setMenu(self.guider_settings_menu)
+                    self.guider_settings_btn.setMenu(self.guider_settings_menu)
                 else:
                     raise Exception
                 self.setup_guider_controls(values)
             except Exception as e:
                 print(e)
-                self.autoguide_group.setChecked(False)
+                self.guider_group.setChecked(False)
                 if self.isVisible():
                     self.connect_fail_dialog(name)
                 else:
                     self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
                                                QtWidgets.QSystemTrayIcon.Warning)
-        elif not self.autoguide_group.isChecked():
+        elif not self.guider_group.isChecked():
             try:
                 if type(appglobals.camera) is ascom.Camera:
                     appglobals.guider.disconnect()
@@ -599,7 +599,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.guider_settings_frame.set_camera(appglobals.guider)
                 self.guider_name_label.setText("Not Connected")
 
-    def setup_autoguider(self):
+    def setup_guider(self):
         appglobals.guider.disconnect()
         appglobals.guider.setup_dialog()
         appglobals.guider.connect()
@@ -640,23 +640,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.guider_settings_frame.setup_controls(values)
 
-    def autoguider_loop(self):
+    def guider_loop(self):
         if self.guider_loop_button.isChecked():
             if self.guider_start_button.isChecked():
-                self.guide_thread = threading.Thread(target=self.autoguider_preview)  # To be implemented
+                self.guider_thread = threading.Thread(target=self.guider_preview)  # To be implemented
             else:
-                self.guide_thread = threading.Thread(target=self.autoguider_preview)
-            self.guide_thread.daemon = True
-            self.guide_thread.start()
+                self.guider_thread = threading.Thread(target=self.guider_preview)
+            self.guider_thread.daemon = True
+            self.guider_thread.start()
 
-    def autoguider_preview(self):
-        if type(appglobals.camera) is ascom.Camera:
+    def guider_preview(self):
+        if type(appglobals.guider) is ascom.Camera:
             while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
                 image = appglobals.guider.capture(exp_sec, True)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
-                self.guide_preview_label.setPixmap(pix)
+                self.guider_preview_label.setPixmap(pix)
         else:
             appglobals.guider.start_video_capture()
             while self.guider_loop_button.isChecked():
@@ -664,8 +664,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 image = appglobals.guider.capture_video_frame(timeout=timeout)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
-                self.guide_preview_label.setPixmap(pix)
-        self.guide_preview_label.clear()
+                self.guider_preview_label.setPixmap(pix)
+        self.guider_preview_label.clear()
 
     # </editor-fold>
 
@@ -1030,7 +1030,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def close_app(self):
         self.mount_group.setChecked(False)
-        self.autoguide_group.setChecked(False)
+        self.guider_group.setChecked(False)
         self.camera_group.setChecked(False)
         self.focuser_group.setChecked(False)
         self.wheel_group.setChecked(False)

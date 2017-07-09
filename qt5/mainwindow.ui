@@ -532,7 +532,7 @@
          </widget>
         </item>
         <item row="1" column="0" colspan="2">
-         <widget class="QGroupBox" name="autoguide_group">
+         <widget class="QGroupBox" name="guider_group">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -540,7 +540,7 @@
            </sizepolicy>
           </property>
           <property name="title">
-           <string>Autoguide</string>
+           <string>Guider</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -568,7 +568,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="guide_settings_btn">
+              <widget class="QToolButton" name="guider_settings_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -614,7 +614,7 @@
                <number>0</number>
               </property>
               <item row="0" column="0" colspan="2">
-               <widget class="Line" name="line_3">
+               <widget class="Line" name="guider_line">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -716,7 +716,7 @@
               <item row="5" column="0" colspan="2">
                <layout class="QHBoxLayout" name="horizontallayout_7">
                 <item>
-                 <spacer name="horizontalSpacer">
+                 <spacer name="guider_spacer">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -1400,7 +1400,7 @@
       <string>Equipment</string>
      </property>
      <addaction name="telescope_action"/>
-     <addaction name="guide_action"/>
+     <addaction name="guider_action"/>
      <addaction name="camera_action"/>
      <addaction name="wheel_action"/>
      <addaction name="focuser_action"/>
@@ -1801,7 +1801,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="autoguide_dockwidget">
+  <widget class="QDockWidget" name="guider_dockwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
      <horstretch>0</horstretch>
@@ -1815,7 +1815,7 @@
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Autoguide</string>
+    <string>Guider</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -1851,7 +1851,7 @@
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
-       <widget class="QWidget" name="scrollareawidgetcontents_3">
+       <widget class="QWidget" name="guiderscrollareawidgetcontents">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -1874,7 +1874,7 @@
           <number>0</number>
          </property>
          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLabel" name="guide_preview_label">
+          <widget class="QLabel" name="guider_preview_label">
            <property name="text">
             <string/>
            </property>
@@ -1888,9 +1888,9 @@
       </widget>
      </item>
      <item>
-      <layout class="QGridLayout" name="gridLayout_5">
+      <layout class="QGridLayout" name="guider_gridlayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="guider_zoom_label">
+        <widget class="QLabel" name="guiderzoom_label">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -1903,7 +1903,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QSpinBox" name="spinBox">
+        <widget class="QSpinBox" name="guiderzoom_spinbox">
          <property name="suffix">
           <string>%</string>
          </property>
@@ -1919,7 +1919,7 @@
         </widget>
        </item>
        <item row="1" column="0" colspan="2">
-        <widget class="QSlider" name="guider_zoom_slider">
+        <widget class="QSlider" name="guiderzoom_slider">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1941,14 +1941,14 @@
         </widget>
        </item>
        <item row="0" column="2" rowspan="2">
-        <widget class="Line" name="guider_zoom_spinbox">
+        <widget class="Line" name="guiderzoom_line">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
        <item row="0" column="3" rowspan="2">
-        <widget class="QPushButton" name="guider_setref_button">
+        <widget class="QPushButton" name="guidersetref_button">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -1983,7 +1983,7 @@
         </widget>
        </item>
        <item row="0" column="4" rowspan="2">
-        <spacer name="guider_spacer">
+        <spacer name="guiderzoom_spacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -2245,12 +2245,12 @@
     <string>Telescope</string>
    </property>
   </action>
-  <action name="guide_action">
+  <action name="guider_action">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Autoguide</string>
+    <string>Guider</string>
    </property>
   </action>
   <action name="camera_action">
@@ -2344,8 +2344,8 @@
   <tabstop>mount_trackrate_spin</tabstop>
   <tabstop>object_combobox</tabstop>
   <tabstop>goto_button</tabstop>
-  <tabstop>autoguide_group</tabstop>
-  <tabstop>guide_settings_btn</tabstop>
+  <tabstop>guider_group</tabstop>
+  <tabstop>guider_settings_btn</tabstop>
   <tabstop>guider_exposure_spinbox</tabstop>
   <tabstop>guider_exposure_slider</tabstop>
   <tabstop>guider_gain_spinbox</tabstop>
@@ -2541,7 +2541,7 @@
   <connection>
    <sender>guider_start_button</sender>
    <signal>clicked()</signal>
-   <receiver>autoguide_dockwidget</receiver>
+   <receiver>guider_dockwidget</receiver>
    <slot>raise()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2557,7 +2557,7 @@
   <connection>
    <sender>guider_loop_button</sender>
    <signal>clicked()</signal>
-   <receiver>autoguide_dockwidget</receiver>
+   <receiver>guider_dockwidget</receiver>
    <slot>raise()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2573,7 +2573,7 @@
   <connection>
    <sender>guider_exposure_spinbox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>autoguide_dockwidget</receiver>
+   <receiver>guider_dockwidget</receiver>
    <slot>raise()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2589,7 +2589,7 @@
   <connection>
    <sender>guider_gain_spinbox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>autoguide_dockwidget</receiver>
+   <receiver>guider_dockwidget</receiver>
    <slot>raise()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2683,9 +2683,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>autoguide_group</sender>
+   <sender>guider_group</sender>
    <signal>toggled(bool)</signal>
-   <receiver>guide_action</receiver>
+   <receiver>guider_action</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2763,9 +2763,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>guide_action</sender>
+   <sender>guider_action</sender>
    <signal>toggled(bool)</signal>
-   <receiver>autoguide_group</receiver>
+   <receiver>guider_group</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2829,7 +2829,7 @@
   <connection>
    <sender>guider_loop_button</sender>
    <signal>toggled(bool)</signal>
-   <receiver>guide_settings_btn</receiver>
+   <receiver>guider_settings_btn</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3083,9 +3083,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>guider_zoom_slider</sender>
+   <sender>guiderzoom_slider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>spinBox</receiver>
+   <receiver>guiderzoom_spinbox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3099,9 +3099,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>spinBox</sender>
+   <sender>guiderzoom_spinbox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>guider_zoom_slider</receiver>
+   <receiver>guiderzoom_slider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'guiderparameters.ui'
 #
-# Created: Sat Jul  8 23:41:16 2017
+# Created: Sun Jul  9 20:17:13 2017
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -41,7 +41,7 @@ class Ui_GuiderParameters(object):
         self.ra_spinbox = QtWidgets.QSpinBox(GuiderParameters)
         self.ra_spinbox.setMinimum(-100)
         self.ra_spinbox.setMaximum(100)
-        self.ra_spinbox.setProperty("value", 100)
+        self.ra_spinbox.setProperty("value", 10)
         self.ra_spinbox.setObjectName("ra_spinbox")
         self.formlayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.ra_spinbox)
         self.dec_label = QtWidgets.QLabel(GuiderParameters)
@@ -50,7 +50,7 @@ class Ui_GuiderParameters(object):
         self.dec_spinBox = QtWidgets.QSpinBox(GuiderParameters)
         self.dec_spinBox.setMinimum(-100)
         self.dec_spinBox.setMaximum(100)
-        self.dec_spinBox.setProperty("value", 100)
+        self.dec_spinBox.setProperty("value", 10)
         self.dec_spinBox.setObjectName("dec_spinBox")
         self.formlayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.dec_spinBox)
         self.parameters_layout.addLayout(self.formlayout)

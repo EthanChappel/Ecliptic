@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'guiderparameters.ui'
 #
-# Created: Sun Jul  9 20:17:13 2017
+# Created: Wed Jul 12 15:26:10 2017
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,6 +58,9 @@ class Ui_GuiderParameters(object):
         self.every_label.setObjectName("every_label")
         self.parameters_layout.addWidget(self.every_label)
         self.seconds_spinbox = QtWidgets.QDoubleSpinBox(GuiderParameters)
+        self.seconds_spinbox.setDecimals(1)
+        self.seconds_spinbox.setMinimum(0.1)
+        self.seconds_spinbox.setProperty("value", 2.0)
         self.seconds_spinbox.setObjectName("seconds_spinbox")
         self.parameters_layout.addWidget(self.seconds_spinbox)
         self.gridLayout.addLayout(self.parameters_layout, 0, 0, 1, 2)

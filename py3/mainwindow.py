@@ -60,8 +60,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if sys.platform.startswith("win"):
             asi.init(os.path.dirname(os.getcwd()).replace("\\", "/") + "/lib/ASICamera2.dll")
 
-        self.t = []
-
         self.target_dialog = targetswindow.TargetsDialog()
 
         self.setup_gui()

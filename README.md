@@ -7,7 +7,7 @@ The goal of Solar System Sequencer is to allow someone to be absent from their e
 
 ## Getting Started
 
-Before contributing code to the repository, **PLEASE READ THE [CONTRIBUTOR'S LICENSE AGREEMENT](https://github.com/EthanChappel/Solar-System-Sequencer/blob/master/CLA.md)!**
+**BY CONTRIBUTING CODE TO THIS REPOSITORY, YOU AGREE TO THE CONTRIBUTOR'S LICENSE AGREEMENT IN [CLA.md](https://github.com/EthanChappel/Solar-System-Sequencer/blob/master/CLA.md)**
 
 ### Prerequisites
 * __[Python 3](https://www.python.org/downloads/)__

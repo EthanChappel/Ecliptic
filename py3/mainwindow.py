@@ -29,8 +29,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_thread = None
         self.guider_thread = None
 
-        self.camera_save_dir = None
-
         self.menu = QtWidgets.QMenu()
         self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
         self.was_hidden = False
@@ -879,7 +877,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_record(self):
         name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
-        avi_name = "{}/{}.avi".format(self.camera_save_dir, name_format)
+        avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
         if type(appglobals.camera) is ascom.Camera:
             out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
             while self.camera_capture_button.isChecked():
@@ -905,13 +903,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if os.path.getsize(avi_name) == 0:
             os.remove(avi_name)
 
-    # TODO: Save directory to data file to persist after exiting
+    def save_settings(self):
+        """Save application settings into settings.json."""
+        if os.path.exists("settings.json"):
+            os.remove("settings.json")
+
+        with open("settings.json", "a") as f:
+            json.dump(appglobals.settings, f, indent=4)
+
     def change_camera_save_dir(self):
-        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory")
+        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory",
+                                                                       appglobals.settings["Save Directory"])
         if str(camera_dir_dialog) == "":
             pass
         else:
-            self.camera_save_dir = str(camera_dir_dialog)
+            appglobals.settings["Save Directory"] = str(camera_dir_dialog)
+            self.save_settings()
 
     # </editor-fold>
 

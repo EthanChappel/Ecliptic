@@ -10,6 +10,18 @@ focuser = None
 targets_tuple = ("Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
 
 try:
+    with open("settings.json", "r") as f:
+            settings = json.load(f)
+except FileNotFoundError:
+    settings = {}
+except json.decoder.JSONDecodeError:
+    messagebox = QtWidgets.QMessageBox()
+    messagebox.setText("The settings data seems to be broken.")
+    messagebox.setIcon(QtWidgets.QMessageBox.Information)
+    messagebox.exec_()
+    settings = {}
+
+try:
     with open("location.json", "r") as f:
             location = json.load(f)
 except FileNotFoundError:

@@ -982,16 +982,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.focuser_action.setChecked(False)
 
     def move_focuser(self):
-        if appglobals.focuser.absolute:
+        if appglobals.focuser.absolute():
             position = self.focuser_position_spinbox.text()
             appglobals.focuser.move(position)
+
         # TODO: Implement relative focusing
-        """
-        old_pos = app_globals.devices["Focuser"].focuser_position()
         else:
+            old_pos = appglobals.focuser.position()
             position = int(self.focuser_position_spinbox.text()) - old_pos
-            print(int(self.focuser_position_spinbox.text()), old_pos, position)
-        """
+            print("\nself.focuser_position_spinbox.text() =", int(self.focuser_position_spinbox.text()),
+                  "\nold_pos =", old_pos, "\nposition =", position)
+            appglobals.focuser.move(position)
 
     def temp_comp(self):
         state = self.temp_checkbox.isChecked()

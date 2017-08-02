@@ -81,8 +81,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>174</width>
-         <height>864</height>
+         <width>178</width>
+         <height>921</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -125,7 +125,7 @@
              <item>
               <widget class="QToolButton" name="scope_settings_btn">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -503,7 +503,7 @@
                 <item>
                  <widget class="QPushButton" name="goto_button">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
@@ -570,7 +570,7 @@
              <item>
               <widget class="QToolButton" name="guider_settings_btn">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -830,7 +830,7 @@
              <item>
               <widget class="QToolButton" name="camera_settings_btn">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1141,7 +1141,7 @@
              <item>
               <widget class="QToolButton" name="wheel_settings_btn">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1268,7 +1268,7 @@
              <item>
               <widget class="QToolButton" name="focuser_settings_btn">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1364,7 +1364,7 @@
      <x>0</x>
      <y>0</y>
      <width>795</width>
-     <height>18</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1528,7 +1528,7 @@
        <item>
         <widget class="QPushButton" name="addrow_button">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1548,7 +1548,7 @@
        <item>
         <widget class="QPushButton" name="removerow_button">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1699,8 +1699,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>605</width>
-          <height>52</height>
+          <width>606</width>
+          <height>49</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1856,8 +1856,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>605</width>
-          <height>52</height>
+          <width>606</width>
+          <height>49</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1953,7 +1953,7 @@
           <bool>false</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -2085,7 +2085,7 @@
        <item>
         <widget class="QPushButton" name="addrow_button_2">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -2105,7 +2105,7 @@
        <item>
         <widget class="QPushButton" name="removerow_button_2">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

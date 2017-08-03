@@ -2,7 +2,7 @@
 import sys
 import traceback
 from typing import Any
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from guistyle import switch_style
 
 sys.dont_write_bytecode = True
@@ -23,6 +23,8 @@ def excepthook(exc_type: tuple, exc_val: Any, tracebackobj: traceback):
     messagebox.setStandardButtons(QtWidgets.QMessageBox.Ok)
     messagebox.exec_()
 
+# TODO: Scale icons properly at high dpi
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 app = QtWidgets.QApplication(sys.argv)
 
 switch_style(app, True)

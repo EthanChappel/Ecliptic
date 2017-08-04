@@ -56,7 +56,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mountmodes_tuple = ("Stop", "Home")
 
         if sys.platform.startswith("win"):
-            asi.init(os.path.dirname(os.getcwd()).replace("\\", "/") + "/lib/ASICamera2.dll")
+            # TODO: Fix error when loaded from different cwd
+            asi.init(os.path.dirname(os.getcwd()).replace("\\", "/") + "/solarsystemsequencer/lib/ASICamera2.dll")
 
         self.target_dialog = targetswindow.TargetsDialog()
 

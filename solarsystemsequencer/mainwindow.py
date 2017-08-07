@@ -14,6 +14,7 @@ import modifylocation
 import targetswindow
 import zwosettings
 import guiderparameters
+import schedulebrain
 from computetargets import ComputeTargets
 from ui.ui_mainwindow import Ui_MainWindow
 
@@ -206,6 +207,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_gain_slider.valueChanged.connect(self.set_guider_gain)
 
         self.savelocation_action.triggered.connect(self.change_camera_save_dir)
+
+        self.schedulebrain_button.clicked.connect(schedulebrain.ScheduleBrain)
 
     def add_schedule_row(self):
         """Add row in schedule_table."""

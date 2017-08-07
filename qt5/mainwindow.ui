@@ -81,8 +81,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>921</height>
+         <width>196</width>
+         <height>1074</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -1364,7 +1364,7 @@
      <x>0</x>
      <y>0</y>
      <width>795</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1566,6 +1566,25 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="schedulebrain_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Generate...</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="Line" name="line_7">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1699,8 +1718,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>606</width>
-          <height>49</height>
+          <width>581</width>
+          <height>69</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1856,8 +1875,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>606</width>
-          <height>49</height>
+          <width>581</width>
+          <height>69</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">

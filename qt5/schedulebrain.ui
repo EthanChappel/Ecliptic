@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>145</height>
+    <width>317</width>
+    <height>138</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -173,7 +173,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="to_label">
+        <widget class="QLabel" name="time_to_label">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -214,30 +214,80 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Preference</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QSpinBox" name="minelevation_spinbox">
+         <property name="suffix">
+          <string>°</string>
+         </property>
+         <property name="maximum">
+          <number>89</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="elevation_to_label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="maxelevation_spinbox">
+         <property name="suffix">
+          <string>°</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>90</number>
+         </property>
+         <property name="value">
+          <number>90</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QRadioButton" name="radioButton">
+        <widget class="QRadioButton" name="east_radiobutton">
          <property name="text">
           <string>East</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="radioButton_2">
+        <widget class="QRadioButton" name="west_radiobutton">
          <property name="text">
           <string>West</string>
          </property>
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Preference</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="elevation_label">
+       <property name="text">
+        <string>Elevation</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

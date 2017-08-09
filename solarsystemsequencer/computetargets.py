@@ -38,7 +38,12 @@ class ComputeTargets:
 
     def object_alt(self, obj: str) -> Dict[str, Any]:
         self.compute_targets(obj)
-        if obj == "Mercury":
+        if obj == "Sun":
+            rascension = self.sun.ra
+            declination = self.sun.dec
+            azimuth = self.sun.az
+            altitude = self.sun.alt
+        elif obj == "Mercury":
             rascension = self.mercury.ra
             declination = self.mercury.dec
             azimuth = self.mercury.az

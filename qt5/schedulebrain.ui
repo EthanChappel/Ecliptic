@@ -264,6 +264,9 @@
          <property name="text">
           <string>East</string>
          </property>
+         <attribute name="buttonGroup">
+          <string notr="true">preference_buttongroup</string>
+         </attribute>
         </widget>
        </item>
        <item>
@@ -271,6 +274,9 @@
          <property name="text">
           <string>West</string>
          </property>
+         <attribute name="buttonGroup">
+          <string notr="true">preference_buttongroup</string>
+         </attribute>
         </widget>
        </item>
       </layout>
@@ -331,4 +337,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="preference_buttongroup"/>
+ </buttongroups>
 </ui>

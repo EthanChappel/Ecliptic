@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'schedulebrain.ui'
 #
-# Created: Tue Aug  8 22:32:42 2017
+# Created: Tue Aug  8 23:30:43 2017
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -116,9 +116,13 @@ class Ui_ScheduleBrainDialog(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.east_radiobutton = QtWidgets.QRadioButton(ScheduleBrainDialog)
         self.east_radiobutton.setObjectName("east_radiobutton")
+        self.preference_buttongroup = QtWidgets.QButtonGroup(ScheduleBrainDialog)
+        self.preference_buttongroup.setObjectName("preference_buttongroup")
+        self.preference_buttongroup.addButton(self.east_radiobutton)
         self.horizontalLayout.addWidget(self.east_radiobutton)
         self.west_radiobutton = QtWidgets.QRadioButton(ScheduleBrainDialog)
         self.west_radiobutton.setObjectName("west_radiobutton")
+        self.preference_buttongroup.addButton(self.west_radiobutton)
         self.horizontalLayout.addWidget(self.west_radiobutton)
         self.form_layout.setLayout(3, QtWidgets.QFormLayout.FieldRole, self.horizontalLayout)
         self.label = QtWidgets.QLabel(ScheduleBrainDialog)

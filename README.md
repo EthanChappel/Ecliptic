@@ -20,6 +20,7 @@ The goal of Solar System Sequencer is to allow someone to be absent from their e
 * __[opencv-python](https://pypi.python.org/pypi/opencv-python)__
 * __[zwoasi](https://pypi.python.org/pypi/zwoasi/)__
 * __[PyEphem](https://pypi.python.org/pypi/ephem/)__
+* __[Pandas](http://pandas.pydata.org/getpandas.html)__
 * __[ASCOM Platform 6](http://ascom-standards.org/Downloads/Index.htm)__
 
 ### Installing

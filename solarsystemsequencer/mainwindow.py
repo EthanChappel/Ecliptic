@@ -208,7 +208,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.savelocation_action.triggered.connect(self.change_camera_save_dir)
 
-        self.schedulebrain_button.clicked.connect(schedulebrain.ScheduleBrain)
+        self.schedulebrain_button.clicked.connect(lambda: schedulebrain.ScheduleBrain(self.schedule_dateedit.text()))
 
     def add_schedule_row(self):
         """Add row in schedule_table."""

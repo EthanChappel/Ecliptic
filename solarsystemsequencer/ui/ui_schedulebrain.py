@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'schedulebrain.ui'
 #
-# Created: Tue Aug  8 23:30:43 2017
+# Created: Wed Aug  9 20:51:40 2017
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ScheduleBrainDialog(object):
     def setupUi(self, ScheduleBrainDialog):
         ScheduleBrainDialog.setObjectName("ScheduleBrainDialog")
-        ScheduleBrainDialog.resize(317, 138)
+        ScheduleBrainDialog.resize(299, 138)
         self.gridLayout = QtWidgets.QGridLayout(ScheduleBrainDialog)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonbox = QtWidgets.QDialogButtonBox(ScheduleBrainDialog)
@@ -71,7 +71,8 @@ class Ui_ScheduleBrainDialog(object):
         self.time_layout = QtWidgets.QHBoxLayout()
         self.time_layout.setObjectName("time_layout")
         self.start_timeedit = QtWidgets.QTimeEdit(ScheduleBrainDialog)
-        self.start_timeedit.setMaximumTime(QtCore.QTime(23, 59, 58))
+        self.start_timeedit.setMaximumDateTime(QtCore.QDateTime(QtCore.QDate(2000, 1, 1), QtCore.QTime(23, 58, 0)))
+        self.start_timeedit.setMaximumTime(QtCore.QTime(23, 58, 0))
         self.start_timeedit.setTimeSpec(QtCore.Qt.LocalTime)
         self.start_timeedit.setTime(QtCore.QTime(0, 0, 0))
         self.start_timeedit.setObjectName("start_timeedit")
@@ -85,8 +86,10 @@ class Ui_ScheduleBrainDialog(object):
         self.time_to_label.setObjectName("time_to_label")
         self.time_layout.addWidget(self.time_to_label)
         self.end_timeedit = QtWidgets.QTimeEdit(ScheduleBrainDialog)
-        self.end_timeedit.setDateTime(QtCore.QDateTime(QtCore.QDate(2000, 1, 1), QtCore.QTime(23, 59, 59)))
-        self.end_timeedit.setMinimumTime(QtCore.QTime(0, 0, 1))
+        self.end_timeedit.setDateTime(QtCore.QDateTime(QtCore.QDate(2000, 1, 1), QtCore.QTime(23, 59, 0)))
+        self.end_timeedit.setMaximumDateTime(QtCore.QDateTime(QtCore.QDate(2000, 1, 1), QtCore.QTime(23, 59, 0)))
+        self.end_timeedit.setMinimumDateTime(QtCore.QDateTime(QtCore.QDate(2000, 1, 1), QtCore.QTime(0, 1, 0)))
+        self.end_timeedit.setMinimumTime(QtCore.QTime(0, 1, 0))
         self.end_timeedit.setTimeSpec(QtCore.Qt.LocalTime)
         self.end_timeedit.setObjectName("end_timeedit")
         self.time_layout.addWidget(self.end_timeedit)
@@ -159,9 +162,9 @@ class Ui_ScheduleBrainDialog(object):
         self.darkness_combobox.setItemText(2, _translate("ScheduleBrainDialog", "Nautical Twilight"))
         self.darkness_combobox.setItemText(3, _translate("ScheduleBrainDialog", "Civil Twilight"))
         self.time_label.setText(_translate("ScheduleBrainDialog", "Time"))
-        self.start_timeedit.setDisplayFormat(_translate("ScheduleBrainDialog", "hh:mm:ss"))
+        self.start_timeedit.setDisplayFormat(_translate("ScheduleBrainDialog", "hh:mm"))
         self.time_to_label.setText(_translate("ScheduleBrainDialog", "to"))
-        self.end_timeedit.setDisplayFormat(_translate("ScheduleBrainDialog", "hh:mm:ss"))
+        self.end_timeedit.setDisplayFormat(_translate("ScheduleBrainDialog", "hh:mm"))
         self.minelevation_spinbox.setSuffix(_translate("ScheduleBrainDialog", "°"))
         self.elevation_to_label.setText(_translate("ScheduleBrainDialog", "to"))
         self.maxelevation_spinbox.setSuffix(_translate("ScheduleBrainDialog", "°"))

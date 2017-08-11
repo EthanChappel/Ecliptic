@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'schedulebrain.ui'
 #
-# Created: Wed Aug  9 20:51:40 2017
-#      by: PyQt5 UI code generator 5.2.1
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ScheduleBrainDialog(object):
     def setupUi(self, ScheduleBrainDialog):
         ScheduleBrainDialog.setObjectName("ScheduleBrainDialog")
-        ScheduleBrainDialog.resize(299, 138)
+        ScheduleBrainDialog.resize(426, 158)
         self.gridLayout = QtWidgets.QGridLayout(ScheduleBrainDialog)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonbox = QtWidgets.QDialogButtonBox(ScheduleBrainDialog)
@@ -58,13 +57,6 @@ class Ui_ScheduleBrainDialog(object):
         self.darkness_label = QtWidgets.QLabel(ScheduleBrainDialog)
         self.darkness_label.setObjectName("darkness_label")
         self.form_layout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.darkness_label)
-        self.darkness_combobox = QtWidgets.QComboBox(ScheduleBrainDialog)
-        self.darkness_combobox.setObjectName("darkness_combobox")
-        self.darkness_combobox.addItem("")
-        self.darkness_combobox.addItem("")
-        self.darkness_combobox.addItem("")
-        self.darkness_combobox.addItem("")
-        self.form_layout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.darkness_combobox)
         self.time_label = QtWidgets.QLabel(ScheduleBrainDialog)
         self.time_label.setObjectName("time_label")
         self.form_layout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.time_label)
@@ -134,6 +126,12 @@ class Ui_ScheduleBrainDialog(object):
         self.elevation_label = QtWidgets.QLabel(ScheduleBrainDialog)
         self.elevation_label.setObjectName("elevation_label")
         self.form_layout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.elevation_label)
+        self.sunelevation_spinbox = QtWidgets.QSpinBox(ScheduleBrainDialog)
+        self.sunelevation_spinbox.setMinimum(-90)
+        self.sunelevation_spinbox.setMaximum(90)
+        self.sunelevation_spinbox.setProperty("value", -18)
+        self.sunelevation_spinbox.setObjectName("sunelevation_spinbox")
+        self.form_layout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.sunelevation_spinbox)
         self.gridLayout.addLayout(self.form_layout, 1, 1, 1, 1)
         self.plot_layout = QtWidgets.QHBoxLayout()
         self.plot_layout.setObjectName("plot_layout")
@@ -155,13 +153,8 @@ class Ui_ScheduleBrainDialog(object):
         self.mars_checkbox.setText(_translate("ScheduleBrainDialog", "Mars"))
         self.neptune_checkbox.setText(_translate("ScheduleBrainDialog", "Neptune"))
         self.jupiter_checkbox.setText(_translate("ScheduleBrainDialog", "Jupiter"))
-        self.darkness_label.setText(_translate("ScheduleBrainDialog", "Darkness"))
-        self.darkness_combobox.setToolTip(_translate("ScheduleBrainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Night<br/></span>Sun &gt;18° below horizon</p><p><span style=\" font-weight:600;\">Astronomical Twilight<br/></span>Sun &gt;12° below horizon</p><p><span style=\" font-weight:600;\">Nautical Twilight<br/></span>Sun &gt;6° below horizon</p><p><span style=\" font-weight:600;\">Civil Twilight<br/></span>Sun &gt;0° below horizon</p></body></html>"))
-        self.darkness_combobox.setItemText(0, _translate("ScheduleBrainDialog", "Night"))
-        self.darkness_combobox.setItemText(1, _translate("ScheduleBrainDialog", "Astronomical Twilight"))
-        self.darkness_combobox.setItemText(2, _translate("ScheduleBrainDialog", "Nautical Twilight"))
-        self.darkness_combobox.setItemText(3, _translate("ScheduleBrainDialog", "Civil Twilight"))
-        self.time_label.setText(_translate("ScheduleBrainDialog", "Time"))
+        self.darkness_label.setText(_translate("ScheduleBrainDialog", "Maximum Sun Elevation"))
+        self.time_label.setText(_translate("ScheduleBrainDialog", "Time Range"))
         self.start_timeedit.setDisplayFormat(_translate("ScheduleBrainDialog", "hh:mm"))
         self.time_to_label.setText(_translate("ScheduleBrainDialog", "to"))
         self.end_timeedit.setDisplayFormat(_translate("ScheduleBrainDialog", "hh:mm"))
@@ -170,6 +163,8 @@ class Ui_ScheduleBrainDialog(object):
         self.maxelevation_spinbox.setSuffix(_translate("ScheduleBrainDialog", "°"))
         self.east_radiobutton.setText(_translate("ScheduleBrainDialog", "East"))
         self.west_radiobutton.setText(_translate("ScheduleBrainDialog", "West"))
-        self.label.setText(_translate("ScheduleBrainDialog", "Preference"))
-        self.elevation_label.setText(_translate("ScheduleBrainDialog", "Elevation"))
+        self.label.setText(_translate("ScheduleBrainDialog", "Directional Preference"))
+        self.elevation_label.setText(_translate("ScheduleBrainDialog", "Elevation Range"))
+        self.sunelevation_spinbox.setToolTip(_translate("ScheduleBrainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Night<br/></span>Sun &gt; 18° below horizon</p><p><span style=\" font-weight:600;\">Astronomical Twilight<br/></span>Sun &gt; 12° below horizon</p><p><span style=\" font-weight:600;\">Nautical Twilight<br/></span>Sun &gt; 6° below horizon</p><p><span style=\" font-weight:600;\">Civil Twilight<br/></span>Sun &gt; 0° below horizon</p></body></html>"))
+        self.sunelevation_spinbox.setSuffix(_translate("ScheduleBrainDialog", "°"))
 

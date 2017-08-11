@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>299</width>
-    <height>138</height>
+    <width>426</width>
+    <height>158</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,41 +108,14 @@
      <item row="0" column="0">
       <widget class="QLabel" name="darkness_label">
        <property name="text">
-        <string>Darkness</string>
+        <string>Maximum Sun Elevation</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="darkness_combobox">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Night&lt;br/&gt;&lt;/span&gt;Sun &amp;gt;18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Astronomical Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt;12° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nautical Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt;6° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Civil Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt;0° below horizon&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>Night</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Astronomical Twilight</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Nautical Twilight</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Civil Twilight</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="time_label">
        <property name="text">
-        <string>Time</string>
+        <string>Time Range</string>
        </property>
       </widget>
      </item>
@@ -314,14 +287,33 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Preference</string>
+        <string>Directional Preference</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="elevation_label">
        <property name="text">
-        <string>Elevation</string>
+        <string>Elevation Range</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="sunelevation_spinbox">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Night&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Astronomical Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 12° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nautical Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 6° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Civil Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 0° below horizon&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="suffix">
+        <string>°</string>
+       </property>
+       <property name="minimum">
+        <number>-90</number>
+       </property>
+       <property name="maximum">
+        <number>90</number>
+       </property>
+       <property name="value">
+        <number>-18</number>
        </property>
       </widget>
      </item>

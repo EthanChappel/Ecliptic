@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>426</width>
+    <width>472</width>
     <height>158</height>
    </rect>
   </property>
@@ -144,10 +144,13 @@
       <layout class="QHBoxLayout" name="time_layout">
        <item>
         <widget class="QTimeEdit" name="start_timeedit">
+         <property name="toolTip">
+          <string>Start time</string>
+         </property>
          <property name="maximumDateTime">
           <datetime>
            <hour>23</hour>
-           <minute>58</minute>
+           <minute>59</minute>
            <second>0</second>
            <year>2000</year>
            <month>1</month>
@@ -157,15 +160,12 @@
          <property name="maximumTime">
           <time>
            <hour>23</hour>
-           <minute>58</minute>
+           <minute>59</minute>
            <second>0</second>
           </time>
          </property>
          <property name="displayFormat">
-          <string>hh:mm</string>
-         </property>
-         <property name="timeSpec">
-          <enum>Qt::LocalTime</enum>
+          <string>hh:mm UTC</string>
          </property>
          <property name="time">
           <time>
@@ -191,6 +191,9 @@
        </item>
        <item>
         <widget class="QTimeEdit" name="end_timeedit">
+         <property name="toolTip">
+          <string>End time</string>
+         </property>
          <property name="dateTime">
           <datetime>
            <hour>23</hour>
@@ -214,7 +217,7 @@
          <property name="minimumDateTime">
           <datetime>
            <hour>0</hour>
-           <minute>1</minute>
+           <minute>0</minute>
            <second>0</second>
            <year>2000</year>
            <month>1</month>
@@ -224,12 +227,12 @@
          <property name="minimumTime">
           <time>
            <hour>0</hour>
-           <minute>1</minute>
+           <minute>0</minute>
            <second>0</second>
           </time>
          </property>
          <property name="displayFormat">
-          <string>hh:mm</string>
+          <string>hh:mm UTC</string>
          </property>
          <property name="timeSpec">
           <enum>Qt::LocalTime</enum>
@@ -242,6 +245,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QSpinBox" name="minelevation_spinbox">
+         <property name="toolTip">
+          <string>Minimum elevation of targets</string>
+         </property>
          <property name="suffix">
           <string>°</string>
          </property>
@@ -265,6 +271,9 @@
        </item>
        <item>
         <widget class="QSpinBox" name="maxelevation_spinbox">
+         <property name="toolTip">
+          <string>Maximum elevation of targets</string>
+         </property>
          <property name="suffix">
           <string>°</string>
          </property>
@@ -285,6 +294,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QRadioButton" name="east_radiobutton">
+         <property name="toolTip">
+          <string>Prefer object to be on the eastern side of the sky</string>
+         </property>
          <property name="text">
           <string>East</string>
          </property>
@@ -295,6 +307,9 @@
        </item>
        <item>
         <widget class="QRadioButton" name="west_radiobutton">
+         <property name="toolTip">
+          <string>Prefer object to be on the western side of the sky</string>
+         </property>
          <property name="text">
           <string>West</string>
          </property>
@@ -322,7 +337,7 @@
      <item row="0" column="1">
       <widget class="QSpinBox" name="sunelevation_spinbox">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Night&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Astronomical Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 12° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nautical Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 6° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Civil Twilight&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 0° below horizon&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Night&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Astronomical Twilight&lt;br/&gt;&lt;/span&gt;Sun 12°-18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nautical Twilight&lt;br/&gt;&lt;/span&gt;Sun 6°-12° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Civil Twilight&lt;br/&gt;&lt;/span&gt;Sun 0°-6° below horizon&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="suffix">
         <string>°</string>
@@ -381,11 +396,11 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="preference_buttongroup"/>
   <buttongroup name="targets_buttongroup">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
+  <buttongroup name="preference_buttongroup"/>
  </buttongroups>
 </ui>

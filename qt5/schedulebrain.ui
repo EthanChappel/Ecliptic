@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>159</height>
+    <width>386</width>
+    <height>214</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,36 +43,10 @@
         </attribute>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="saturn_checkbox">
-        <property name="text">
-         <string>Saturn</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">targets_buttongroup</string>
-        </attribute>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="venus_checkbox">
         <property name="text">
          <string>Venus</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">targets_buttongroup</string>
-        </attribute>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="uranus_checkbox">
-        <property name="text">
-         <string>Uranus</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -95,10 +69,10 @@
         </attribute>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="neptune_checkbox">
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="jupiter_checkbox">
         <property name="text">
-         <string>Neptune</string>
+         <string>Jupiter</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -108,10 +82,36 @@
         </attribute>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="jupiter_checkbox">
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="saturn_checkbox">
         <property name="text">
-         <string>Jupiter</string>
+         <string>Saturn</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">targets_buttongroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="uranus_checkbox">
+        <property name="text">
+         <string>Uranus</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">targets_buttongroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QCheckBox" name="neptune_checkbox">
+        <property name="text">
+         <string>Neptune</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -126,21 +126,43 @@
    </item>
    <item row="1" column="1">
     <layout class="QFormLayout" name="form_layout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="darkness_label">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Maximum Sun Elevation</string>
+        <string>Direction</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="time_label">
+     <item row="3" column="1">
+      <widget class="QComboBox" name="directional_combobox">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>East</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Both</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>West</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="targetpreference_label">
        <property name="text">
-        <string>Time Range</string>
+        <string>Target Preference</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="0" column="1">
       <layout class="QHBoxLayout" name="time_layout">
        <item>
         <widget class="QTimeEdit" name="start_timeedit">
@@ -241,8 +263,8 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="elevationrange_layout">
        <item>
         <widget class="QSpinBox" name="minelevation_spinbox">
          <property name="toolTip">
@@ -253,6 +275,9 @@
          </property>
          <property name="maximum">
           <number>89</number>
+         </property>
+         <property name="value">
+          <number>12</number>
          </property>
         </widget>
        </item>
@@ -290,21 +315,7 @@
        </item>
       </layout>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Directional Preference</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="elevation_label">
-       <property name="text">
-        <string>Elevation Range</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
+     <item row="2" column="1">
       <widget class="QSpinBox" name="sunelevation_spinbox">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Night&lt;br/&gt;&lt;/span&gt;Sun &amp;gt; 18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Astronomical Twilight&lt;br/&gt;&lt;/span&gt;Sun 12°-18° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nautical Twilight&lt;br/&gt;&lt;/span&gt;Sun 6°-12° below horizon&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Civil Twilight&lt;br/&gt;&lt;/span&gt;Sun 0°-6° below horizon&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -323,24 +334,37 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="directional_combobox">
-       <property name="currentIndex">
-        <number>1</number>
+     <item row="0" column="0">
+      <widget class="QLabel" name="time_label">
+       <property name="text">
+        <string>Time Range</string>
        </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="elevation_label">
+       <property name="text">
+        <string>Elevation Range</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="darkness_label">
+       <property name="text">
+        <string>Max Sun Elevation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="targetpreference_combobox">
        <item>
         <property name="text">
-         <string>East</string>
+         <string>Prefer less for longer</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Both</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>West</string>
+         <string>Prefer highest</string>
         </property>
        </item>
       </widget>
@@ -352,7 +376,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonbox</sender>

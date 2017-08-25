@@ -208,7 +208,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.savelocation_action.triggered.connect(self.change_camera_save_dir)
 
-        self.schedulebrain_button.clicked.connect(lambda: schedulebrain.ScheduleBrain(self.schedule_dateedit.text()))
+        self.schedulebrain_button.clicked.connect(self.generate_schedule)
 
     def add_schedule_row(self):
         """Add row in schedule_table."""
@@ -328,6 +328,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.schedule_table.cellWidget(count, 4).blockSignals(False)
                 self.schedule_table.cellWidget(count, 5).blockSignals(False)
                 count += 1
+
+    def generate_schedule(self):
+        schedulebrain.ScheduleBrain(self.schedule_dateedit.text())
+        self.load_schedule(self.schedule_dateedit.text())
 
     def add_filter_row(self):
         """Add row in filter_table."""

@@ -1,5 +1,6 @@
 import math
 import datetime
+import json
 from typing import List
 from PyQt5 import QtCore, QtWidgets
 import pandas as pd
@@ -68,13 +69,15 @@ class ScheduleBrain(QtWidgets.QDialog, ui_schedulebrain.Ui_ScheduleBrainDialog):
                         target = no_target_action
             # Add to final if it wasn't previously added
             if target != prev:
-                print(l, target)
                 final[l] = target
                 prev = target
         date = [int(i) for i in self.date.split("/")]
         time = [int(i) for i in end_time.split(":")]
         final[datetime.datetime(date[0], date[1], date[2], time[0], time[1])] = end_action
-        # TODO: Save to schedule.json and reload it
+        appglobals.schedule[self.date] = [{"Target": final.get(t), "Time": str(t.time()), "Filter": "", "Exposure": "0",
+                                           "Gain": "0", "Integration": "0"} for t in final]
+        with open("schedule.json", "w") as f:
+            json.dump(appglobals.schedule, f, indent=4)
 
     def ok(self):
         self.generate_schedule(targets=[t.text() for t in self.targets_buttongroup.buttons() if t.isChecked()],

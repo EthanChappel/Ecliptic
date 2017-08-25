@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>386</width>
-    <height>214</height>
+    <width>308</width>
+    <height>244</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,14 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="2">
+   <item row="1" column="0" rowspan="2" alignment="Qt::AlignTop">
     <widget class="QGroupBox" name="targets_groupbox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Targets</string>
      </property>
@@ -126,14 +132,14 @@
    </item>
    <item row="1" column="1">
     <layout class="QFormLayout" name="form_layout">
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
+     <item row="4" column="0">
+      <widget class="QLabel" name="direction_label">
        <property name="text">
         <string>Direction</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QComboBox" name="directional_combobox">
        <property name="currentIndex">
         <number>1</number>
@@ -155,7 +161,7 @@
        </item>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="targetpreference_label">
        <property name="text">
         <string>Target Preference</string>
@@ -355,11 +361,11 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QComboBox" name="targetpreference_combobox">
        <item>
         <property name="text">
-         <string>Prefer less for longer</string>
+         <string>Less for longer</string>
         </property>
        </item>
        <item>
@@ -367,6 +373,80 @@
          <string>Prefer highest</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="notarget_label">
+       <property name="text">
+        <string>No Target Action</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="notarget_combobox">
+       <property name="toolTip">
+        <string>Action to perform if no targets are available</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>Stop</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Home</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="endaction_label">
+       <property name="text">
+        <string>End Action</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QComboBox" name="endaction_combobox">
+       <property name="toolTip">
+        <string>Action to perform if no targets are available</string>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>Stop</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Home</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="interval_label">
+       <property name="text">
+        <string>Interval</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="interval_spinbox">
+       <property name="toolTip">
+        <string>Time intervals at which to calculate between start and end times</string>
+       </property>
+       <property name="suffix">
+        <string> Minutes</string>
+       </property>
+       <property name="minimum">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <number>60</number>
+       </property>
       </widget>
      </item>
     </layout>

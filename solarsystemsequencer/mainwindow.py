@@ -269,8 +269,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def save_schedule(self):
         """Save contents of schedule_table into schedule.json."""
-        if os.path.exists("schedule.json"):
-            os.remove("schedule.json")
         schedule_list = []
         for row in range(self.schedule_table.rowCount()):
             schedule_dict = {}
@@ -287,7 +285,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             schedule_list.append(schedule_dict)
             appglobals.schedule.update({self.schedule_dateedit.text(): schedule_list})
         print(sys._getframe(1).f_code.co_name)
-        with open("schedule.json", "a") as f:
+        with open("schedule.json", "w") as f:
             json.dump(appglobals.schedule, f, indent=4)
 
     def load_schedule(self, date: str):

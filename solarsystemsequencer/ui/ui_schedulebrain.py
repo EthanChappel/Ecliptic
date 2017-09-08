@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ScheduleBrainDialog(object):
     def setupUi(self, ScheduleBrainDialog):
         ScheduleBrainDialog.setObjectName("ScheduleBrainDialog")
-        ScheduleBrainDialog.resize(308, 244)
+        ScheduleBrainDialog.resize(386, 263)
         self.gridLayout = QtWidgets.QGridLayout(ScheduleBrainDialog)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonbox = QtWidgets.QDialogButtonBox(ScheduleBrainDialog)

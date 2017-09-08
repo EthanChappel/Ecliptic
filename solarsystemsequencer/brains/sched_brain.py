@@ -38,12 +38,17 @@ def generate(targets: List[str], date: str, start_time: str, end_time: str, max_
         compute = ComputeTargets(l, appglobals.location["Latitude"], appglobals.location["Longitude"])
         target = None
         if target_pref == "Less for longer":
-            lowest = max_ele
+            # TODO: Double check to make sure this always works in southern hemisphere and equatorial regions
+            eastest = 359
             for t in schedule.get(l):
-                if min_ele < compute.object_alt(t)["alt"] * 180 / math.pi < lowest:
-                    pass
-                    '''target = t
-                    lowest = compute.object_alt(t)["alt"] * 180 / math.pi'''
+                if prev in schedule.get(l):
+                    target = prev
+                elif compute.object_alt(t)["az"] * 180 / math.pi < eastest:
+                    target = t
+                    eastest = compute.object_alt(t)["az"] * 180 / math.pi
+            else:
+                if target is None:
+                    target = no_target_action
         elif target_pref == "Prefer highest":
             highest = min_ele
             for t in schedule.get(l):
@@ -55,6 +60,7 @@ def generate(targets: List[str], date: str, start_time: str, end_time: str, max_
                     target = no_target_action
         # Add to final if it wasn't previously added
         if target != prev:
+            print(l, target, compute.object_alt(t)["az"] * 180 / math.pi)
             final[l] = target
             prev = target
     date_list = [int(i) for i in date.split("/")]
@@ -62,5 +68,9 @@ def generate(targets: List[str], date: str, start_time: str, end_time: str, max_
     final[datetime.datetime(date_list[0], date_list[1], date_list[2], time_list[0], time_list[1])] = end_action
     appglobals.schedule[date] = [{"Target": final.get(t), "Time": str(t.time()), "Filter": "", "Exposure": "0",
                                   "Gain": "0", "Integration": "0"} for t in final]
+    save()
+
+
+def save():
     with open("schedule.json", "w") as f:
         json.dump(appglobals.schedule, f, indent=4)

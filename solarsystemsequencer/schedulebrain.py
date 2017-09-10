@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from ui import ui_schedulebrain
 from brains import sched_brain
+import targetfilters
 
 
 class ScheduleBrain(QtWidgets.QDialog, ui_schedulebrain.Ui_ScheduleBrainDialog):
@@ -11,6 +12,10 @@ class ScheduleBrain(QtWidgets.QDialog, ui_schedulebrain.Ui_ScheduleBrainDialog):
         self.setFixedSize(self.size())
         self.buttonbox.accepted.connect(self.ok)
         self.date = date
+
+        for b in self.filters_buttongroup.buttons():
+            b.clicked.connect(lambda: targetfilters.TargetFilters())
+
         self.exec_()
 
     def ok(self):

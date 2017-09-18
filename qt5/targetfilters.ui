@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string/>
+   <string>Solar System Sequencer - Filter Presets</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,8 +26,8 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QTableWidget" name="filter_tablewidget">
+   <item row="0" column="0">
+    <widget class="QTableWidget" name="filters_table">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -56,7 +56,7 @@
      </column>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="buttonbox_layout">
      <property name="leftMargin">
       <number>9</number>
@@ -67,6 +67,16 @@
      <property name="bottomMargin">
       <number>9</number>
      </property>
+     <item>
+      <widget class="QLabel" name="targets_label">
+       <property name="text">
+        <string>Target</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="targets_combobox"/>
+     </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonbox">
        <property name="orientation">

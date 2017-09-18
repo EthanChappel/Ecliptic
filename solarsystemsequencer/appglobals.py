@@ -56,3 +56,15 @@ except json.decoder.JSONDecodeError:
     messagebox.setIcon(QtWidgets.QMessageBox.Information)
     messagebox.exec_()
     schedule = {}
+
+try:
+    with open("presets.json", "r") as f:
+            presets = json.load(f)
+except FileNotFoundError:
+    presets = {}
+except json.decoder.JSONDecodeError:
+    messagebox = QtWidgets.QMessageBox()
+    messagebox.setText("The filter presets data seems to be broken.")
+    messagebox.setIcon(QtWidgets.QMessageBox.Information)
+    messagebox.exec_()
+    presets = {}

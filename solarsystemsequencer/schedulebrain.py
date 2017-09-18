@@ -13,8 +13,14 @@ class ScheduleBrain(QtWidgets.QDialog, ui_schedulebrain.Ui_ScheduleBrainDialog):
         self.buttonbox.accepted.connect(self.ok)
         self.date = date
 
-        for b in self.filters_buttongroup.buttons():
-            b.clicked.connect(lambda: targetfilters.TargetFilters())
+        # TODO: Iterate with loop
+        self.mercuryfilters_button.clicked.connect(lambda: targetfilters.TargetFilters(0))
+        self.venusfilters_button.clicked.connect(lambda: targetfilters.TargetFilters(1))
+        self.marsfilters_button.clicked.connect(lambda: targetfilters.TargetFilters(2))
+        self.jupiterfilters_button.clicked.connect(lambda: targetfilters.TargetFilters(3))
+        self.saturnfilters_button.clicked.connect(lambda: targetfilters.TargetFilters(4))
+        self.uranusfilters_button.clicked.connect(lambda: targetfilters.TargetFilters(5))
+        self.neptunefilters_button.clicked.connect(lambda: targetfilters.TargetFilters(6))
 
         self.exec_()
 

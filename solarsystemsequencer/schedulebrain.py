@@ -27,7 +27,7 @@ class ScheduleBrain(QtWidgets.QDialog, ui_schedulebrain.Ui_ScheduleBrainDialog):
     def ok(self):
         sched_brain.generate(targets=[t.text() for t in self.targets_buttongroup.buttons() if t.isChecked()],
                              date=self.date,
-                             start_time=self.start_timeedit.text(),
+                             start_time=self.start_timeedit.time().toString(),
                              end_time=self.end_timeedit.time().toString(),
                              max_sun_ele=self.sunelevation_spinbox.value(),
                              min_ele=self.minelevation_spinbox.value(),

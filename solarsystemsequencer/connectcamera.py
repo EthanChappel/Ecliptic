@@ -8,37 +8,49 @@ import appglobals
 class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
     def __init__(self):
         super(ConnectCamera, self).__init__()
+        self.asi_selected = False
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
         self.setFixedSize(self.size())
         self.accepted = False
         self.asi_camera = None
-        self.buttonbox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(False)
-        self.buttonbox.accepted.connect(self.ok)
+        self.back_button = self.buttonbox.addButton("Back", QtWidgets.QDialogButtonBox.ResetRole)
+        self.back_button.clicked.connect(self.back)
+        self.back_button.setVisible(False)
         self.buttonbox.rejected.connect(self.cancel)
-        self.ascom_radio.clicked.connect(lambda: self.buttonbox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True))
-        self.asi_radio.clicked.connect(lambda: self.buttonbox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(True))
-        self.refresh_asilist()
-        self.asi_sync_button.clicked.connect(self.refresh_asilist)
+        self.ascom_commandlink.clicked.connect(self.connect_ascom)
+        self.asi_commandlink.clicked.connect(self.select_asi)
+        self.asi_connect_button.clicked.connect(self.connect_asi)
+        self.refresh_asi_list()
 
-    def refresh_asilist(self):
+    def refresh_asi_list(self):
         self.asi_combobox.clear()
         list_cam = asi.list_cameras()
         self.asi_combobox.addItems(list_cam)
         if len(list_cam) == 0:
-            self.asi_combobox.setDisabled(True)
-            self.asi_radio.setDisabled(True)
-            self.asi_label.setDisabled(True)
-            self.asi_radio.setChecked(False)
+            self.asi_commandlink.setDisabled(True)
+            self.stackedWidget.setCurrentIndex(0)
         else:
-            self.asi_combobox.setEnabled(True)
-            self.asi_radio.setEnabled(True)
-            self.asi_label.setEnabled(True)
+            self.asi_commandlink.setEnabled(True)
 
-    def ok(self):
+    def select_asi(self):
+        self.stackedWidget.setCurrentIndex(1)
+        self.back_button.setVisible(True)
+        self.back_button.setEnabled(True)
+
+    def connect_asi(self):
         self.accepted = True
         self.asi_camera = self.asi_combobox.currentText()
+        self.asi_selected = True
+        self.accept()
+
+    def connect_ascom(self):
+        self.accepted = True
         self.accept()
 
     def cancel(self):
         self.close()
+
+    def back(self):
+        self.stackedWidget.setCurrentIndex(0)
+        self.back_button.setDisabled(True)

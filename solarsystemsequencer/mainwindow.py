@@ -563,7 +563,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             guider_dialog.exec_()
             name = "The guider"
             try:
-                if guider_dialog.ascom_radio.isChecked() and guider_dialog.accepted:
+                if not guider_dialog.asi_selected and guider_dialog.accepted:
                     appglobals.guider = ascom.Camera()
                     values = self.camera_settings(appglobals.guider)
                     name = appglobals.guider.name_()
@@ -572,7 +572,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     if self.isHidden():
                         self.tray_icon.showMessage("Guider Connected", "{} has been connected.".format(name),
                                                    QtWidgets.QSystemTrayIcon.Information)
-                elif guider_dialog.asi_radio.isChecked() and guider_dialog.accepted:
+                elif guider_dialog.asi_selected and guider_dialog.accepted:
                     appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
                     values = self.camera_settings(appglobals.guider)
                     self.guider_settings_frame.set_camera(appglobals.guider)
@@ -683,7 +683,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             camera_dialog = connectcamera.ConnectCamera()
             camera_dialog.exec_()
             try:
-                if camera_dialog.ascom_radio.isChecked() and camera_dialog.accepted:
+                if not camera_dialog.asi_selected and camera_dialog.accepted:
                     appglobals.camera = ascom.Camera()
                     values = self.camera_settings(appglobals.camera)
                     name = appglobals.camera.name_()
@@ -692,7 +692,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     if self.isHidden():
                         self.tray_icon.showMessage("Camera Connected", "{} has been connected.".format(name),
                                                    QtWidgets.QSystemTrayIcon.Information)
-                elif camera_dialog.asi_radio.isChecked() and camera_dialog.accepted:
+                elif camera_dialog.asi_selected and camera_dialog.accepted:
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
                     values = self.camera_settings(appglobals.camera)
                     self.camera_settings_frame.set_camera(appglobals.camera)

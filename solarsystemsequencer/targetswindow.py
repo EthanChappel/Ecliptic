@@ -1,4 +1,5 @@
-from typing import Dict, Tuple, Optional, List
+from datetime import timedelta
+from typing import List
 import ephem
 import numpy as np
 from scipy.interpolate import spline
@@ -8,6 +9,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from cycler import cycler
 from ui.ui_targetswindow import Ui_Dialog
 import computetargets
+from conversions import time
 import appglobals
 
 
@@ -51,19 +53,24 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         """Set graph date to current date."""
         self.schedule_dateedit.setDateTime(QtCore.QDateTime.currentDateTime())
 
-    def generate(self, latitude: List[int], longitude: List[int]):
+    def generate(self, latitude: List[int]=None, longitude: List[int]=None):
         """Generate graph whenever date is changed."""
+        if latitude is None:
+            latitude = appglobals.location["Latitude"]
+        if longitude is None:
+            longitude = appglobals.location["Longitude"]
+        dtime = self.schedule_dateedit.dateTime().toPyDateTime()
+        dtime = dtime.replace(hour=0, minute=0, second=0, microsecond=0)
         self.sched_plot.lines = []
         self.sched_plot.patches = []
         for t in appglobals.targets_tuple:
             alt_list = []
             hour_list = []
             for h in range(-1, 26):
-                timestr = (str(self.schedule_dateedit.text()) + " " + str(h) + ":00:00")
-                alt = self.compute_target(t, timestr, latitude, longitude)
+                time_h = dtime + timedelta(hours=h)
+                alt = computetargets.get_alt(t, time_h, latitude, longitude)
 
-                alt_split = str(ephem.degrees(alt["alt"]))
-                alt_split = alt_split.split(":")
+                alt_split = str(ephem.degrees(alt)).split(":")
                 alt_decimal = int(alt_split[0]) + (int(alt_split[1]) / 60) + (float(alt_split[2]) / 3600)
                 alt_list.append(alt_decimal)
                 hour_list.append(h)
@@ -72,32 +79,48 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             x_smooth = np.linspace(hour_array.min(), alt_array.max(), 250)
             y_smooth = spline(hour_array, alt_array, x_smooth)
             self.sched_plot.plot(x_smooth, y_smooth, gid=t)
-        twilight = self.compute_twilight(latitude, longitude)
 
+        day_sun_rise = computetargets.previous_rise("Sun", dtime, 0, latitude, longitude)
+        day_sun_set = computetargets.next_set("Sun", dtime, 0, latitude, longitude)
         try:
-            sun_rise = twilight[0][3] + (twilight[0][4] / 60) + (twilight[0][5] / 3600)
-            sun_set = twilight[4][3] + (twilight[4][4] / 60) + (twilight[4][5] / 3600)
-        except TypeError:
+            rise_time = day_sun_rise.datetime()
+            set_time = day_sun_set.datetime()
+            sun_rise = time.get_decimal(rise_time.hour, rise_time.minute, rise_time.second)
+            sun_set = time.get_decimal(set_time.hour, set_time.minute, set_time.second)
+        except AttributeError:
             sun_rise = None
             sun_set = None
 
+        civil_sun_rise = computetargets.previous_rise("Sun", dtime, -6, latitude, longitude)
+        civil_sun_set = computetargets.next_set("Sun", dtime, -6, latitude, longitude)
         try:
-            civil_rise = twilight[1][3]+(twilight[1][4]/60)+(twilight[1][5]/3600)
-            civil_set = twilight[5][3] + (twilight[5][4] / 60) + (twilight[5][5] / 3600)
-        except TypeError:
+            rise_time = civil_sun_rise.datetime()
+            set_time = civil_sun_set.datetime()
+            civil_rise = time.get_decimal(rise_time.hour, rise_time.minute, rise_time.second)
+            civil_set = time.get_decimal(set_time.hour, set_time.minute, set_time.second)
+        except AttributeError:
             civil_rise = None
             civil_set = None
+
+        nautical_sun_rise = computetargets.previous_rise("Sun", dtime, -12, latitude, longitude)
+        nautical_sun_set = computetargets.next_set("Sun", dtime, -12, latitude, longitude)
         try:
-            nautical_rise = twilight[2][3] + (twilight[2][4] / 60) + (twilight[2][5] / 3600)
-            nautical_set = twilight[6][3] + (twilight[6][4] / 60) + (twilight[6][5] / 3600)
-        except TypeError:
+            rise_time = nautical_sun_rise.datetime()
+            nautical_rise = time.get_decimal(rise_time.hour, rise_time.minute, rise_time.second)
+            set_time = nautical_sun_set.datetime()
+            nautical_set = time.get_decimal(set_time.hour, set_time.minute, set_time.second)
+        except AttributeError:
             nautical_rise = None
             nautical_set = None
 
+        astronomical_sun_rise = computetargets.previous_rise("Sun", dtime, -18, latitude, longitude)
+        astronomical_sun_set = computetargets.next_set("Sun", dtime, -18, latitude, longitude)
         try:
-            astronomical_rise = twilight[3][3] + (twilight[3][4] / 60) + (twilight[3][5] / 3600)
-            astronomical_set = twilight[7][3] + (twilight[7][4] / 60) + (twilight[7][5] / 3600)
-        except TypeError:
+            rise_time = astronomical_sun_rise.datetime()
+            astronomical_rise = time.get_decimal(rise_time.hour, rise_time.minute, rise_time.second)
+            set_time = astronomical_sun_set.datetime()
+            astronomical_set = time.get_decimal(set_time.hour, set_time.minute, set_time.second)
+        except AttributeError:
             astronomical_rise = None
             astronomical_set = None
 
@@ -106,19 +129,15 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
             if astronomical_rise > nautical_rise:
                 self.sched_plot.axvspan(astronomical_rise - 24, nautical_rise, color="blue", alpha=0.15)
                 self.sched_plot.axvspan(astronomical_rise, nautical_rise + 24, color="blue", alpha=0.15)
-                print(astronomical_rise, astronomical_set, twilight[11])
             else:
                 self.sched_plot.axvspan(astronomical_rise - 24, nautical_rise - 24, color="blue", alpha=0.15)
                 self.sched_plot.axvspan(astronomical_rise, nautical_rise, color="blue", alpha=0.15)
-                print(astronomical_rise, astronomical_set, twilight[11])
         except TypeError:
             try:
                 self.sched_plot.axvspan(astronomical_rise - 24, astronomical_set - 24, color="blue", alpha=0.15)
                 self.sched_plot.axvspan(astronomical_rise, astronomical_set, color="blue", alpha=0.15)
-                print(astronomical_rise, astronomical_set, twilight[11])
             except TypeError:
                 pass
-        print(astronomical_rise, astronomical_set, twilight[11])
 
         try:
             if civil_rise < nautical_rise:
@@ -156,7 +175,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 self.sched_plot.axvspan(sun_rise, sun_set, color="yellow", alpha=0.25)
                 self.sched_plot.axvspan(sun_rise - 24, sun_set-24, color="yellow", alpha=0.25)
         except TypeError:
-            if "above" in str(twilight[8]):
+            if isinstance(day_sun_rise, ephem.AlwaysUpError) and isinstance(day_sun_set, ephem.AlwaysUpError):
                 self.sched_plot.axvspan(0, 24, color="yellow", alpha=0.25)
 
         try:
@@ -202,22 +221,6 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
                 pass
 
         self.canvas.draw()
-
-    @staticmethod
-    def compute_target(target: str, time: str, latitude: List[int], longitude: List[int]) -> Dict[str, ephem.Angle]:
-        compute_alt = computetargets.ComputeTargets(time, latitude, longitude)
-        alt = compute_alt.object_alt(target)
-        return alt
-
-    def compute_twilight(self, latitude: List[int], longitude: List[int]) -> Tuple[
-                                                                 Optional[int], Optional[int], Optional[int],
-                                                                 Optional[int], Optional[int], Optional[int],
-                                                                 Optional[int], Optional[int], Optional[int],
-                                                                 Optional[int], Optional[int], Optional[int]]:
-        time = str(self.schedule_dateedit.text()) + " 12:00"
-        twi = computetargets.ComputeTargets(time, latitude, longitude)
-        alt = twi.twilight()
-        return alt
 
     def on_plot_hover(self, event):
         """Show QToolTip when line is hovered over in graph."""

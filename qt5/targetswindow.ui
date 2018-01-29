@@ -94,6 +94,13 @@
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
+       <property name="maximumTime">
+        <time>
+         <hour>0</hour>
+         <minute>0</minute>
+         <second>0</second>
+        </time>
+       </property>
        <property name="currentSection">
         <enum>QDateTimeEdit::DaySection</enum>
        </property>

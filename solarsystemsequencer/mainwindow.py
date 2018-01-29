@@ -2,6 +2,7 @@
 import os
 import sys
 import threading
+from datetime import datetime
 from typing import List, Dict
 import cv2
 import ephem
@@ -14,7 +15,7 @@ import modifylocation
 import targetswindow
 import zwosettings
 import guiderparameters
-from computetargets import ComputeTargets
+import computetargets
 from ui.ui_mainwindow import Ui_MainWindow
 
 if sys.platform.startswith("win"):
@@ -450,7 +451,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
             str(appglobals.location["Longitude"][1]) + "\'" +
             str(appglobals.location["Longitude"][2]) + "\"")
-        self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
+        self.target_dialog.generate()
 
     def open_target_gui(self):
         """Show window with chart of planet elevations throughout the day."""
@@ -509,17 +510,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             messagebox.exec_()
             self.telescope_action.setChecked(False)
 
-    def compute_target(self, target: str, time: ephem.Date, print_: bool=False) -> Dict[str, float]:
-        if target == "Stop" or target == "Home" or target == "":
-            self.goto_target()
-        else:
-            compute_alt = ComputeTargets(time, appglobals.location["Latitude"], appglobals.location["Longitude"])
-            alt = compute_alt.object_alt(target)
-            if print_:
-                print("Target: %-5s, Time: %-19s, RA: %-11s, Dec°: %-11s, Az: %-11s, Alt°: %-11s"
-                      % (target, str(time), str(ephem.hours(alt["ra"])), str(ephem.degrees(alt["dec"])),
-                         str(ephem.degrees(alt["az"])), str(ephem.degrees(alt["alt"]))))
-            return alt
+    @staticmethod
+    def compute_ra(target: str, time: datetime, print_: bool=False):
+        ra = computetargets.get_ra(target, time, appglobals.location["Latitude"], appglobals.location["Longitude"])
+        if print_:
+            print("Target: %-5s, Time: %-19s, RA: %-11s" % (target, str(time), str(ephem.hours(ra))))
+        return ra
+
+    @staticmethod
+    def compute_dec(target: str, time: datetime, print_: bool=False):
+        dec = computetargets.get_dec(target, time, appglobals.location["Latitude"], appglobals.location["Longitude"])
+        if print_:
+            print("Target: %-5s, Time: %-19s, Dec°: %-11s" % (target, str(time), str(ephem.degrees(dec))))
+        return dec
 
     def goto_target(self):
         goto_thread = threading.Thread(target=self.goto_target_thread)
@@ -531,11 +534,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
             appglobals.telescope.stop_tracking()
         else:
-            coords = self.compute_target(self.object_combobox.currentText(), ephem.now())
-            ra_split = str(ephem.hours(coords["ra"]))
+            ra = self.compute_ra(self.object_combobox.currentText(), ephem.now().datetime())
+            dec = self.compute_dec(self.object_combobox.currentText(), ephem.now().datetime())
+            ra_split = str(ephem.hours(ra))
             ra_split = ra_split.split(":")
             ra_decimal = int(ra_split[0]) + (int(ra_split[1]) / 60) + (float(ra_split[2]) / 3600)
-            dec_split = str(ephem.degrees(coords["dec"]))
+            dec_split = str(ephem.degrees(dec))
             dec_split = dec_split.split(":")
 
             if int(dec_split[0]) >= 0:

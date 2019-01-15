@@ -37,9 +37,6 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="earth_layout"/>
-   </item>
-   <item>
     <layout class="QGridLayout" name="gridLayout_2">
      <property name="leftMargin">
       <number>9</number>

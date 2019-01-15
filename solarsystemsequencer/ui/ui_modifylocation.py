@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'modifylocation.ui'
 #
-# Created: Mon Jun 19 21:50:37 2017
-#      by: PyQt5 UI code generator 5.2.1
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -18,9 +17,6 @@ class Ui_LocationDialog(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(LocationDialog)
         self.verticalLayout.setContentsMargins(0, 0, 0, -1)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.earth_layout = QtWidgets.QHBoxLayout()
-        self.earth_layout.setObjectName("earth_layout")
-        self.verticalLayout.addLayout(self.earth_layout)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setContentsMargins(9, -1, 9, -1)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -44,7 +40,6 @@ class Ui_LocationDialog(object):
         self.line = QtWidgets.QFrame(LocationDialog)
         self.line.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
         self.gridLayout_2.addWidget(self.line, 0, 5, 2, 1)
         self.long_s_spin = QtWidgets.QSpinBox(LocationDialog)

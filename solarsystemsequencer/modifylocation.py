@@ -1,10 +1,6 @@
 import json
 import os
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-import matplotlib.pyplot as plt
 from PyQt5 import QtCore, QtWidgets
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import appglobals
 from conversions import coordinates
 from ui import ui_modifylocation
@@ -18,9 +14,6 @@ class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
         self.dec_lat, self.dec_lon = coordinates.decimal_coordinates(appglobals.location["Latitude"],
                                                                      appglobals.location["Longitude"])
 
-        self.earth_figure = plt.figure(facecolor=(0.333, 0.333, 0.333))
-        self.earth_canvas = FigureCanvas(self.earth_figure)
-
         self.setupUi(self)
         self.setup_gui()
 
@@ -32,39 +25,8 @@ class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
         self.lat_s_spin.setValue(appglobals.location["Latitude"][2])
         self.long_s_spin.setValue(appglobals.location["Longitude"][2])
 
-        self.lat_d_spin.valueChanged.connect(self.generate_map)
-        self.long_d_spin.valueChanged.connect(self.generate_map)
-        self.lat_m_spin.valueChanged.connect(self.generate_map)
-        self.long_m_spin.valueChanged.connect(self.generate_map)
-        self.lat_s_spin.valueChanged.connect(self.generate_map)
-        self.long_s_spin.valueChanged.connect(self.generate_map)
         self.button_box.accepted.connect(self.ok)
         self.button_box.rejected.connect(self.cancel)
-
-        self.generate_map()
-        self.earth_layout.addWidget(self.earth_canvas)
-
-    def generate_map(self):
-        """Generate map to display in window."""
-        # TODO: Fix map shrinking on first change
-        self.earth_figure.clf()
-        appglobals.location["Latitude"] = [self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()]
-        appglobals.location["Longitude"] = [self.long_d_spin.value(), self.long_m_spin.value(),
-                                            self.long_s_spin.value()]
-        self.dec_lat, self.dec_lon = coordinates.decimal_coordinates(appglobals.location["Latitude"],
-                                                                     appglobals.location["Longitude"])
-        earth_axes = plt.axes(projection=ccrs.Orthographic(self.dec_lon, self.dec_lat))
-        states_provinces = cfeature.NaturalEarthFeature(category='cultural', name='admin_1_states_provinces_lines',
-                                                        scale='50m', facecolor='none')
-        earth_axes.add_feature(states_provinces, edgecolor="gray", linewidth=0.4)
-        earth_axes.add_feature(cfeature.BORDERS, edgecolor="gray", linewidth=0.5)
-        earth_axes.add_feature(cfeature.LAKES, edgecolor="black", facecolor="white", linewidth=0.5)
-        earth_axes.set_global()
-        earth_axes.plot(self.dec_lon, self.dec_lat, 'ro', markersize=2)
-        earth_axes.add_feature(cfeature.COASTLINE, linewidth=0.5)
-        self.earth_figure.add_subplot(earth_axes)
-        self.earth_figure.tight_layout()
-        self.earth_canvas.draw()
 
     def ok(self):
         """Do if "OK" button is pressed"""
@@ -77,12 +39,7 @@ class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
             os.remove("location.json")
         with open("location.json", "a") as f:
             json.dump(appglobals.location, f, indent=0)
-        self.earth_figure.clf()
 
     def cancel(self):
         """Do if "Cancel" button is pressed"""
         self.reject()
-        self.earth_figure.clf()
-
-    def closeEvent(self, event):
-        self.earth_figure.clf()

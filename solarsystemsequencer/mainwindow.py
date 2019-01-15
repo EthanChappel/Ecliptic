@@ -23,7 +23,7 @@ if sys.platform.startswith("win"):
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
 
         self.firstclose = True
         self.camera_thread = None

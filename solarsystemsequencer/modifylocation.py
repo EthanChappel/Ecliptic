@@ -8,7 +8,7 @@ from ui import ui_modifylocation
 
 class LocationDialog(QtWidgets.QDialog, ui_modifylocation.Ui_LocationDialog):
     def __init__(self):
-        super(LocationDialog, self).__init__()
+        super().__init__()
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
 
         self.dec_lat, self.dec_lon = coordinates.decimal_coordinates(appglobals.location["Latitude"],

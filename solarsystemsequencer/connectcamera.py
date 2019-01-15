@@ -7,7 +7,7 @@ import appglobals
 
 class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
     def __init__(self):
-        super(ConnectCamera, self).__init__()
+        super().__init__()
         self.asi_selected = False
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)

@@ -5,7 +5,7 @@ from ui import ui_zwosettings
 
 class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
     def __init__(self):
-        super(ZWOSettings, self).__init__()
+        super().__init__()
         self.camera = None
         self.setupUi(self)
         self.setup_gui()

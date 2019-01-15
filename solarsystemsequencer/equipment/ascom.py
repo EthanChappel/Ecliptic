@@ -12,8 +12,7 @@ import ASCOM.Utilities
 
 class Device:
     def __init__(self, device):
-        super(Device, self).__init__()
-        self.device = device
+        self.device = None
         self.choose_dialog = ASCOM.Utilities.Chooser()
         self.choose_dialog.DeviceType = device
         self.choose = self.choose_dialog.Choose()
@@ -40,7 +39,7 @@ class Device:
 
 class Telescope(Device):
     def __init__(self):
-        super(Telescope, self).__init__("Telescope")
+        super().__init__("Telescope")
         self.device = ASCOM.DriverAccess.Telescope(self.choose)
 
     def can_slew_eq(self) -> bool:
@@ -73,7 +72,7 @@ class Telescope(Device):
 
 class Camera(Device):
     def __init__(self):
-        super(Camera, self).__init__("Camera")
+        super().__init__("Camera")
         self.device = ASCOM.DriverAccess.Camera(self.choose)
         self.connect()
 
@@ -125,7 +124,7 @@ class Camera(Device):
 
 class FilterWheel(Device):
     def __init__(self):
-        super(FilterWheel, self).__init__("FilterWheel")
+        super().__init__("FilterWheel")
         self.device = ASCOM.DriverAccess.FilterWheel(self.choose)
         self.connect()
 
@@ -148,7 +147,7 @@ class FilterWheel(Device):
 
 class Focuser(Device):
     def __init__(self):
-        super(Focuser, self).__init__("Focuser")
+        super().__init__("Focuser")
         self.device = ASCOM.DriverAccess.Focuser(self.choose)
         self.connect()
 

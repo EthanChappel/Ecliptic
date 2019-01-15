@@ -494,7 +494,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope_settings()
 
     def telescope_settings(self):
-        if not appglobals.telescope.canslew_eq():
+        if not appglobals.telescope.can_slew_eq():
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")

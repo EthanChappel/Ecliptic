@@ -43,10 +43,10 @@ class Telescope(Device):
         super(Telescope, self).__init__("Telescope")
         self.device = ASCOM.DriverAccess.Telescope(self.choose)
 
-    def canslew_eq(self) -> bool:
+    def can_slew_eq(self) -> bool:
         return self.device.CanSlew
 
-    def canslew_altaz(self) -> bool:
+    def can_slew_alt_az(self) -> bool:
         return self.device.CanSlewAltAz
 
     def home(self):

@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 import zwoasi as asi
 from ui import ui_connectcamera
 import appglobals

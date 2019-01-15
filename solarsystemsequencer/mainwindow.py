@@ -8,7 +8,7 @@ import cv2
 import ephem
 import zwoasi as asi
 from PIL import Image, ImageQt
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 import appglobals
 import connectcamera
 import modifylocation

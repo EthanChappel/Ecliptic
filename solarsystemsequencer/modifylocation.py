@@ -1,6 +1,6 @@
 import json
 import os
-from PyQt5 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 import appglobals
 from conversions import coordinates
 from ui import ui_modifylocation

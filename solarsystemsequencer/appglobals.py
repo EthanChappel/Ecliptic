@@ -1,5 +1,5 @@
 import json
-from PyQt5 import QtWidgets
+from PySide2 import QtWidgets
 
 telescope = None
 camera = None

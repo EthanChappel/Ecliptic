@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'modifylocation.ui'
+# Form implementation generated from reading ui file 'modifylocation.ui',
+# licensing of 'modifylocation.ui' applies.
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created: Tue Jan 15 03:07:22 2019
+#      by: pyside2-uic  running on PySide2 5.12.0
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_LocationDialog(object):
     def setupUi(self, LocationDialog):
@@ -40,6 +42,7 @@ class Ui_LocationDialog(object):
         self.line = QtWidgets.QFrame(LocationDialog)
         self.line.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
         self.gridLayout_2.addWidget(self.line, 0, 5, 2, 1)
         self.long_s_spin = QtWidgets.QSpinBox(LocationDialog)
@@ -67,19 +70,18 @@ class Ui_LocationDialog(object):
         self.verticalLayout.addLayout(self.gridLayout_2)
 
         self.retranslateUi(LocationDialog)
-        self.button_box.accepted.connect(LocationDialog.accept)
-        self.button_box.rejected.connect(LocationDialog.reject)
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL("accepted()"), LocationDialog.accept)
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL("rejected()"), LocationDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(LocationDialog)
 
     def retranslateUi(self, LocationDialog):
-        _translate = QtCore.QCoreApplication.translate
-        LocationDialog.setWindowTitle(_translate("LocationDialog", "Solar System Sequencer - Location"))
-        self.lat_label.setText(_translate("LocationDialog", "Latitude"))
-        self.lat_m_spin.setSuffix(_translate("LocationDialog", "m"))
-        self.long_label.setText(_translate("LocationDialog", "Longitude"))
-        self.long_s_spin.setSuffix(_translate("LocationDialog", "s"))
-        self.lat_s_spin.setSuffix(_translate("LocationDialog", "s"))
-        self.lat_d_spin.setSuffix(_translate("LocationDialog", "°"))
-        self.long_m_spin.setSuffix(_translate("LocationDialog", "m"))
-        self.long_d_spin.setSuffix(_translate("LocationDialog", "°"))
+        LocationDialog.setWindowTitle(QtWidgets.QApplication.translate("LocationDialog", "Solar System Sequencer - Location", None, -1))
+        self.lat_label.setText(QtWidgets.QApplication.translate("LocationDialog", "Latitude", None, -1))
+        self.lat_m_spin.setSuffix(QtWidgets.QApplication.translate("LocationDialog", "m", None, -1))
+        self.long_label.setText(QtWidgets.QApplication.translate("LocationDialog", "Longitude", None, -1))
+        self.long_s_spin.setSuffix(QtWidgets.QApplication.translate("LocationDialog", "s", None, -1))
+        self.lat_s_spin.setSuffix(QtWidgets.QApplication.translate("LocationDialog", "s", None, -1))
+        self.lat_d_spin.setSuffix(QtWidgets.QApplication.translate("LocationDialog", "°", None, -1))
+        self.long_m_spin.setSuffix(QtWidgets.QApplication.translate("LocationDialog", "m", None, -1))
+        self.long_d_spin.setSuffix(QtWidgets.QApplication.translate("LocationDialog", "°", None, -1))
 

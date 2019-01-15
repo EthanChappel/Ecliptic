@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'connectcamera.ui'
+# Form implementation generated from reading ui file 'connectcamera.ui',
+# licensing of 'connectcamera.ui' applies.
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created: Tue Jan 15 03:04:56 2019
+#      by: pyside2-uic  running on PySide2 5.12.0
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_ConnectCamera(object):
     def setupUi(self, ConnectCamera):
@@ -29,7 +31,7 @@ class Ui_ConnectCamera(object):
         self.instruct_label.setSizePolicy(sizePolicy)
         self.instruct_label.setWordWrap(True)
         self.instruct_label.setObjectName("instruct_label")
-        self.verticalLayout.addWidget(self.instruct_label, 0, QtCore.Qt.AlignTop)
+        self.verticalLayout.addWidget(self.instruct_label)
         self.ascom_commandlink = QtWidgets.QCommandLinkButton(self.camera_page)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/thirdparty/ascom_logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -43,9 +45,6 @@ class Ui_ConnectCamera(object):
         self.asi_commandlink.setIcon(icon1)
         self.asi_commandlink.setObjectName("asi_commandlink")
         self.verticalLayout.addWidget(self.asi_commandlink)
-        self.ascom_commandlink.raise_()
-        self.asi_commandlink.raise_()
-        self.instruct_label.raise_()
         self.stackedWidget.addWidget(self.camera_page)
         self.asi_page = QtWidgets.QWidget()
         self.asi_page.setObjectName("asi_page")
@@ -72,7 +71,7 @@ class Ui_ConnectCamera(object):
         self.asi_label.setSizePolicy(sizePolicy)
         self.asi_label.setWordWrap(True)
         self.asi_label.setObjectName("asi_label")
-        self.gridLayout.addWidget(self.asi_label, 0, 0, 1, 2, QtCore.Qt.AlignTop)
+        self.gridLayout.addWidget(self.asi_label, 0, 0, 1, 2)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem1, 3, 1, 1, 1)
         self.asi_connect_button = QtWidgets.QPushButton(self.asi_page)
@@ -95,20 +94,19 @@ class Ui_ConnectCamera(object):
 
         self.retranslateUi(ConnectCamera)
         self.stackedWidget.setCurrentIndex(0)
-        self.buttonbox.accepted.connect(ConnectCamera.accept)
-        self.buttonbox.rejected.connect(ConnectCamera.reject)
+        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"), ConnectCamera.accept)
+        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"), ConnectCamera.reject)
         QtCore.QMetaObject.connectSlotsByName(ConnectCamera)
 
     def retranslateUi(self, ConnectCamera):
-        _translate = QtCore.QCoreApplication.translate
-        ConnectCamera.setWindowTitle(_translate("ConnectCamera", "Solar System Sequencer - Connect Camera"))
-        self.instruct_label.setText(_translate("ConnectCamera", "Select the camera you would like to connect."))
-        self.ascom_commandlink.setText(_translate("ConnectCamera", "ASCOM Camera"))
-        self.ascom_commandlink.setDescription(_translate("ConnectCamera", "Connect an ASCOM camera. Data acquisition is currently slow compared to ZWO ASI Cameras"))
-        self.asi_commandlink.setText(_translate("ConnectCamera", "ZWO ASI Camera"))
-        self.asi_commandlink.setDescription(_translate("ConnectCamera", "Connect a ZWO ASI camera."))
-        self.label.setText(_translate("ConnectCamera", "ZWO ASI Camera"))
-        self.asi_label.setText(_translate("ConnectCamera", "Connect a ZWO ASI camera."))
-        self.asi_connect_button.setText(_translate("ConnectCamera", "Connect"))
+        ConnectCamera.setWindowTitle(QtWidgets.QApplication.translate("ConnectCamera", "Solar System Sequencer - Connect Camera", None, -1))
+        self.instruct_label.setText(QtWidgets.QApplication.translate("ConnectCamera", "Select the camera you would like to connect.", None, -1))
+        self.ascom_commandlink.setText(QtWidgets.QApplication.translate("ConnectCamera", "ASCOM Camera", None, -1))
+        self.ascom_commandlink.setDescription(QtWidgets.QApplication.translate("ConnectCamera", "Connect an ASCOM camera. Data acquisition is currently slow compared to ZWO ASI Cameras", None, -1))
+        self.asi_commandlink.setText(QtWidgets.QApplication.translate("ConnectCamera", "ZWO ASI Camera", None, -1))
+        self.asi_commandlink.setDescription(QtWidgets.QApplication.translate("ConnectCamera", "Connect a ZWO ASI camera.", None, -1))
+        self.label.setText(QtWidgets.QApplication.translate("ConnectCamera", "ZWO ASI Camera", None, -1))
+        self.asi_label.setText(QtWidgets.QApplication.translate("ConnectCamera", "Connect a ZWO ASI camera.", None, -1))
+        self.asi_connect_button.setText(QtWidgets.QApplication.translate("ConnectCamera", "Connect", None, -1))
 
 import res_rc

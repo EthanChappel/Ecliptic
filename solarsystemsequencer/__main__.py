@@ -2,7 +2,7 @@
 import sys
 import traceback
 from typing import Any
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 sys.dont_write_bytecode = True
 

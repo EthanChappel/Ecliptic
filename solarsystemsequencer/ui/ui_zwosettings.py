@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'zwosettings.ui'
+# Form implementation generated from reading ui file 'zwosettings.ui',
+# licensing of 'zwosettings.ui' applies.
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created: Tue Jan 15 03:07:57 2019
+#      by: pyside2-uic  running on PySide2 5.12.0
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_ZWOSettings(object):
     def setupUi(self, ZWOSettings):
@@ -85,17 +87,16 @@ class Ui_ZWOSettings(object):
         QtCore.QMetaObject.connectSlotsByName(ZWOSettings)
 
     def retranslateUi(self, ZWOSettings):
-        _translate = QtCore.QCoreApplication.translate
-        ZWOSettings.setWindowTitle(_translate("ZWOSettings", "Frame"))
-        self.temperature_label.setText(_translate("ZWOSettings", "Temperature"))
-        self.brightness_label.setText(_translate("ZWOSettings", "Brightness"))
-        self.gamma_label.setText(_translate("ZWOSettings", "Gamma"))
-        self.red_label.setText(_translate("ZWOSettings", "Red"))
-        self.blue_label.setText(_translate("ZWOSettings", "Blue"))
-        self.usb_label.setText(_translate("ZWOSettings", "USB Bandwidth"))
-        self.highspeed_checkbox.setText(_translate("ZWOSettings", "High Speed"))
-        self.verticalflip_checkbox.setText(_translate("ZWOSettings", "Vertical Flip"))
-        self.monobin_checkbox.setText(_translate("ZWOSettings", "Mono Bin"))
-        self.hardwarebin_checkbox.setText(_translate("ZWOSettings", "Hardware Bin"))
-        self.horizontalflip_checkbox.setText(_translate("ZWOSettings", "Horizontal Flip"))
+        ZWOSettings.setWindowTitle(QtWidgets.QApplication.translate("ZWOSettings", "Frame", None, -1))
+        self.temperature_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Temperature", None, -1))
+        self.brightness_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Brightness", None, -1))
+        self.gamma_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Gamma", None, -1))
+        self.red_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Red", None, -1))
+        self.blue_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Blue", None, -1))
+        self.usb_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "USB Bandwidth", None, -1))
+        self.highspeed_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "High Speed", None, -1))
+        self.verticalflip_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Vertical Flip", None, -1))
+        self.monobin_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Mono Bin", None, -1))
+        self.hardwarebin_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Hardware Bin", None, -1))
+        self.horizontalflip_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Horizontal Flip", None, -1))
 

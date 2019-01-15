@@ -21,7 +21,7 @@ class TargetsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.setWindowFlags(QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowMinimizeButtonHint |
                             QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowCloseButtonHint)
         self.schedule_figure = Figure(facecolor=(0.333, 0.333, 0.333))
-        self.sched_plot = self.schedule_figure.add_subplot(1, 1, 1, axisbg="black")
+        self.sched_plot = self.schedule_figure.add_subplot(1, 1, 1, facecolor="black")
         self.sched_plot.spines["bottom"].set_color("white")
         self.sched_plot.spines["top"].set_color("white")
         self.sched_plot.spines["right"].set_color("white")

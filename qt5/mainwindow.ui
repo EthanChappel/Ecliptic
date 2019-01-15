@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>795</width>
-    <height>649</height>
+    <height>688</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,8 +81,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>178</width>
-         <height>921</height>
+         <width>227</width>
+         <height>1247</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -1364,7 +1364,7 @@
      <x>0</x>
      <y>0</y>
      <width>795</width>
-     <height>17</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1415,15 +1415,8 @@
     </property>
     <addaction name="action_about"/>
    </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-    <addaction name="targets_action"/>
-   </widget>
    <addaction name="file_menu"/>
    <addaction name="menu_edit"/>
-   <addaction name="menuView"/>
    <addaction name="help_menu"/>
   </widget>
   <widget class="QDockWidget" name="schedule_dockwidget">
@@ -1699,8 +1692,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>606</width>
-          <height>49</height>
+          <width>550</width>
+          <height>83</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1856,8 +1849,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>606</width>
-          <height>49</height>
+          <width>550</width>
+          <height>83</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">

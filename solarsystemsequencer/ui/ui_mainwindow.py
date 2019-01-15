@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Aug  2 16:29:28 2017
-#      by: PyQt5 UI code generator 5.2.1
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(795, 649)
+        MainWindow.resize(795, 688)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/logo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -44,7 +43,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scrollarea.setObjectName("scrollarea")
         self.scroll_area_widget_contents = QtWidgets.QWidget()
-        self.scroll_area_widget_contents.setGeometry(QtCore.QRect(0, 0, 178, 921))
+        self.scroll_area_widget_contents.setGeometry(QtCore.QRect(0, 0, 227, 1247))
         self.scroll_area_widget_contents.setObjectName("scroll_area_widget_contents")
         self.formLayout_4 = QtWidgets.QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName("formLayout_4")
@@ -715,7 +714,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 795, 17))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 795, 25))
         self.menubar.setObjectName("menubar")
         self.file_menu = QtWidgets.QMenu(self.menubar)
         self.file_menu.setObjectName("file_menu")
@@ -729,8 +728,6 @@ class Ui_MainWindow(object):
         self.menu_equipment.setObjectName("menu_equipment")
         self.help_menu = QtWidgets.QMenu(self.menubar)
         self.help_menu.setObjectName("help_menu")
-        self.menuView = QtWidgets.QMenu(self.menubar)
-        self.menuView.setObjectName("menuView")
         MainWindow.setMenuBar(self.menubar)
         self.schedule_dockwidget = QtWidgets.QDockWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Preferred)
@@ -828,7 +825,7 @@ class Ui_MainWindow(object):
         self.changes_label.setSizePolicy(sizePolicy)
         self.changes_label.setAlignment(QtCore.Qt.AlignCenter)
         self.changes_label.setObjectName("changes_label")
-        self.horizontallayout.addWidget(self.changes_label)
+        self.horizontallayout.addWidget(self.changes_label, 0, QtCore.Qt.AlignRight)
         self.verticalLayout_7.addLayout(self.horizontallayout)
         self.schedule_dockwidget.setWidget(self.dockwidget_contents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.schedule_dockwidget)
@@ -855,7 +852,7 @@ class Ui_MainWindow(object):
         self.camera_scrollarea.setAlignment(QtCore.Qt.AlignCenter)
         self.camera_scrollarea.setObjectName("camera_scrollarea")
         self.camera_scrollarea_contents = QtWidgets.QWidget()
-        self.camera_scrollarea_contents.setGeometry(QtCore.QRect(0, 0, 606, 49))
+        self.camera_scrollarea_contents.setGeometry(QtCore.QRect(0, 0, 550, 83))
         self.camera_scrollarea_contents.setObjectName("camera_scrollarea_contents")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.camera_scrollarea_contents)
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -864,7 +861,7 @@ class Ui_MainWindow(object):
         self.camera_preview_label.setText("")
         self.camera_preview_label.setAlignment(QtCore.Qt.AlignCenter)
         self.camera_preview_label.setObjectName("camera_preview_label")
-        self.verticalLayout_4.addWidget(self.camera_preview_label)
+        self.verticalLayout_4.addWidget(self.camera_preview_label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.camera_scrollarea.setWidget(self.camera_scrollarea_contents)
         self.verticalLayout_9.addWidget(self.camera_scrollarea)
         self.gridLayout_6 = QtWidgets.QGridLayout()
@@ -923,7 +920,7 @@ class Ui_MainWindow(object):
         self.guider_scrollarea.setAlignment(QtCore.Qt.AlignCenter)
         self.guider_scrollarea.setObjectName("guider_scrollarea")
         self.guiderscrollareawidgetcontents = QtWidgets.QWidget()
-        self.guiderscrollareawidgetcontents.setGeometry(QtCore.QRect(0, 0, 606, 49))
+        self.guiderscrollareawidgetcontents.setGeometry(QtCore.QRect(0, 0, 550, 83))
         self.guiderscrollareawidgetcontents.setObjectName("guiderscrollareawidgetcontents")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.guiderscrollareawidgetcontents)
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -932,7 +929,7 @@ class Ui_MainWindow(object):
         self.guider_preview_label.setText("")
         self.guider_preview_label.setAlignment(QtCore.Qt.AlignCenter)
         self.guider_preview_label.setObjectName("guider_preview_label")
-        self.verticalLayout_6.addWidget(self.guider_preview_label)
+        self.verticalLayout_6.addWidget(self.guider_preview_label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.guider_scrollarea.setWidget(self.guiderscrollareawidgetcontents)
         self.verticalLayout_10.addWidget(self.guider_scrollarea)
         self.guider_gridlayout = QtWidgets.QGridLayout()
@@ -1053,7 +1050,7 @@ class Ui_MainWindow(object):
         self.changes_label_2.setSizePolicy(sizePolicy)
         self.changes_label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.changes_label_2.setObjectName("changes_label_2")
-        self.horizontallayout_14.addWidget(self.changes_label_2)
+        self.horizontallayout_14.addWidget(self.changes_label_2, 0, QtCore.Qt.AlignRight)
         self.verticalLayout_5.addLayout(self.horizontallayout_14)
         self.filters_dockwidget.setWidget(self.filters_dockwidgetcontents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.filters_dockwidget)
@@ -1149,10 +1146,8 @@ class Ui_MainWindow(object):
         self.menu_edit.addAction(self.filters_action)
         self.menu_edit.addAction(self.location_action)
         self.help_menu.addAction(self.action_about)
-        self.menuView.addAction(self.targets_action)
         self.menubar.addAction(self.file_menu.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
-        self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.help_menu.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -1295,7 +1290,6 @@ class Ui_MainWindow(object):
         self.menu_edit.setTitle(_translate("MainWindow", "Edit"))
         self.menu_equipment.setTitle(_translate("MainWindow", "Equipment"))
         self.help_menu.setTitle(_translate("MainWindow", "Help"))
-        self.menuView.setTitle(_translate("MainWindow", "View"))
         self.schedule_dockwidget.setWindowTitle(_translate("MainWindow", "Schedule"))
         item = self.schedule_table.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Time"))

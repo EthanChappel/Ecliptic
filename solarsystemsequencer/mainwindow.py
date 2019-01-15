@@ -12,7 +12,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import appglobals
 import connectcamera
 import modifylocation
-import targetswindow
 import zwosettings
 import guiderparameters
 import computetargets
@@ -58,8 +57,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
-
-        self.target_dialog = targetswindow.TargetsDialog()
 
         self.setup_gui()
 
@@ -144,7 +141,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Connect functions to actions
         self.location_action.triggered.connect(self.location_set)
-        self.targets_action.triggered.connect(self.open_target_gui)
         self.exit_action.triggered.connect(self.close_app)
 
         # Add targets to object_combobox
@@ -451,11 +447,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
             str(appglobals.location["Longitude"][1]) + "\'" +
             str(appglobals.location["Longitude"][2]) + "\"")
-        self.target_dialog.generate()
-
-    def open_target_gui(self):
-        """Show window with chart of planet elevations throughout the day."""
-        self.target_dialog.show()
 
     @staticmethod
     def connect_fail_dialog(name: str):
@@ -1068,7 +1059,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Override default closeEvent method."""
         event.ignore()
         self.setVisible(False)
-        self.target_dialog.setVisible(False)
         for dock in self.findChildren(QtWidgets.QDockWidget):
             dock.setVisible(False)
         if self.firstclose:

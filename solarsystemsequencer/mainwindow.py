@@ -97,31 +97,48 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
 
         # Connects pressed event that moves mount to the directional buttons
-        self.slewnorth_button.pressed.connect(lambda: self.slew(1, self.mount_trackrate_spin.cleanText()))
-        self.slewnorth_button.pressed.connect(lambda: self.slew(1, self.mount_trackrate_spin.cleanText()))
-        self.sleweast_button.pressed.connect(lambda: self.slew(0, self.mount_trackrate_spin.cleanText()))
+        self.slewnorth_button.pressed.connect(
+            lambda: appglobals.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
+        )
+        self.slewnorth_button.pressed.connect(
+            lambda: appglobals.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
+        )
+        self.sleweast_button.pressed.connect(
+            lambda: appglobals.telescope.move_axis(0, self.mount_trackrate_spin.cleanText())
+        )
         self.slewsouth_button.pressed.connect(
-            lambda: self.slew(1, -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: appglobals.telescope.move_axis(1, -1 * float(self.mount_trackrate_spin.cleanText()))
+        )
         self.slewwest_button.pressed.connect(
-            lambda: self.slew(0, -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: appglobals.telescope.move_axis(0, -1 * float(self.mount_trackrate_spin.cleanText()))
+        )
         self.slewnortheast_button.pressed.connect(
-            lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(),
-                                       self.mount_trackrate_spin.cleanText()))
+            lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(), self.mount_trackrate_spin.cleanText())
+        )
         self.slewsoutheast_button.pressed.connect(
-            lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(),
-                                       -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: self.slew_diagonal(
+                self.mount_trackrate_spin.cleanText(),
+                -1 * float(self.mount_trackrate_spin.cleanText())
+            )
+        )
         self.slewsouthwest_button.pressed.connect(
-            lambda: self.slew_diagonal(-1 * float(self.mount_trackrate_spin.cleanText()),
-                                       -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: self.slew_diagonal(
+                -1 * float(self.mount_trackrate_spin.cleanText()),
+                -1 * float(self.mount_trackrate_spin.cleanText())
+            )
+        )
         self.slewnorthwest_button.pressed.connect(
-            lambda: self.slew_diagonal(-1 * float(self.mount_trackrate_spin.cleanText()),
-                                       self.mount_trackrate_spin.cleanText()))
+            lambda: self.slew_diagonal(
+                -1 * float(self.mount_trackrate_spin.cleanText()),
+                self.mount_trackrate_spin.cleanText()
+            )
+        )
 
         # Connects clicked event that stops mount to the directional buttons
-        self.slewnorth_button.released.connect(lambda: self.slew(1, 0.0))
-        self.sleweast_button.released.connect(lambda: self.slew(0, 0.0))
-        self.slewsouth_button.released.connect(lambda: self.slew(1, 0.0))
-        self.slewwest_button.released.connect(lambda: self.slew(0, 0.0))
+        self.slewnorth_button.released.connect(lambda: appglobals.telescope.move_axis(1, 0.0))
+        self.sleweast_button.released.connect(lambda: appglobals.telescope.move_axis(0, 0.0))
+        self.slewsouth_button.released.connect(lambda: appglobals.telescope.move_axis(1, 0.0))
+        self.slewwest_button.released.connect(lambda: appglobals.telescope.move_axis(0, 0.0))
         self.slewnortheast_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewsoutheast_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewsouthwest_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
@@ -513,10 +530,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             body = get_body(self.object_combobox.currentText().lower(), Time.now())
             appglobals.telescope.goto(body.ra.hour, body.dec.degree)
-
-    @staticmethod
-    def slew(axis: int, rate: float):
-        appglobals.telescope.move_axis(axis, rate)
 
     @staticmethod
     def slew_diagonal(rate1: float, rate2: float):

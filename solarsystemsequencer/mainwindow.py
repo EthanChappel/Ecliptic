@@ -5,7 +5,6 @@ import threading
 from datetime import datetime
 from typing import List, Dict
 import cv2
-import ephem
 import zwoasi as asi
 from PIL import Image, ImageQt
 from PySide2 import QtCore, QtGui, QtWidgets
@@ -14,7 +13,8 @@ import connectcamera
 import modifylocation
 import zwosettings
 import guiderparameters
-import computetargets
+from astropy.time import Time
+from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
 
 if sys.platform.startswith("win"):
@@ -501,20 +501,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             messagebox.exec_()
             self.telescope_action.setChecked(False)
 
-    @staticmethod
-    def compute_ra(target: str, time: datetime, print_: bool=False):
-        ra = computetargets.get_ra(target, time, appglobals.location["Latitude"], appglobals.location["Longitude"])
-        if print_:
-            print("Target: %-5s, Time: %-19s, RA: %-11s" % (target, str(time), str(ephem.hours(ra))))
-        return ra
-
-    @staticmethod
-    def compute_dec(target: str, time: datetime, print_: bool=False):
-        dec = computetargets.get_dec(target, time, appglobals.location["Latitude"], appglobals.location["Longitude"])
-        if print_:
-            print("Target: %-5s, Time: %-19s, Dec°: %-11s" % (target, str(time), str(ephem.degrees(dec))))
-        return dec
-
     def goto_target(self):
         goto_thread = threading.Thread(target=self.goto_target_thread)
         goto_thread.start()
@@ -525,19 +511,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
             appglobals.telescope.stop_tracking()
         else:
-            ra = self.compute_ra(self.object_combobox.currentText(), ephem.now().datetime())
-            dec = self.compute_dec(self.object_combobox.currentText(), ephem.now().datetime())
-            ra_split = str(ephem.hours(ra))
-            ra_split = ra_split.split(":")
-            ra_decimal = int(ra_split[0]) + (int(ra_split[1]) / 60) + (float(ra_split[2]) / 3600)
-            dec_split = str(ephem.degrees(dec))
-            dec_split = dec_split.split(":")
-
-            if int(dec_split[0]) >= 0:
-                dec_decimal = int(dec_split[0]) + (int(dec_split[1]) / 60) + (float(dec_split[2]) / 3600)
-            else:
-                dec_decimal = int(dec_split[0]) + ((-1 * int(dec_split[1])) / 60) + (-1 * float(dec_split[2]) / 3600)
-            appglobals.telescope.goto(ra_decimal, dec_decimal)
+            body = get_body(self.object_combobox.currentText().lower(), Time.now())
+            appglobals.telescope.goto(body.ra.hour, body.dec.degree)
 
     @staticmethod
     def slew(axis: int, rate: float):
@@ -869,7 +844,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_preview_label.clear()
 
     def camera_record(self):
-        name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
+        name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
         if type(appglobals.camera) is ascom.Camera:
             out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)

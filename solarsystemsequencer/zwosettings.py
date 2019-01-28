@@ -100,9 +100,9 @@ class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
         if "Blue" in values:
             self.blue_label.setVisible(True)
             self.blue_spinbox.setVisible(True)
-            self.blue_spinbox.setMinimum(values["Blues"]["Min"])
-            self.blue_spinbox.setMaximum(values["Blues"]["Max"])
-            self.blue_spinbox.setValue(values["Blues"]["Current"])
+            self.blue_spinbox.setMinimum(values["Blue"]["Min"])
+            self.blue_spinbox.setMaximum(values["Blue"]["Max"])
+            self.blue_spinbox.setValue(values["Blue"]["Current"])
         else:
             self.blue_label.setVisible(False)
             self.blue_spinbox.setVisible(False)

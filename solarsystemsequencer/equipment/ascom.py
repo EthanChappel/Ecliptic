@@ -118,8 +118,7 @@ class Camera(Device):
         return self.device.PercentCompleted
 
     def image_array(self) -> List[int]:
-        image = list(self.device.ImageArray)
-        return image
+        return list(self.device.ImageArray)
 
 
 class FilterWheel(Device):

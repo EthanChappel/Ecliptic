@@ -58,12 +58,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setup_gui()
 
     def setup_gui(self):
-        # Center window on screen
-        window_size = self.frameGeometry()
-        desktop = QtWidgets.QDesktopWidget().availableGeometry().center()
-        window_size.moveCenter(desktop)
-        self.move(window_size.topLeft())
-
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
         self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
         self.tabifyDockWidget(self.guider_dockwidget, self.camera_dockwidget)

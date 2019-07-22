@@ -58,5 +58,4 @@ sys.excepthook = excepthook
 import mainwindow
 widget = mainwindow.MainWindow()
 widget.show()
-app.setQuitOnLastWindowClosed(False)
 sys.exit(app.exec_())

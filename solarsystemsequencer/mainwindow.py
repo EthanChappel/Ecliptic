@@ -25,13 +25,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
-        self.firstclose = True
         self.camera_thread = None
         self.guider_thread = None
 
         self.menu = QtWidgets.QMenu()
-        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
-        self.was_hidden = False
         self.status_coords_label = QtWidgets.QLabel()
         self.setupUi(self)
 
@@ -66,14 +63,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         desktop = QtWidgets.QDesktopWidget().availableGeometry().center()
         window_size.moveCenter(desktop)
         self.move(window_size.topLeft())
-
-        # Tray icon
-        self.menu.addAction(self.exit_action)
-        show_action = self.menu.addAction("Open")
-        self.menu.addMenu(self.menu_equipment)
-        show_action.triggered.connect(self.show)
-        self.tray_icon.setContextMenu(self.menu)
-        self.tray_icon.show()
 
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
         self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
@@ -158,7 +147,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Connect functions to actions
         self.location_action.triggered.connect(self.location_set)
-        self.exit_action.triggered.connect(self.close_app)
 
         # Add targets to object_combobox
         self.object_combobox.addItems(self.mountmodes_tuple)
@@ -484,17 +472,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.telescope_settings()
                 name = appglobals.telescope.name_()
                 self.telescope_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Telescope Connected", "{} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
                 self.mount_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.mount_group.isChecked():
             try:
                 appglobals.telescope.disconnect()
@@ -552,9 +533,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     name = appglobals.guider.name_()
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
-                    if self.isHidden():
-                        self.tray_icon.showMessage("Guider Connected", "{} has been connected.".format(name),
-                                                   QtWidgets.QSystemTrayIcon.Information)
                 elif guider_dialog.asi_selected and guider_dialog.accepted:
                     appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
                     values = self.camera_settings(appglobals.guider)
@@ -567,11 +545,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except Exception as e:
                 print(e)
                 self.guider_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.guider_group.isChecked():
             try:
                 if type(appglobals.guider) is ascom.Camera:
@@ -672,9 +646,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     name = appglobals.camera.name_()
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
-                    if self.isHidden():
-                        self.tray_icon.showMessage("Camera Connected", "{} has been connected.".format(name),
-                                                   QtWidgets.QSystemTrayIcon.Information)
                 elif camera_dialog.asi_selected and camera_dialog.accepted:
                     appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
                     values = self.camera_settings(appglobals.camera)
@@ -688,11 +659,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except Exception as e:
                 print(e)
                 self.camera_group.setChecked(False)
-                if self.isVisible() and camera_dialog.accepted:
-                    self.connect_fail_dialog(name)
-                elif self.isHidden() and camera_dialog.accepted:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
 
         elif not self.camera_group.isChecked():
             try:
@@ -913,17 +880,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.focuser_settings()
                 name = appglobals.focuser.name_()
                 self.focuser_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Focuser Connected", "{} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
                 self.focuser_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.focuser_group.isChecked():
             try:
                 self.temp_checkbox.setVisible(False)
@@ -996,17 +956,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 appglobals.wheel = ascom.FilterWheel()
                 name = appglobals.wheel.name_()
                 self.wheel_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Filter Wheel Connected", "{} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
                 self.wheel_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.wheel_group.isChecked():
             try:
                 self.temp_checkbox.setVisible(False)
@@ -1034,25 +987,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             print(e)
 
     # </editor-fold>
-
-    def close_app(self):
-        self.mount_group.setChecked(False)
-        self.guider_group.setChecked(False)
-        self.camera_group.setChecked(False)
-        self.focuser_group.setChecked(False)
-        self.wheel_group.setChecked(False)
-        sys.exit()
-
-    def closeEvent(self, event: QtGui.QCloseEvent):
-        """Override default closeEvent method."""
-        event.ignore()
-        self.setVisible(False)
-        for dock in self.findChildren(QtWidgets.QDockWidget):
-            dock.setVisible(False)
-        if self.firstclose:
-            self.firstclose = False
-            self.tray_icon.showMessage("Running in background", "Solar System Sequencer is still running in the "
-                                                                "background.", QtWidgets.QSystemTrayIcon.Information)
 
     def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""

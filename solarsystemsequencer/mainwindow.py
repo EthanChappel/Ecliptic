@@ -456,8 +456,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
 
-    # <editor-fold desc="Telescope">
-
     def connect_telescope(self):
         if self.mount_group.isChecked():
             name = "The telescope"
@@ -510,10 +508,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def slew_diagonal(rate1: float, rate2: float):
         appglobals.telescope.move_axis(0, rate1)
         appglobals.telescope.move_axis(1, rate2)
-
-    # </editor-fold>
-
-    # <editor-fold desc="Guider">
 
     def connect_guider(self):
         if self.guider_group.isChecked():
@@ -623,10 +617,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pix = ImageQt.toqpixmap(image)
                 self.guider_preview_label.setPixmap(pix)
         self.guider_preview_label.clear()
-
-    # </editor-fold>
-
-    # <editor-fold desc="Camera">
 
     def connect_camera(self):
         if self.camera_group.isChecked():
@@ -862,10 +852,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.settings["Save Directory"] = str(camera_dir_dialog)
             self.save_settings()
 
-    # </editor-fold>
-
-    # <editor-fold desc="Focuser">
-
     def connect_focuser(self):
         if self.focuser_group.isChecked():
             name = "The focuser"
@@ -939,10 +925,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.focuser_position_spinbox.setEnabled(True)
         appglobals.focuser.temp_comp(state)
 
-    # </editor-fold>
-
-    # <editor-fold desc="Filter Wheel">
-
     def connect_filters(self):
         if self.wheel_group.isChecked():
             name = "The filter wheel"
@@ -979,8 +961,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.wheel.rotate_wheel(text)
         except AttributeError as e:
             print(e)
-
-    # </editor-fold>
 
     def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""

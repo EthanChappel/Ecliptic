@@ -4,8 +4,8 @@ from typing import List, Union
 import numpy as np
 import appglobals
 import clr
-clr.AddReference("lib/ASCOM.DriverAccess")
-clr.AddReference("lib/ASCOM.Utilities")
+clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
+clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 import ASCOM.DriverAccess
 import ASCOM.Utilities
 

@@ -10,7 +10,6 @@ from PIL import Image, ImageQt
 from PySide2 import QtCore, QtGui, QtWidgets
 import appglobals
 import connectcamera
-import modifylocation
 import zwosettings
 import guiderparameters
 from astropy.time import Time
@@ -62,6 +61,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
         self.tabifyDockWidget(self.guider_dockwidget, self.camera_dockwidget)
         self.tabifyDockWidget(self.camera_dockwidget, self.filters_dockwidget)
+        self.tabifyDockWidget(self.filters_dockwidget, self.settings_dockwidget)
         self.schedule_dockwidget.raise_()
         self.camera_dockwidget.setVisible(False)
         self.guider_dockwidget.setVisible(False)
@@ -140,7 +140,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.removerow_button.clicked.connect(self.remove_schedule_row)
 
         # Connect functions to actions
-        self.location_action.triggered.connect(self.location_set)
+        self.location_action.triggered.connect(lambda: self.settings_dockwidget.raise_())
 
         # Add targets to object_combobox
         self.object_combobox.addItems(self.mountmodes_tuple)
@@ -158,6 +158,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
         )
         self.statusbar.addWidget(self.status_coords_label)
+
+        # Fill location widgets with saved values.
+        self.lat_d_spin.setValue(appglobals.location["Latitude"][0])
+        self.long_d_spin.setValue(appglobals.location["Longitude"][0])
+        self.lat_m_spin.setValue(appglobals.location["Latitude"][1])
+        self.long_m_spin.setValue(appglobals.location["Longitude"][1])
+        self.lat_s_spin.setValue(appglobals.location["Latitude"][2])
+        self.long_s_spin.setValue(appglobals.location["Longitude"][2])
+
+        # Save location when changed.
+        self.lat_d_spin.valueChanged.connect(self.location_set)
+        self.lat_m_spin.valueChanged.connect(self.location_set)
+        self.lat_s_spin.valueChanged.connect(self.location_set)
+        self.long_d_spin.valueChanged.connect(self.location_set)
+        self.long_m_spin.valueChanged.connect(self.location_set)
+        self.long_s_spin.valueChanged.connect(self.location_set)
 
         # Allow table headers to fit schedule_table
         self.schedule_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
@@ -437,11 +453,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def location_set(self):
         """Set observing location."""
-        location_dialog = modifylocation.LocationDialog()
-        location_dialog.exec_()
+        appglobals.location["Latitude"] = [
+            self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()
+        ]
+        appglobals.location["Longitude"] = [
+            self.long_d_spin.value(), self.long_m_spin.value(), self.long_s_spin.value()
+        ]
+
         if os.path.exists("location.json"):
-            with open("location.json", "r") as f:
-                appglobals.location = json.load(f)
+            os.remove("location.json")
+        with open("location.json", "a") as f:
+            json.dump(appglobals.location, f, indent=0)
         self.status_coords_label.setText(
             "Latitude: %d°%d\'%d\", Longitude: %d°%d\'%d\"" % (
                 appglobals.location["Latitude"][0],

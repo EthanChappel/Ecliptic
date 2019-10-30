@@ -1,26 +1,9 @@
 #!/usr/bin/env python3
 import sys
-import traceback
-from typing import Any
 from PySide2 import QtCore, QtGui, QtWidgets
+import mainwindow
 
 sys.dont_write_bytecode = True
-
-
-def excepthook(exc_type: tuple, exc_val: Any, tracebackobj: traceback):
-    messagebox = QtWidgets.QMessageBox()
-    messagebox.setIcon(QtWidgets.QMessageBox.Critical)
-
-    message = str("".join(traceback.format_tb(tracebackobj)))
-    message_text = str(exc_type) + message + str(exc_val)
-    print(message_text)
-    messagebox.setWindowTitle("Solar System Sequencer - Exception")
-    messagebox.setText("An exception occurred! Please copy the text in the details, then open a new issue at:")
-    messagebox.setInformativeText("<a href='https://github.com/EthanChappel/Solar-System-Sequencer/issues'>"
-                                  "https://github.com/EthanChappel/Solar-System-Sequencer/issues</a>")
-    messagebox.setDetailedText(message_text)
-    messagebox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-    messagebox.exec_()
 
 # TODO: Scale icons properly at high dpi
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
@@ -54,8 +37,6 @@ app.setStyleSheet("""
 app.setPalette(palette)
 app.setStyle("Fusion")
 
-sys.excepthook = excepthook
-import mainwindow
 widget = mainwindow.MainWindow()
 widget.show()
 sys.exit(app.exec_())

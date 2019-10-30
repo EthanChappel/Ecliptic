@@ -148,12 +148,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set label to show latitude and longitude and show it on status bar
         self.status_coords_label.setText(
-            "Latitude: " + str(appglobals.location["Latitude"][0]) + "°" +
-            str(appglobals.location["Latitude"][1]) + "\'" +
-            str(appglobals.location["Latitude"][2]) + "\"" +
-            ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
-            str(appglobals.location["Longitude"][1]) + "\'" +
-            str(appglobals.location["Longitude"][2]) + "\"")
+            "Latitude: %d°%d\'%d\", Longitude: %d°%d\'%d\"" % (
+                appglobals.location["Latitude"][0],
+                appglobals.location["Latitude"][1],
+                appglobals.location["Latitude"][2],
+                appglobals.location["Longitude"][0],
+                appglobals.location["Longitude"][1],
+                appglobals.location["Longitude"][2]
+            )
+        )
         self.statusbar.addWidget(self.status_coords_label)
 
         # Allow table headers to fit schedule_table
@@ -440,12 +443,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             with open("location.json", "r") as f:
                 appglobals.location = json.load(f)
         self.status_coords_label.setText(
-            "Latitude: " + str(appglobals.location["Latitude"][0]) + "°" +
-            str(appglobals.location["Latitude"][1]) + "\'" +
-            str(appglobals.location["Latitude"][2]) + "\"" +
-            ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
-            str(appglobals.location["Longitude"][1]) + "\'" +
-            str(appglobals.location["Longitude"][2]) + "\"")
+            "Latitude: %d°%d\'%d\", Longitude: %d°%d\'%d\"" % (
+                appglobals.location["Latitude"][0],
+                appglobals.location["Latitude"][1],
+                appglobals.location["Latitude"][2],
+                appglobals.location["Longitude"][0],
+                appglobals.location["Longitude"][1],
+                appglobals.location["Longitude"][2]
+            )
+        )
 
     @staticmethod
     def connect_fail_dialog(name: str):

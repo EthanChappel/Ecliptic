@@ -292,7 +292,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Save existing items with numeric strings as integers.
                 if item is None:
                     pass
-                elif item.text().isnumeric():
+                elif col > 2:
                     value = int(item.text())
                 elif isinstance(item.text(), str) and item.text() not in ("", "None"):
                     value = item.text()

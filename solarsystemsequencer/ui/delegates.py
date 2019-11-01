@@ -46,12 +46,16 @@ class QComboBoxItemDelegate(QStyledItemDelegate):
 
 
 class QSpinBoxItemDelegate(QStyledItemDelegate):
-    def __init__(self, parent=None, suffix=""):
+    def __init__(self, parent=None, minimum=0, maximum=99, suffix=""):
         super().__init__(parent=parent)
+        self.min = minimum
+        self.max = maximum
         self.suffix = suffix
 
     def createEditor(self, parent, option, index):
         editor = QSpinBox(parent)
+        editor.setMinimum(self.min)
+        editor.setMaximum(self.max)
         editor.setSuffix(self.suffix)
         return editor
 

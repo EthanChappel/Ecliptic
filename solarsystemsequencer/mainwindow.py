@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -68,14 +68,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.time_delegate = QTimeEditItemDelegate(self)
         self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
         self.filter_delegate = QComboBoxItemDelegate(self, self.filter_list_model)
-        self.exposure_delegate = QSpinBoxItemDelegate(self, EXPOSURE_UNIT)
-        self.gain_delegate = QSpinBoxItemDelegate(self, GAIN_UNIT)
-        self.integration_delegate = QSpinBoxItemDelegate(self, INTEGRATION_UNIT)
+        self.exposure_delegate = QSpinBoxItemDelegate(self, suffix=EXPOSURE_UNIT)
+        self.gain_delegate = QSpinBoxItemDelegate(self, suffix=GAIN_UNIT)
+        self.integration_delegate = QSpinBoxItemDelegate(self, suffix=INTEGRATION_UNIT)
 
         # Create Delegates for columns in filters table.
         self.position_delegate = QSpinBoxItemDelegate(self)
-        self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, CUTOFF_UNIT)
-        self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, CUTOFF_UNIT)
+        self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
+        self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")

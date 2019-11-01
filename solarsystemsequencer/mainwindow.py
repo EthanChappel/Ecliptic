@@ -303,7 +303,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Save existing items with numeric strings as integers.
                 if item is None:
                     pass
-                elif col > 2:
+                elif col > 2 and item.text() not in ("", "None"):
                     value = int(item.text())
                 elif isinstance(item.text(), str) and item.text() not in ("", "None"):
                     value = item.text()
@@ -360,9 +360,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Save existing items with numeric strings as integers.
                 if item is None:
                     pass
-                elif col > 1:
+                elif col > 1 and item.text() not in ("", "None"):
                     value = int(item.text())
-                elif isinstance(item.text(), str):
+                elif isinstance(item.text(), str) and item.text() not in ("", "None"):
                     value = item.text()
                 filter_dict.update({header: value})
             filter_list.append(filter_dict)

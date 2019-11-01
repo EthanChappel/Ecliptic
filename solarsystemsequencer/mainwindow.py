@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -26,6 +26,7 @@ if sys.platform.startswith("win"):
 EXPOSURE_UNIT = "ms"
 GAIN_UNIT = "e/adu"
 INTEGRATION_UNIT = "s"
+CUTOFF_UNIT = "nm"
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -70,6 +71,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.exposure_delegate = QSpinBoxItemDelegate(self, EXPOSURE_UNIT)
         self.gain_delegate = QSpinBoxItemDelegate(self, GAIN_UNIT)
         self.integration_delegate = QSpinBoxItemDelegate(self, INTEGRATION_UNIT)
+
+        # Create Delegates for columns in filters table.
+        self.position_delegate = QSpinBoxItemDelegate(self)
+        self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, CUTOFF_UNIT)
+        self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, CUTOFF_UNIT)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -259,8 +265,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.schedule_table.setItemDelegateForColumn(4, self.gain_delegate)
         self.schedule_table.setItemDelegateForColumn(5, self.integration_delegate)
 
+        self.filter_table.setItemDelegateForColumn(2, self.position_delegate)
+        self.filter_table.setItemDelegateForColumn(3, self.lower_cutoff_delegate)
+        self.filter_table.setItemDelegateForColumn(4, self.upper_cutoff_delegate)
+
         # Save whenever cell is changed.
         self.schedule_table.itemChanged.connect(self.save_schedule)
+        self.filter_table.itemChanged.connect(self.save_filters)
 
     def add_schedule_row(self):
         """Add row in schedule_table."""
@@ -330,27 +341,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         upper_spinbox = QtWidgets.QSpinBox()
         brand_lineedit = QtWidgets.QLineEdit()
 
-        name_lineedit.editingFinished.connect(self.save_filters)
-        pos_spinbox.editingFinished.connect(self.save_filters)
-        lower_spinbox.editingFinished.connect(self.save_filters)
-        upper_spinbox.editingFinished.connect(self.save_filters)
-        brand_lineedit.editingFinished.connect(self.save_filters)
-
-        lower_spinbox.setSuffix("nm")
-        upper_spinbox.setSuffix("nm")
-
         pos_spinbox.setMinimum(0)
         lower_spinbox.setMinimum(0)
         upper_spinbox.setMinimum(0)
 
         lower_spinbox.setMaximum(1999)
         upper_spinbox.setMaximum(2000)
-
-        self.filter_table.setCellWidget(self.row_count, 0, name_lineedit)
-        self.filter_table.setCellWidget(self.row_count, 1, brand_lineedit)
-        self.filter_table.setCellWidget(self.row_count, 2, pos_spinbox)
-        self.filter_table.setCellWidget(self.row_count, 3, lower_spinbox)
-        self.filter_table.setCellWidget(self.row_count, 4, upper_spinbox)
 
     def remove_filter_row(self):
         """Remove selected rows from filter_table."""
@@ -371,10 +367,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             filter_dict = {}
             for col in range(self.filter_table.columnCount()):
                 header = str(self.filter_table.horizontalHeaderItem(col).text())
-                try:
-                    value = str(self.filter_table.cellWidget(row, col).cleanText())
-                except AttributeError:
-                    value = str(self.filter_table.cellWidget(row, col).text())
+                item = self.filter_table.item(row, col)
+                value = None
+
+                # Save existing items with numeric strings as integers.
+                if item is None:
+                    pass
+                elif col > 1:
+                    value = int(item.text())
+                elif isinstance(item.text(), str):
+                    value = item.text()
                 filter_dict.update({header: value})
             filter_list.append(filter_dict)
         with open("filters.json", "a") as f:
@@ -409,23 +411,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for f in filters:
             self.add_filter_row()
 
-            self.filter_table.cellWidget(count, 0).blockSignals(True)
-            self.filter_table.cellWidget(count, 1).blockSignals(True)
-            self.filter_table.cellWidget(count, 2).blockSignals(True)
-            self.filter_table.cellWidget(count, 3).blockSignals(True)
-            self.filter_table.cellWidget(count, 4).blockSignals(True)
+            self.filter_table.setItem(count, 0, QTableWidgetItem(f["Name"]))
+            self.filter_table.setItem(count, 1, QTableWidgetItem(f["Brand"]))
+            self.filter_table.setItem(count, 2, QTableWidgetItem(str(f["Wheel Position"])))
+            self.filter_table.setItem(count, 3, QTableWidgetItem(str(f["Lower Cutoff"])))
+            self.filter_table.setItem(count, 4, QTableWidgetItem(str(f["Upper Cutoff"])))
 
-            self.filter_table.cellWidget(count, 0).setText(f["Name"])
-            self.filter_table.cellWidget(count, 1).setText(f["Brand"])
-            self.filter_table.cellWidget(count, 2).setValue(int(f["Wheel Position"]))
-            self.filter_table.cellWidget(count, 3).setValue(int(f["Lower Cutoff"]))
-            self.filter_table.cellWidget(count, 4).setValue(int(f["Upper Cutoff"]))
-
-            self.filter_table.cellWidget(count, 0).blockSignals(False)
-            self.filter_table.cellWidget(count, 1).blockSignals(False)
-            self.filter_table.cellWidget(count, 2).blockSignals(False)
-            self.filter_table.cellWidget(count, 3).blockSignals(False)
-            self.filter_table.cellWidget(count, 4).blockSignals(False)
             count += 1
 
     def location_set(self):

@@ -1367,7 +1367,7 @@ class Ui_MainWindow(object):
         self.addrow_button.setToolTip(QtWidgets.QApplication.translate("MainWindow", "Add row", None, -1))
         self.removerow_button.setToolTip(QtWidgets.QApplication.translate("MainWindow", "Remove row", None, -1))
         self.schedule_date_label.setText(QtWidgets.QApplication.translate("MainWindow", "Date", None, -1))
-        self.schedule_dateedit.setDisplayFormat(QtWidgets.QApplication.translate("MainWindow", "yyyy/MM/dd", None, -1))
+        self.schedule_dateedit.setDisplayFormat(QtWidgets.QApplication.translate("MainWindow", "yyyy-MM-dd", None, -1))
         self.changes_label.setText(QtWidgets.QApplication.translate("MainWindow", "Changes are saved automatically", None, -1))
         self.camera_dockwidget.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Camera", None, -1))
         self.camera_zoom_label.setText(QtWidgets.QApplication.translate("MainWindow", "Zoom", None, -1))

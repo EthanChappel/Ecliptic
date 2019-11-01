@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -334,19 +334,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Add row in filter_table."""
         self.row_count = self.filter_table.rowCount()
         self.filter_table.insertRow(self.row_count)
-
-        name_lineedit = QtWidgets.QLineEdit()
-        pos_spinbox = QtWidgets.QSpinBox()
-        lower_spinbox = QtWidgets.QSpinBox()
-        upper_spinbox = QtWidgets.QSpinBox()
-        brand_lineedit = QtWidgets.QLineEdit()
-
-        pos_spinbox.setMinimum(0)
-        lower_spinbox.setMinimum(0)
-        upper_spinbox.setMinimum(0)
-
-        lower_spinbox.setMaximum(1999)
-        upper_spinbox.setMaximum(2000)
 
     def remove_filter_row(self):
         """Remove selected rows from filter_table."""

@@ -1,9 +1,9 @@
 from PySide2 import QtCore
 from PySide2.QtCore import Qt, QStringListModel
-from PySide2.QtWidgets import QItemDelegate, QTimeEdit, QSpinBox, QComboBox
+from PySide2.QtWidgets import QStyledItemDelegate, QTimeEdit, QSpinBox, QComboBox
 
 
-class QTimeEditItemDelegate(QItemDelegate):
+class QTimeEditItemDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -22,7 +22,7 @@ class QTimeEditItemDelegate(QItemDelegate):
         editor.setGeometry(option.rect)
 
 
-class QComboBoxItemDelegate(QItemDelegate):
+class QComboBoxItemDelegate(QStyledItemDelegate):
     def __init__(self, parent=None, items=()):
         super().__init__(parent=parent)
         self.items = items
@@ -45,19 +45,28 @@ class QComboBoxItemDelegate(QItemDelegate):
         editor.setGeometry(option.rect)
 
 
-class QSpinBoxItemDelegate(QItemDelegate):
-    def __init__(self, parent=None):
+class QSpinBoxItemDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None, suffix=""):
         super().__init__(parent=parent)
+        self.suffix = suffix
 
     def createEditor(self, parent, option, index):
         editor = QSpinBox(parent)
+        editor.setSuffix(self.suffix)
         return editor
 
     def setEditorData(self, editor, index):
-        editor.setValue(int(index.model().data(index, Qt.EditRole)))
+        data = index.model().data(index, Qt.EditRole)
+        if data != "None":
+            editor.setValue(int(data))
 
     def setModelData(self, editor, model, index):
-        model.setData(index, editor.cleanText(), Qt.EditRole)
+        model.setData(index, editor.value(), Qt.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)
+
+    def displayText(self, value, locale):
+        if value != "None":
+            return str(value) + self.suffix
+        return ""

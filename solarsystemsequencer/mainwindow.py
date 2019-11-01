@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -12,12 +12,20 @@ import appglobals
 import connectcamera
 import zwosettings
 import guiderparameters
+from PySide2.QtCore import QStringListModel
+from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
+from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
 
 if sys.platform.startswith("win"):
     from equipment import ascom
+
+
+EXPOSURE_UNIT = "ms"
+GAIN_UNIT = "e/adu"
+INTEGRATION_UNIT = "s"
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -50,6 +58,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.row_count = self.schedule_table.rowCount()
 
         self.mountmodes_tuple = ("Stop", "Home")
+
+        # Models for schedule table columns.
+        self.target_list_model = QStringListModel()
+        self.filter_list_model = QStringListModel()
+
+        # Create Delegates for columns in schedule table.
+        self.time_delegate = QTimeEditItemDelegate(self)
+        self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
+        self.filter_delegate = QComboBoxItemDelegate(self, self.filter_list_model)
+        self.exposure_delegate = QSpinBoxItemDelegate(self, EXPOSURE_UNIT)
+        self.gain_delegate = QSpinBoxItemDelegate(self, GAIN_UNIT)
+        self.integration_delegate = QSpinBoxItemDelegate(self, INTEGRATION_UNIT)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -222,53 +242,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.savelocation_action.triggered.connect(self.change_camera_save_dir)
 
+        # Set the choices for the targets column.
+        self.target_list_model.setStringList(self.mountmodes_tuple + appglobals.targets_tuple)
+
+        # Set the choices for the filters column.
+        filter_names = []
+        for f in appglobals.filters:
+            filter_names.append(f["Name"])
+        self.filter_list_model.setStringList(filter_names)
+
+        # Set item delegates for columns in schedule table.
+        self.schedule_table.setItemDelegateForColumn(0, self.time_delegate)
+        self.schedule_table.setItemDelegateForColumn(1, self.target_delegate)
+        self.schedule_table.setItemDelegateForColumn(2, self.filter_delegate)
+        self.schedule_table.setItemDelegateForColumn(3, self.exposure_delegate)
+        self.schedule_table.setItemDelegateForColumn(4, self.gain_delegate)
+        self.schedule_table.setItemDelegateForColumn(5, self.integration_delegate)
+
+        # Save whenever cell is changed.
+        self.schedule_table.itemChanged.connect(self.save_schedule)
+
     def add_schedule_row(self):
         """Add row in schedule_table."""
         self.row_count = self.schedule_table.rowCount()
         self.schedule_table.insertRow(self.row_count)
-
-        # Create QTimeEdit for Time Column
-        time_timeedit = QtWidgets.QTimeEdit()
-        time_timeedit.setDisplayFormat("HH:mm:ss")
-
-        # Create QComboBox for Target Column
-        target_combobox = QtWidgets.QComboBox()
-        target_combobox.addItems(self.mountmodes_tuple)
-        target_combobox.addItems(appglobals.targets_tuple)
-        target_combobox.setCurrentIndex(-1)
-
-        # Create QComboBox for Filter Column
-        filter_combobox = QtWidgets.QComboBox()
-        for f in appglobals.filters:
-            filter_combobox.addItem(f.get("Name"))
-        filter_combobox.setCurrentIndex(-1)
-
-        # Create QSpinBox for Exposure Column
-        exposure_spinbox = QtWidgets.QSpinBox()
-        exposure_spinbox.setSuffix("ms")
-
-        # Create QSpinBox for Gain Column
-        gain_spinbox = QtWidgets.QSpinBox()
-        gain_spinbox.setSuffix("e/adu")
-
-        # Create QSpinBox for Integration Column
-        integration_spinbox = QtWidgets.QSpinBox()
-        integration_spinbox.setSuffix("s")
-
-        time_timeedit.editingFinished.connect(self.save_schedule)
-        target_combobox.currentIndexChanged.connect(self.save_schedule)
-        filter_combobox.currentIndexChanged.connect(self.save_schedule)
-        exposure_spinbox.editingFinished.connect(self.save_schedule)
-        gain_spinbox.editingFinished.connect(self.save_schedule)
-        integration_spinbox.editingFinished.connect(self.save_schedule)
-
-        # Add widgets to their cells in schedule_table
-        self.schedule_table.setCellWidget(self.row_count, 0, time_timeedit)
-        self.schedule_table.setCellWidget(self.row_count, 1, target_combobox)
-        self.schedule_table.setCellWidget(self.row_count, 2, filter_combobox)
-        self.schedule_table.setCellWidget(self.row_count, 3, exposure_spinbox)
-        self.schedule_table.setCellWidget(self.row_count, 4, gain_spinbox)
-        self.schedule_table.setCellWidget(self.row_count, 5, integration_spinbox)
 
     def remove_schedule_row(self):
         """Remove selected rows from schedule_table."""
@@ -289,17 +286,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             schedule_dict = {}
             for col in range(self.schedule_table.columnCount()):
                 header = str(self.schedule_table.horizontalHeaderItem(col).text())
-                try:
-                    value = str(self.schedule_table.cellWidget(row, col).currentText())
-                except AttributeError:
-                    try:
-                        value = str(self.schedule_table.cellWidget(row, col).cleanText())
-                    except AttributeError:
-                        value = str(self.schedule_table.cellWidget(row, col).text())
+                item = self.schedule_table.item(row, col)
+                value = None
+
+                # Save existing items with numeric strings as integers.
+                if item is None:
+                    pass
+                elif item.text().isnumeric():
+                    value = int(item.text())
+                elif isinstance(item.text(), str) and item.text() not in ("", "None"):
+                    value = item.text()
+
                 schedule_dict.update({header: value})
             schedule_list.append(schedule_dict)
             appglobals.schedule.update({self.schedule_dateedit.text(): schedule_list})
-        print(sys._getframe(1).f_code.co_name)
         with open("schedule.json", "w") as f:
             json.dump(appglobals.schedule, f, indent=4)
 
@@ -311,32 +311,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for f in appglobals.schedule[date]:
                 self.add_schedule_row()
 
-                self.schedule_table.cellWidget(count, 0).blockSignals(True)
-                self.schedule_table.cellWidget(count, 1).blockSignals(True)
-                self.schedule_table.cellWidget(count, 2).blockSignals(True)
-                self.schedule_table.cellWidget(count, 3).blockSignals(True)
-                self.schedule_table.cellWidget(count, 4).blockSignals(True)
-                self.schedule_table.cellWidget(count, 5).blockSignals(True)
-
-                time = QtCore.QTime.fromString(f["Time"])
-                target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
-                set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
-
-                print(time.toString(), target, set_filter, int(f["Exposure"]), int(f["Gain"]), int(f["Integration"]))
-
-                self.schedule_table.cellWidget(count, 0).setTime(time)
-                self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
-                self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
-                self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
-                self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
-                self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
-
-                self.schedule_table.cellWidget(count, 0).blockSignals(False)
-                self.schedule_table.cellWidget(count, 1).blockSignals(False)
-                self.schedule_table.cellWidget(count, 2).blockSignals(False)
-                self.schedule_table.cellWidget(count, 3).blockSignals(False)
-                self.schedule_table.cellWidget(count, 4).blockSignals(False)
-                self.schedule_table.cellWidget(count, 5).blockSignals(False)
+                self.schedule_table.setItem(count, 0, QTableWidgetItem(f["Time"]))
+                self.schedule_table.setItem(count, 1, QTableWidgetItem(f["Target"]))
+                self.schedule_table.setItem(count, 2, QTableWidgetItem(f["Filter"]))
+                self.schedule_table.setItem(count, 3, QTableWidgetItem(str(f["Exposure"])))
+                self.schedule_table.setItem(count, 4, QTableWidgetItem(str(f["Gain"])))
+                self.schedule_table.setItem(count, 5, QTableWidgetItem(str(f["Integration"])))
                 count += 1
 
     def add_filter_row(self):
@@ -401,16 +381,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             json.dump(filter_list, f, indent=0)
         with open("filters.json", "r") as f:
             appglobals.filters = json.load(f)
-        for row in range(self.schedule_table.rowCount()):
-            cbox = self.schedule_table.cellWidget(row, 2)
-            text = cbox.currentText()
-            cbox.blockSignals(True)
-            cbox.clear()
-            for f in appglobals.filters:
-                cbox.addItem(f["Name"])
-            index = cbox.findText(text)
-            cbox.blockSignals(False)
-            cbox.setCurrentIndex(index)
+
+        # Update filter model
+        filter_names = []
+        for f in appglobals.filters:
+            filter_names.append(f["Name"])
+        self.filter_list_model.setStringList(filter_names)
+
         self.position_combobox.blockSignals(True)
         text = self.position_combobox.currentText()
         text2 = self.camera_filter_combobox.currentText()

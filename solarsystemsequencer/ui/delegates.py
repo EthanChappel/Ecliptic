@@ -4,12 +4,14 @@ from PySide2.QtWidgets import QStyledItemDelegate, QTimeEdit, QSpinBox, QComboBo
 
 
 class QTimeEditItemDelegate(QStyledItemDelegate):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, time_spec=Qt.UTC):
         super().__init__(parent=parent)
+        self.time_spec = time_spec
 
     def createEditor(self, parent, option, index):
         editor = QTimeEdit(parent)
         editor.setDisplayFormat("HH:mm:ss")
+        editor.setTimeSpec(self.time_spec)
         return editor
 
     def setEditorData(self, editor, index):

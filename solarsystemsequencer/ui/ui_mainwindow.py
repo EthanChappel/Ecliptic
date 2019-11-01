@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'qt5/mainwindow.ui',
 # licensing of 'qt5/mainwindow.ui' applies.
 #
-# Created: Wed Oct 30 03:43:14 2019
+# Created: Fri Nov  1 17:47:50 2019
 #      by: pyside2-uic  running on PySide2 5.12.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(795, 688)
+        MainWindow.resize(795, 796)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/logo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -815,6 +815,7 @@ class Ui_MainWindow(object):
         self.schedule_dateedit.setCurrentSection(QtWidgets.QDateTimeEdit.DaySection)
         self.schedule_dateedit.setCalendarPopup(False)
         self.schedule_dateedit.setCurrentSectionIndex(2)
+        self.schedule_dateedit.setTimeSpec(QtCore.Qt.UTC)
         self.schedule_dateedit.setObjectName("schedule_dateedit")
         self.horizontallayout.addWidget(self.schedule_dateedit)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)

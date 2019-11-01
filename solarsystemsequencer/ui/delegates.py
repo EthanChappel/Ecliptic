@@ -57,7 +57,7 @@ class QSpinBoxItemDelegate(QStyledItemDelegate):
 
     def setEditorData(self, editor, index):
         data = index.model().data(index, Qt.EditRole)
-        if data != "None":
+        if data not in (None, "None"):
             editor.setValue(int(data))
 
     def setModelData(self, editor, model, index):

@@ -33,6 +33,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
+        self.telescope = None
+        self.camera = None
+        self.guider = None
+        self.wheel = None
+        self.focuser = None
+
         self.camera_thread = None
         self.guider_thread = None
 
@@ -107,19 +113,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Connects pressed event that moves mount to the directional buttons
         self.slewnorth_button.pressed.connect(
-            lambda: appglobals.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
+            lambda: self.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
         )
         self.slewnorth_button.pressed.connect(
-            lambda: appglobals.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
+            lambda: self.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
         )
         self.sleweast_button.pressed.connect(
-            lambda: appglobals.telescope.move_axis(0, self.mount_trackrate_spin.cleanText())
+            lambda: self.telescope.move_axis(0, self.mount_trackrate_spin.cleanText())
         )
         self.slewsouth_button.pressed.connect(
-            lambda: appglobals.telescope.move_axis(1, -1 * float(self.mount_trackrate_spin.cleanText()))
+            lambda: self.telescope.move_axis(1, -1 * float(self.mount_trackrate_spin.cleanText()))
         )
         self.slewwest_button.pressed.connect(
-            lambda: appglobals.telescope.move_axis(0, -1 * float(self.mount_trackrate_spin.cleanText()))
+            lambda: self.telescope.move_axis(0, -1 * float(self.mount_trackrate_spin.cleanText()))
         )
         self.slewnortheast_button.pressed.connect(
             lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(), self.mount_trackrate_spin.cleanText())
@@ -144,10 +150,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         # Connects clicked event that stops mount to the directional buttons
-        self.slewnorth_button.released.connect(lambda: appglobals.telescope.move_axis(1, 0.0))
-        self.sleweast_button.released.connect(lambda: appglobals.telescope.move_axis(0, 0.0))
-        self.slewsouth_button.released.connect(lambda: appglobals.telescope.move_axis(1, 0.0))
-        self.slewwest_button.released.connect(lambda: appglobals.telescope.move_axis(0, 0.0))
+        self.slewnorth_button.released.connect(lambda: self.telescope.move_axis(1, 0.0))
+        self.sleweast_button.released.connect(lambda: self.telescope.move_axis(0, 0.0))
+        self.slewsouth_button.released.connect(lambda: self.telescope.move_axis(1, 0.0))
+        self.slewwest_button.released.connect(lambda: self.telescope.move_axis(0, 0.0))
         self.slewnortheast_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewsoutheast_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewsouthwest_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
@@ -443,9 +449,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.mount_group.isChecked():
             name = "The telescope"
             try:
-                appglobals.telescope = ascom.Telescope()
+                self.telescope = ascom.Telescope()
                 self.telescope_settings()
-                name = appglobals.telescope.name_()
+                name = self.telescope.name_()
                 self.telescope_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -453,21 +459,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.connect_fail_dialog(name)
         elif not self.mount_group.isChecked():
             try:
-                appglobals.telescope.disconnect()
-                appglobals.telescope.dispose()
+                self.telescope.disconnect()
+                self.telescope.dispose()
             except AttributeError as e:
                 print(e)
-            appglobals.telescope = None
+            self.telescope = None
             self.telescope_name_label.setText("Not Connected")
 
     def setup_telescope(self):
-        appglobals.telescope.disconnect()
-        appglobals.telescope.setup_dialog()
-        appglobals.telescope.connect()
+        self.telescope.disconnect()
+        self.telescope.setup_dialog()
+        self.telescope.connect()
         self.telescope_settings()
 
     def telescope_settings(self):
-        if not appglobals.telescope.can_slew_eq():
+        if not self.telescope.can_slew_eq():
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
@@ -480,17 +486,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def goto_target_thread(self):
         if self.object_combobox.currentText() == "Home":
-            appglobals.telescope.home()
+            self.telescope.home()
         elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
-            appglobals.telescope.stop_tracking()
+            self.telescope.stop_tracking()
         else:
             body = get_body(self.object_combobox.currentText().lower(), Time.now())
-            appglobals.telescope.goto(body.ra.hour, body.dec.degree)
+            self.telescope.goto(body.ra.hour, body.dec.degree)
 
-    @staticmethod
-    def slew_diagonal(rate1: float, rate2: float):
-        appglobals.telescope.move_axis(0, rate1)
-        appglobals.telescope.move_axis(1, rate2)
+    def slew_diagonal(self, rate1: float, rate2: float):
+        self.telescope.move_axis(0, rate1)
+        self.telescope.move_axis(1, rate2)
 
     def connect_guider(self):
         if self.guider_group.isChecked():
@@ -499,15 +504,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "The guider"
             try:
                 if not guider_dialog.asi_selected and guider_dialog.accepted:
-                    appglobals.guider = ascom.Camera()
-                    values = self.camera_settings(appglobals.guider)
-                    name = appglobals.guider.name_()
+                    self.guider = ascom.Camera()
+                    values = self.camera_settings(self.guider)
+                    name = self.guider.name_()
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
                 elif guider_dialog.asi_selected and guider_dialog.accepted:
-                    appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
-                    values = self.camera_settings(appglobals.guider)
-                    self.guider_settings_frame.set_camera(appglobals.guider)
+                    self.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
+                    values = self.camera_settings(self.guider)
+                    self.guider_settings_frame.set_camera(self.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
                     self.guider_menu.addAction(self.guider_settings_action)
                 else:
@@ -519,35 +524,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.connect_fail_dialog(name)
         elif not self.guider_group.isChecked():
             try:
-                if type(appglobals.guider) is ascom.Camera:
+                if type(self.guider) is ascom.Camera:
                     self.guider_menu.removeAction(self.ascomguidersettings_action)
-                    appglobals.guider.disconnect()
-                    appglobals.guider.dispose()
-                elif type(appglobals.guider) is asi.Camera:
+                    self.guider.disconnect()
+                    self.guider.dispose()
+                elif type(self.guider) is asi.Camera:
                     self.guider_menu.removeAction(self.guider_settings_action)
-                    appglobals.guider.close()
+                    self.guider.close()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.guider = None
-                self.guider_settings_frame.set_camera(appglobals.guider)
+                self.guider = None
+                self.guider_settings_frame.set_camera(self.guider)
                 self.guider_name_label.setText("Not Connected")
 
     def setup_guider(self):
-        appglobals.guider.disconnect()
-        appglobals.guider.setup_dialog()
-        appglobals.guider.connect()
-        self.setup_guider_controls(self.camera_settings(appglobals.guider))
+        self.guider.disconnect()
+        self.guider.setup_dialog()
+        self.guider.connect()
+        self.setup_guider_controls(self.camera_settings(self.guider))
 
     def set_guider_exposure(self):
-        if type(appglobals.guider) is asi.Camera:
+        if type(self.guider) is asi.Camera:
             exp_us = int(self.guider_exposure_spinbox.cleanText()) * 1000
-            appglobals.guider.set_control_value(asi.ASI_EXPOSURE, exp_us)
+            self.guider.set_control_value(asi.ASI_EXPOSURE, exp_us)
 
     def set_guider_gain(self):
-        if type(appglobals.guider) is asi.Camera:
+        if type(self.guider) is asi.Camera:
             gain = int(self.guider_gain_spinbox.cleanText())
-            appglobals.guider.set_control_value(asi.ASI_GAIN, gain)
+            self.guider.set_control_value(asi.ASI_GAIN, gain)
 
     def setup_guider_controls(self, values):
         if "Gain" in values:
@@ -584,18 +589,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_thread.start()
 
     def guider_preview(self):
-        if type(appglobals.guider) is ascom.Camera:
+        if type(self.guider) is ascom.Camera:
             while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
-                image = appglobals.guider.capture(exp_sec, True)
+                image = self.guider.capture(exp_sec, True)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.guider_preview_label.setPixmap(pix)
         else:
-            appglobals.guider.start_video_capture()
+            self.guider.start_video_capture()
             while self.guider_loop_button.isChecked():
                 timeout = int(self.guider_exposure_spinbox.cleanText()) * 2 + 500
-                image = appglobals.guider.capture_video_frame(timeout=timeout)
+                image = self.guider.capture_video_frame(timeout=timeout)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.guider_preview_label.setPixmap(pix)
@@ -608,15 +613,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             camera_dialog.exec_()
             try:
                 if not camera_dialog.asi_selected and camera_dialog.accepted:
-                    appglobals.camera = ascom.Camera()
-                    values = self.camera_settings(appglobals.camera)
-                    name = appglobals.camera.name_()
+                    self.camera = ascom.Camera()
+                    values = self.camera_settings(self.camera)
+                    name = self.camera.name_()
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                 elif camera_dialog.asi_selected and camera_dialog.accepted:
-                    appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
-                    values = self.camera_settings(appglobals.camera)
-                    self.camera_settings_frame.set_camera(appglobals.camera)
+                    self.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
+                    values = self.camera_settings(self.camera)
+                    self.camera_settings_frame.set_camera(self.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.camera_settings_action)
@@ -630,18 +635,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif not self.camera_group.isChecked():
             try:
-                if type(appglobals.camera) is ascom.Camera:
+                if type(self.camera) is ascom.Camera:
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
-                    appglobals.camera.disconnect()
-                    appglobals.camera.dispose()
-                elif type(appglobals.camera) is asi.Camera:
+                    self.camera.disconnect()
+                    self.camera.dispose()
+                elif type(self.camera) is asi.Camera:
                     self.camera_settings_menu.removeAction(self.camera_settings_action)
-                    appglobals.camera.close()
+                    self.camera.close()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.camera = None
-                self.camera_settings_frame.set_camera(appglobals.camera)
+                self.camera = None
+                self.camera_settings_frame.set_camera(self.camera)
                 self.camera_name_label.setText("Not Connected")
 
     def setup_camera_controls(self, values):
@@ -671,10 +676,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_settings_frame.setup_controls(values)
 
     def setup_camera(self):
-        appglobals.camera.disconnect()
-        appglobals.camera.setup_dialog()
-        appglobals.camera.connect()
-        self.setup_camera_controls(self.camera_settings(appglobals.camera))
+        self.camera.disconnect()
+        self.camera.setup_dialog()
+        self.camera.connect()
+        self.setup_camera_controls(self.camera_settings(self.camera))
 
     def camera_settings(self, camera):
         values = {}
@@ -754,14 +759,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return values
 
     def set_camera_exposure(self):
-        if type(appglobals.camera) is asi.Camera:
+        if type(self.camera) is asi.Camera:
             exp_us = int(self.camera_exposure_spinbox.cleanText()) * 1000
-            appglobals.camera.set_control_value(asi.ASI_EXPOSURE, exp_us)
+            self.camera.set_control_value(asi.ASI_EXPOSURE, exp_us)
 
     def set_camera_gain(self):
-        if type(appglobals.camera) is asi.Camera:
+        if type(self.camera) is asi.Camera:
             gain = int(self.camera_gain_spinbox.cleanText())
-            appglobals.camera.set_control_value(asi.ASI_GAIN, gain)
+            self.camera.set_control_value(asi.ASI_GAIN, gain)
 
     def camera_loop(self):
         if self.camera_loop_button.isChecked():
@@ -773,18 +778,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_thread.start()
 
     def camera_preview(self):
-        if type(appglobals.camera) is ascom.Camera:
+        if type(self.camera) is ascom.Camera:
             while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = appglobals.camera.capture(exp_sec, True)
+                image = self.camera.capture(exp_sec, True)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.camera_preview_label.setPixmap(pix)
         else:
-            appglobals.camera.start_video_capture()
+            self.camera.start_video_capture()
             while self.camera_loop_button.isChecked():
                 timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
-                image = appglobals.camera.capture_video_frame(timeout=timeout)
+                image = self.camera.capture_video_frame(timeout=timeout)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.camera_preview_label.setPixmap(pix)
@@ -793,23 +798,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def camera_record(self):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
-        if type(appglobals.camera) is ascom.Camera:
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
+        if type(self.camera) is ascom.Camera:
+            out = cv2.VideoWriter(avi_name, -1, 20.0, (self.camera.num_x(), self.camera.num_y()), False)
             while self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = appglobals.camera.capture(exp_sec, True)
+                image = self.camera.capture(exp_sec, True)
                 out.write(image)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.camera_preview_label.setPixmap(pix)
         else:
             print(0)
-            width = appglobals.camera.get_camera_property()["MaxWidth"]
-            height = appglobals.camera.get_camera_property()["MaxHeight"]
+            width = self.camera.get_camera_property()["MaxWidth"]
+            height = self.camera.get_camera_property()["MaxHeight"]
             out = cv2.VideoWriter(avi_name, -1, 20.0, (width, height), False)
             while self.camera_capture_button.isChecked():
                 timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
-                image = appglobals.camera.capture_video_frame(timeout=timeout)
+                image = self.camera.capture_video_frame(timeout=timeout)
                 out.write(image)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
@@ -839,9 +844,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.focuser_group.isChecked():
             name = "The focuser"
             try:
-                appglobals.focuser = ascom.Focuser()
+                self.focuser = ascom.Focuser()
                 self.focuser_settings()
-                name = appglobals.focuser.name_()
+                name = self.focuser.name_()
                 self.focuser_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -851,34 +856,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
-                appglobals.focuser.disconnect()
-                appglobals.focuser.dispose()
+                self.focuser.disconnect()
+                self.focuser.dispose()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.focuser = None
+                self.focuser = None
                 self.focuser_name_label.setText("Not Connected")
 
     def setup_focuser(self):
-        appglobals.focuser.disconnect()
-        appglobals.focuser.setup_dialog()
-        appglobals.focuser.connect()
+        self.focuser.disconnect()
+        self.focuser.setup_dialog()
+        self.focuser.connect()
         self.focuser_settings()
 
     def focuser_settings(self):
-        self.focuser_position_spinbox.setMaximum(appglobals.focuser.max_step())
+        self.focuser_position_spinbox.setMaximum(self.focuser.max_step())
         self.focuser_position_spinbox.blockSignals(True)
-        self.focuser_position_spinbox.setValue(appglobals.focuser.position())
+        self.focuser_position_spinbox.setValue(self.focuser.position())
         self.focuser_position_spinbox.blockSignals(False)
-        if appglobals.focuser.temp_comp_available():
-            if appglobals.focuser.is_temp_comp():
+        if self.focuser.temp_comp_available():
+            if self.focuser.is_temp_comp():
                 self.temp_checkbox.setChecked(True)
             else:
                 self.temp_checkbox.setChecked(False)
             self.temp_checkbox.setVisible(True)
         else:
             self.temp_checkbox.setVisible(False)
-        if not appglobals.focuser.absolute():
+        if not self.focuser.absolute():
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
@@ -886,17 +891,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.focuser_action.setChecked(False)
 
     def move_focuser(self):
-        if appglobals.focuser.absolute():
+        if self.focuser.absolute():
             position = self.focuser_position_spinbox.text()
-            appglobals.focuser.move(position)
+            self.focuser.move(position)
 
         # TODO: Implement relative focusing
         else:
-            old_pos = appglobals.focuser.position()
+            old_pos = self.focuser.position()
             position = int(self.focuser_position_spinbox.text()) - old_pos
             print("\nself.focuser_position_spinbox.text() =", int(self.focuser_position_spinbox.text()),
                   "\nold_pos =", old_pos, "\nposition =", position)
-            appglobals.focuser.move(position)
+            self.focuser.move(position)
 
     def temp_comp(self):
         state = self.temp_checkbox.isChecked()
@@ -906,14 +911,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.focuser_position_label.setEnabled(True)
             self.focuser_position_spinbox.setEnabled(True)
-        appglobals.focuser.temp_comp(state)
+        self.focuser.temp_comp(state)
 
     def connect_filters(self):
         if self.wheel_group.isChecked():
             name = "The filter wheel"
             try:
-                appglobals.wheel = ascom.FilterWheel()
-                name = appglobals.wheel.name_()
+                self.wheel = ascom.FilterWheel()
+                name = self.wheel.name_()
                 self.wheel_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -923,25 +928,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
-                appglobals.wheel.disconnect()
-                appglobals.wheel.dispose()
+                self.wheel.disconnect()
+                self.wheel.dispose()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.wheel = None
+                self.wheel = None
                 self.wheel_name_label.setText("Not Connected")
 
-    @staticmethod
-    def setup_filterwheel():
-        appglobals.wheel.disconnect()
-        appglobals.wheel.setup_dialog()
-        appglobals.wheel.connect()
+    def setup_filterwheel(self):
+        self.wheel.disconnect()
+        self.wheel.setup_dialog()
+        self.wheel.connect()
         # self.filterwheel_settings()
 
     def change_filter(self):
         try:
             text = self.position_combobox.currentText()
-            appglobals.wheel.rotate_wheel(text)
+            self.wheel.rotate_wheel(text)
         except AttributeError as e:
             print(e)
 

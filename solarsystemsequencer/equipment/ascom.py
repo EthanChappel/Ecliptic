@@ -3,6 +3,7 @@ import json
 from typing import List, Union
 import numpy as np
 import appglobals
+from equipment.equipment import Device
 import clr
 clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
@@ -10,24 +11,27 @@ import ASCOM.DriverAccess
 import ASCOM.Utilities
 
 
-class Device:
+class AscomDevice(Device):
     def __init__(self, device):
         self.device = None
         self.choose_dialog = ASCOM.Utilities.Chooser()
         self.choose_dialog.DeviceType = device
         self.choose = self.choose_dialog.Choose()
 
-    def name_(self) -> str:
+    def device_name(self) -> str:
         return self.device.Name
 
-    def connect(self):
-        self.device.Connected = True
+    def set_connected(self, connected: bool):
+        self.device.Connected = connected
 
-    def connected(self) -> bool:
-        return self.device.Connected
+    def connect(self):
+        self.set_connected(True)
 
     def disconnect(self):
-        self.device.Connected = False
+        self.set_connected(False)
+
+    def is_connected(self) -> bool:
+        return self.device.Connected
 
     def dispose(self):
         self.device.Dispose()
@@ -37,7 +41,7 @@ class Device:
         self.device.SetupDialog()
 
 
-class Telescope(Device):
+class Telescope(AscomDevice):
     def __init__(self):
         super().__init__("Telescope")
         self.device = ASCOM.DriverAccess.Telescope(self.choose)
@@ -70,7 +74,7 @@ class Telescope(Device):
         self.device.MoveAxis(axis, rate)
 
 
-class Camera(Device):
+class Camera(AscomDevice):
     def __init__(self):
         super().__init__("Camera")
         self.device = ASCOM.DriverAccess.Camera(self.choose)
@@ -121,7 +125,7 @@ class Camera(Device):
         return list(self.device.ImageArray)
 
 
-class FilterWheel(Device):
+class FilterWheel(AscomDevice):
     def __init__(self):
         super().__init__("FilterWheel")
         self.device = ASCOM.DriverAccess.FilterWheel(self.choose)
@@ -144,7 +148,7 @@ class FilterWheel(Device):
                         pass
 
 
-class Focuser(Device):
+class Focuser(AscomDevice):
     def __init__(self):
         super().__init__("Focuser")
         self.device = ASCOM.DriverAccess.Focuser(self.choose)

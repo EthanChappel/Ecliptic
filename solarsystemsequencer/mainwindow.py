@@ -451,7 +451,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.telescope = ascom.Telescope()
                 self.telescope_settings()
-                name = self.telescope.name_()
+                name = self.telescope.device_name()
                 self.telescope_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -506,7 +506,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not guider_dialog.asi_selected and guider_dialog.accepted:
                     self.guider = ascom.Camera()
                     values = self.camera_settings(self.guider)
-                    name = self.guider.name_()
+                    name = self.guider.device_name()
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
                 elif guider_dialog.asi_selected and guider_dialog.accepted:
@@ -615,7 +615,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not camera_dialog.asi_selected and camera_dialog.accepted:
                     self.camera = ascom.Camera()
                     values = self.camera_settings(self.camera)
-                    name = self.camera.name_()
+                    name = self.camera.device_name()
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                 elif camera_dialog.asi_selected and camera_dialog.accepted:
@@ -846,7 +846,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.focuser = ascom.Focuser()
                 self.focuser_settings()
-                name = self.focuser.name_()
+                name = self.focuser.device_name()
                 self.focuser_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -918,7 +918,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "The filter wheel"
             try:
                 self.wheel = ascom.FilterWheel()
-                name = self.wheel.name_()
+                name = self.wheel.device_name()
                 self.wheel_name_label.setText(name)
             except Exception as e:
                 print(e)

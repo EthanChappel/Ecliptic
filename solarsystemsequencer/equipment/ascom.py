@@ -3,7 +3,7 @@ import json
 from typing import List, Union
 import numpy as np
 import appglobals
-from equipment.equipment import Device, Telescope, FilterWheel
+from equipment.equipment import Device, Telescope, FilterWheel, Focuser
 import clr
 clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
@@ -160,19 +160,19 @@ class AscomFilterWheel(FilterWheel, AscomDevice):
                         pass
 
 
-class Focuser(AscomDevice):
+class AscomFocuser(Focuser, AscomDevice):
     def __init__(self):
         super().__init__("Focuser")
         self.device = ASCOM.DriverAccess.Focuser(self.choose)
         self.connect()
 
-    def move(self, pos: int):
+    def set_position(self, pos: int):
         self.device.Move(pos)
 
-    def position(self) -> int:
+    def get_position(self) -> int:
         return self.device.Position
 
-    def absolute(self) -> bool:
+    def is_abs_position(self) -> bool:
         return self.device.Absolute
 
     def max_step(self) -> int:
@@ -181,8 +181,8 @@ class Focuser(AscomDevice):
     def is_temp_comp(self) -> bool:
         return self.device.TempComp
 
-    def temp_comp_available(self) -> bool:
+    def has_temp_comp(self) -> bool:
         return self.device.TempCompAvailable
 
-    def temp_comp(self, val: bool):
+    def set_temp_comp(self, val: bool):
         self.device.TempComp = val

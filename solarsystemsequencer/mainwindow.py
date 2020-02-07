@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -844,7 +844,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.focuser_group.isChecked():
             name = "The focuser"
             try:
-                self.focuser = ascom.Focuser()
+                self.focuser = ascom.AscomFocuser()
                 self.focuser_settings()
                 name = self.focuser.device_name()
                 self.focuser_name_label.setText(name)
@@ -873,9 +873,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def focuser_settings(self):
         self.focuser_position_spinbox.setMaximum(self.focuser.max_step())
         self.focuser_position_spinbox.blockSignals(True)
-        self.focuser_position_spinbox.setValue(self.focuser.position())
+        self.focuser_position_spinbox.setValue(self.focuser.get_position())
         self.focuser_position_spinbox.blockSignals(False)
-        if self.focuser.temp_comp_available():
+        if self.focuser.has_temp_comp():
             if self.focuser.is_temp_comp():
                 self.temp_checkbox.setChecked(True)
             else:
@@ -883,7 +883,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.temp_checkbox.setVisible(True)
         else:
             self.temp_checkbox.setVisible(False)
-        if not self.focuser.absolute():
+        if not self.focuser.is_abs_position():
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
@@ -891,17 +891,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.focuser_action.setChecked(False)
 
     def move_focuser(self):
-        if self.focuser.absolute():
+        if self.focuser.is_abs_position():
             position = self.focuser_position_spinbox.text()
-            self.focuser.move(position)
+            self.focuser.set_position(position)
 
         # TODO: Implement relative focusing
         else:
-            old_pos = self.focuser.position()
+            old_pos = self.focuser.get_position()
             position = int(self.focuser_position_spinbox.text()) - old_pos
             print("\nself.focuser_position_spinbox.text() =", int(self.focuser_position_spinbox.text()),
                   "\nold_pos =", old_pos, "\nposition =", position)
-            self.focuser.move(position)
+            self.focuser.set_position(position)
 
     def temp_comp(self):
         state = self.temp_checkbox.isChecked()
@@ -911,7 +911,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.focuser_position_label.setEnabled(True)
             self.focuser_position_spinbox.setEnabled(True)
-        self.focuser.temp_comp(state)
+        self.focuser.set_temp_comp(state)
 
     def connect_filters(self):
         if self.wheel_group.isChecked():

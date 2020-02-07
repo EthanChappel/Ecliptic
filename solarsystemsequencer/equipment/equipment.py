@@ -48,3 +48,26 @@ class FilterWheel(Device):
 
     @abstractmethod
     def rotate_wheel(self, text: Union[str, int]): pass
+
+
+class Focuser(Device):
+    @abstractmethod
+    def set_position(self, pos: int): pass
+
+    @abstractmethod
+    def get_position(self) -> int: pass
+
+    @abstractmethod
+    def is_abs_position(self) -> bool: pass
+
+    @abstractmethod
+    def max_step(self) -> int: pass
+
+    @abstractmethod
+    def is_temp_comp(self) -> bool: pass
+
+    @abstractmethod
+    def has_temp_comp(self) -> bool: pass
+
+    @abstractmethod
+    def set_temp_comp(self, val: bool): pass

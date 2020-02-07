@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Union
 
 
 class Device(ABC):
@@ -39,3 +40,11 @@ class Telescope(Device):
 
     @abstractmethod
     def get_pier_side(self) -> int: pass
+
+
+class FilterWheel(Device):
+    @abstractmethod
+    def wheel_position(self, pos: int): pass
+
+    @abstractmethod
+    def rotate_wheel(self, text: Union[str, int]): pass

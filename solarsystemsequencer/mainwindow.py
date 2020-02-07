@@ -917,7 +917,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.wheel_group.isChecked():
             name = "The filter wheel"
             try:
-                self.wheel = ascom.FilterWheel()
+                self.wheel = ascom.AscomFilterWheel()
                 name = self.wheel.device_name()
                 self.wheel_name_label.setText(name)
             except Exception as e:

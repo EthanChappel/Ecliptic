@@ -3,7 +3,7 @@ import json
 from typing import List, Union
 import numpy as np
 import appglobals
-from equipment.equipment import Device, Telescope
+from equipment.equipment import Device, Telescope, FilterWheel
 import clr
 clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
@@ -137,7 +137,7 @@ class Camera(AscomDevice):
         return list(self.device.ImageArray)
 
 
-class FilterWheel(AscomDevice):
+class AscomFilterWheel(FilterWheel, AscomDevice):
     def __init__(self):
         super().__init__("FilterWheel")
         self.device = ASCOM.DriverAccess.FilterWheel(self.choose)

@@ -16,22 +16,7 @@ class AscomDevice(Device):
 
     def __init__(self, device: type):
         self.driver = device(self.chooser(type(self)._device_type))
-        self.connect()
-
-    def device_name(self) -> str:
-        return self.driver.Name
-
-    def set_connected(self, connected: bool):
-        self.driver.Connected = connected
-
-    def connect(self):
-        self.set_connected(True)
-
-    def disconnect(self):
-        self.set_connected(False)
-
-    def is_connected(self) -> bool:
-        return self.driver.Connected
+        self.driver.Connected = True
 
     def dispose(self):
         self.driver.Dispose()
@@ -45,6 +30,18 @@ class AscomDevice(Device):
         choose_dialog = ASCOM.Utilities.Chooser()
         choose_dialog.DeviceType = device_type
         return choose_dialog.Choose()
+
+    @property
+    def name(self) -> str:
+        return self.driver.Name
+
+    @property
+    def connected(self):
+        return self.driver.Connected
+
+    @connected.setter
+    def connected(self, value: bool):
+        self.driver.Connected = value
 
 
 class AscomTelescope(Telescope, AscomDevice):

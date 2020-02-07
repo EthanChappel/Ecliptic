@@ -5,16 +5,19 @@ import numpy as np
 
 class Device(ABC):
     @abstractmethod
-    def device_name(self) -> str: pass
-
-    @abstractmethod
-    def is_connected(self) -> bool: pass
-
-    @abstractmethod
-    def set_connected(self, connected: bool): pass
-
-    @abstractmethod
     def setup_dialog(self): pass
+
+    @property
+    @abstractmethod
+    def name(self) -> str: pass
+
+    @property
+    @abstractmethod
+    def connected(self): pass
+
+    @connected.setter
+    @abstractmethod
+    def connected(self, value: bool): pass
 
 
 class Telescope(Device):

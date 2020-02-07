@@ -451,7 +451,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.telescope = ascom.AscomTelescope()
                 self.telescope_settings()
-                name = self.telescope.device_name()
+                name = self.telescope.name
                 self.telescope_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -459,7 +459,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.connect_fail_dialog(name)
         elif not self.mount_group.isChecked():
             try:
-                self.telescope.disconnect()
+                self.telescope.connected = False
                 self.telescope.dispose()
             except AttributeError as e:
                 print(e)
@@ -467,9 +467,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.telescope_name_label.setText("Not Connected")
 
     def setup_telescope(self):
-        self.telescope.disconnect()
+        self.telescope.connected = False
         self.telescope.setup_dialog()
-        self.telescope.connect()
+        self.telescope.connected = True
         self.telescope_settings()
 
     def telescope_settings(self):
@@ -506,7 +506,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not guider_dialog.asi_selected and guider_dialog.accepted:
                     self.guider = ascom.AscomCamera()
                     values = self.camera_settings(self.guider)
-                    name = self.guider.device_name()
+                    name = self.guider.name
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
                 elif guider_dialog.asi_selected and guider_dialog.accepted:
@@ -526,7 +526,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 if type(self.guider) is ascom.AscomCamera:
                     self.guider_menu.removeAction(self.ascomguidersettings_action)
-                    self.guider.disconnect()
+                    self.guider.connected = False
                     self.guider.dispose()
                 elif type(self.guider) is asi.Camera:
                     self.guider_menu.removeAction(self.guider_settings_action)
@@ -539,9 +539,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.guider_name_label.setText("Not Connected")
 
     def setup_guider(self):
-        self.guider.disconnect()
+        self.guider.connected = False
         self.guider.setup_dialog()
-        self.guider.connect()
+        self.guider.connected = True
         self.setup_guider_controls(self.camera_settings(self.guider))
 
     def set_guider_exposure(self):
@@ -615,7 +615,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not camera_dialog.asi_selected and camera_dialog.accepted:
                     self.camera = ascom.AscomCamera()
                     values = self.camera_settings(self.camera)
-                    name = self.camera.device_name()
+                    name = self.camera.name
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                 elif camera_dialog.asi_selected and camera_dialog.accepted:
@@ -637,7 +637,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 if type(self.camera) is ascom.AscomCamera:
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
-                    self.camera.disconnect()
+                    self.camera.connected = False
                     self.camera.dispose()
                 elif type(self.camera) is asi.Camera:
                     self.camera_settings_menu.removeAction(self.camera_settings_action)
@@ -676,9 +676,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_settings_frame.setup_controls(values)
 
     def setup_camera(self):
-        self.camera.disconnect()
+        self.camera.connected = False
         self.camera.setup_dialog()
-        self.camera.connect()
+        self.camera.connected = True
         self.setup_camera_controls(self.camera_settings(self.camera))
 
     def camera_settings(self, camera):
@@ -846,7 +846,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.focuser = ascom.AscomFocuser()
                 self.focuser_settings()
-                name = self.focuser.device_name()
+                name = self.focuser.name
                 self.focuser_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -856,7 +856,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
-                self.focuser.disconnect()
+                self.focuser.connected = False
                 self.focuser.dispose()
             except AttributeError as e:
                 print(e)
@@ -865,9 +865,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.focuser_name_label.setText("Not Connected")
 
     def setup_focuser(self):
-        self.focuser.disconnect()
+        self.focuser.connected = False
         self.focuser.setup_dialog()
-        self.focuser.connect()
+        self.focuser.connected = True
         self.focuser_settings()
 
     def focuser_settings(self):
@@ -918,7 +918,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "The filter wheel"
             try:
                 self.wheel = ascom.AscomFilterWheel()
-                name = self.wheel.device_name()
+                name = self.wheel.name
                 self.wheel_name_label.setText(name)
             except Exception as e:
                 print(e)
@@ -928,7 +928,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
-                self.wheel.disconnect()
+                self.wheel.connected = False
                 self.wheel.dispose()
             except AttributeError as e:
                 print(e)
@@ -937,9 +937,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.wheel_name_label.setText("Not Connected")
 
     def setup_filterwheel(self):
-        self.wheel.disconnect()
+        self.wheel.connected = False
         self.wheel.setup_dialog()
-        self.wheel.connect()
+        self.wheel.connected = True
         # self.filterwheel_settings()
 
     def change_filter(self):

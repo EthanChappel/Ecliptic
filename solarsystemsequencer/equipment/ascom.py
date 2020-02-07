@@ -3,7 +3,7 @@ import json
 from typing import List, Union
 import numpy as np
 import appglobals
-from equipment.equipment import Device
+from equipment.equipment import Device, Telescope
 import clr
 clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
@@ -41,7 +41,7 @@ class AscomDevice(Device):
         self.device.SetupDialog()
 
 
-class Telescope(AscomDevice):
+class AscomTelescope(Telescope, AscomDevice):
     def __init__(self):
         super().__init__("Telescope")
         self.device = ASCOM.DriverAccess.Telescope(self.choose)
@@ -52,26 +52,38 @@ class Telescope(AscomDevice):
     def can_slew_alt_az(self) -> bool:
         return self.device.CanSlewAltAz
 
-    def home(self):
+    def goto_home(self):
         self.device.Unpark()
         self.device.FindHome()
 
-    def park(self):
-        self.device.Park()
+    def set_parked(self, parked: bool):
+        if parked:
+            self.device.Park()
+        else:
+            self.device.Unpark()
+
+    def is_tracking(self) -> bool:
+        return self.device.Tracking
+
+    def set_tracking(self, tracking: bool):
+        self.device.Tracking = tracking
 
     def can_slew(self) -> bool:
         return self.device.CanSlew
-
-    def stop_tracking(self):
-        self.device.Tracking = False
 
     def goto(self, ra, dec):
         self.device.Tracking = True
         self.device.SlewToCoordinates(ra, dec)
 
-    def move_axis(self, axis, rate):
+    def move_axis(self, axis: int, rate: float):
         self.device.Tracking = True
         self.device.MoveAxis(axis, rate)
+
+    def pulse_guide(self, direction: int, duration: int):
+        self.device.PulseGuide(direction, duration)
+
+    def get_pier_side(self):
+        return self.device.SideOfPier
 
 
 class Camera(AscomDevice):

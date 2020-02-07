@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -449,7 +449,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.mount_group.isChecked():
             name = "The telescope"
             try:
-                self.telescope = ascom.Telescope()
+                self.telescope = ascom.AscomTelescope()
                 self.telescope_settings()
                 name = self.telescope.device_name()
                 self.telescope_name_label.setText(name)
@@ -486,9 +486,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def goto_target_thread(self):
         if self.object_combobox.currentText() == "Home":
-            self.telescope.home()
+            self.telescope.goto_home()
         elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
-            self.telescope.stop_tracking()
+            self.telescope.set_tracking(False)
         else:
             body = get_body(self.object_combobox.currentText().lower(), Time.now())
             self.telescope.goto(body.ra.hour, body.dec.degree)

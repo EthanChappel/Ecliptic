@@ -3,7 +3,7 @@ import json
 from typing import List, Union
 import numpy as np
 import appglobals
-from equipment.equipment import Device, Telescope, FilterWheel, Focuser
+from equipment.equipment import Device, Telescope, Camera, FilterWheel, Focuser
 import clr
 clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
@@ -86,34 +86,34 @@ class AscomTelescope(Telescope, AscomDevice):
         return self.device.SideOfPier
 
 
-class Camera(AscomDevice):
+class AscomCamera(Camera, AscomDevice):
     def __init__(self):
         super().__init__("Camera")
         self.device = ASCOM.DriverAccess.Camera(self.choose)
         self.connect()
 
-    def gain_min(self) -> int:
+    def min_gain(self) -> int:
         return self.device.GainMin
 
-    def gain_max(self) -> int:
+    def max_gain(self) -> int:
         return self.device.GainMax
 
     def gain(self) -> int:
         return self.device.Gain
 
-    def exposure_min(self) -> float:
+    def min_exposure(self) -> float:
         return self.device.ExposureMin
 
-    def exposure_max(self) -> float:
+    def max_exposure(self) -> float:
         return self.device.ExposureMax
 
-    def num_x(self) -> int:
+    def image_width(self) -> int:
         return self.device.NumX
 
-    def num_y(self) -> int:
+    def image_height(self) -> int:
         return self.device.NumY
 
-    def image_ready(self) -> bool:
+    def exposure_complete(self) -> bool:
         return self.device.ImageReady
 
     def capture(self, exposure: float, light: bool) -> np.ndarray:
@@ -130,7 +130,7 @@ class Camera(AscomDevice):
     def stop_exposure(self):
         self.device.StopExposure()
 
-    def percent_completed(self) -> int:
+    def exposure_progress(self) -> int:
         return self.device.PercentCompleted
 
     def image_array(self) -> List[int]:

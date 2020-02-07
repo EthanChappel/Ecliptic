@@ -504,7 +504,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "The guider"
             try:
                 if not guider_dialog.asi_selected and guider_dialog.accepted:
-                    self.guider = ascom.Camera()
+                    self.guider = ascom.AscomCamera()
                     values = self.camera_settings(self.guider)
                     name = self.guider.device_name()
                     self.guider_name_label.setText(name)
@@ -524,7 +524,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.connect_fail_dialog(name)
         elif not self.guider_group.isChecked():
             try:
-                if type(self.guider) is ascom.Camera:
+                if type(self.guider) is ascom.AscomCamera:
                     self.guider_menu.removeAction(self.ascomguidersettings_action)
                     self.guider.disconnect()
                     self.guider.dispose()
@@ -589,7 +589,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_thread.start()
 
     def guider_preview(self):
-        if type(self.guider) is ascom.Camera:
+        if type(self.guider) is ascom.AscomCamera:
             while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
                 image = self.guider.capture(exp_sec, True)
@@ -613,7 +613,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             camera_dialog.exec_()
             try:
                 if not camera_dialog.asi_selected and camera_dialog.accepted:
-                    self.camera = ascom.Camera()
+                    self.camera = ascom.AscomCamera()
                     values = self.camera_settings(self.camera)
                     name = self.camera.device_name()
                     self.camera_name_label.setText(name)
@@ -635,7 +635,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif not self.camera_group.isChecked():
             try:
-                if type(self.camera) is ascom.Camera:
+                if type(self.camera) is ascom.AscomCamera:
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
                     self.camera.disconnect()
                     self.camera.dispose()
@@ -683,11 +683,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_settings(self, camera):
         values = {}
-        if type(camera) is ascom.Camera:
-            values.update({"Gain": {"Min": camera.gain_min(), "Max": camera.gain_max(), "Current": camera.gain()}})
-            values.update({"Exposure": {"Min": camera.exposure_min() * 1000,
-                                        "Max": camera.exposure_max() * 1000,
-                                        "Current": camera.exposure_min() * 1000}})  # No current value in ASCOM
+        if type(camera) is ascom.AscomCamera:
+            values.update({"Gain": {"Min": camera.min_gain(), "Max": camera.max_gain(), "Current": camera.gain()}})
+            values.update({"Exposure": {"Min": camera.min_exposure() * 1000,
+                                        "Max": camera.max_exposure() * 1000,
+                                        "Current": camera.min_exposure() * 1000}})  # No current value in ASCOM
 
         elif type(camera) is asi.Camera:
             controls = camera.get_controls()
@@ -778,7 +778,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_thread.start()
 
     def camera_preview(self):
-        if type(self.camera) is ascom.Camera:
+        if type(self.camera) is ascom.AscomCamera:
             while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
                 image = self.camera.capture(exp_sec, True)
@@ -798,8 +798,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def camera_record(self):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
-        if type(self.camera) is ascom.Camera:
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (self.camera.num_x(), self.camera.num_y()), False)
+        if type(self.camera) is ascom.AscomCamera:
+            out = cv2.VideoWriter(avi_name, -1, 20.0, (self.camera.image_width(), self.camera.image_height()), False)
             while self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
                 image = self.camera.capture(exp_sec, True)

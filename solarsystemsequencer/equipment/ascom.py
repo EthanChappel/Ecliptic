@@ -12,11 +12,11 @@ import ASCOM.Utilities
 
 
 class AscomDevice(Device):
-    def __init__(self, device):
-        self.device = None
-        self.choose_dialog = ASCOM.Utilities.Chooser()
-        self.choose_dialog.DeviceType = device
-        self.choose = self.choose_dialog.Choose()
+    _device_type = None
+
+    def __init__(self, device: type):
+        self.device = device(self.chooser(type(self)._device_type))
+        self.connect()
 
     def device_name(self) -> str:
         return self.device.Name
@@ -40,11 +40,18 @@ class AscomDevice(Device):
     def setup_dialog(self):
         self.device.SetupDialog()
 
+    @staticmethod
+    def chooser(device_type: str) -> str:
+        choose_dialog = ASCOM.Utilities.Chooser()
+        choose_dialog.DeviceType = device_type
+        return choose_dialog.Choose()
+
 
 class AscomTelescope(Telescope, AscomDevice):
+    _device_type = "Telescope"
+
     def __init__(self):
-        super().__init__("Telescope")
-        self.device = ASCOM.DriverAccess.Telescope(self.choose)
+        super().__init__(ASCOM.DriverAccess.Telescope)
 
     def can_slew_eq(self) -> bool:
         return self.device.CanSlew
@@ -87,10 +94,10 @@ class AscomTelescope(Telescope, AscomDevice):
 
 
 class AscomCamera(Camera, AscomDevice):
+    _device_type = "Camera"
+
     def __init__(self):
-        super().__init__("Camera")
-        self.device = ASCOM.DriverAccess.Camera(self.choose)
-        self.connect()
+        super().__init__(ASCOM.DriverAccess.Camera)
 
     def min_gain(self) -> int:
         return self.device.GainMin
@@ -138,10 +145,10 @@ class AscomCamera(Camera, AscomDevice):
 
 
 class AscomFilterWheel(FilterWheel, AscomDevice):
+    _device_type = "FilterWheel"
+
     def __init__(self):
-        super().__init__("FilterWheel")
-        self.device = ASCOM.DriverAccess.FilterWheel(self.choose)
-        self.connect()
+        super().__init__(ASCOM.DriverAccess.FilterWheel)
 
     def wheel_position(self, pos: int):
         self.device.Position = pos
@@ -161,10 +168,10 @@ class AscomFilterWheel(FilterWheel, AscomDevice):
 
 
 class AscomFocuser(Focuser, AscomDevice):
+    _device_type = "Focuser"
+
     def __init__(self):
-        super().__init__("Focuser")
-        self.device = ASCOM.DriverAccess.Focuser(self.choose)
-        self.connect()
+        super().__init__(ASCOM.DriverAccess.Focuser)
 
     def set_position(self, pos: int):
         self.device.Move(pos)

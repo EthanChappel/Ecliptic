@@ -36,14 +36,17 @@ class Telescope(Device):
     @abstractmethod
     def set_parked(self, parked: bool): pass
 
+    @property
     @abstractmethod
-    def is_tracking(self) -> bool: pass
+    def tracking(self) -> bool: pass
 
+    @tracking.setter
     @abstractmethod
-    def set_tracking(self, tracking: bool): pass
+    def tracking(self, value: bool): pass
 
+    @property
     @abstractmethod
-    def get_pier_side(self) -> int: pass
+    def pier_side(self) -> int: pass
 
 
 class Camera(Device):

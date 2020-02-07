@@ -50,12 +50,6 @@ class AscomTelescope(Telescope, AscomDevice):
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.Telescope)
 
-    def can_slew_eq(self) -> bool:
-        return self.driver.CanSlew
-
-    def can_slew_alt_az(self) -> bool:
-        return self.driver.CanSlewAltAz
-
     def goto_home(self):
         self.driver.Unpark()
         self.driver.FindHome()
@@ -65,15 +59,6 @@ class AscomTelescope(Telescope, AscomDevice):
             self.driver.Park()
         else:
             self.driver.Unpark()
-
-    def is_tracking(self) -> bool:
-        return self.driver.Tracking
-
-    def set_tracking(self, tracking: bool):
-        self.driver.Tracking = tracking
-
-    def can_slew(self) -> bool:
-        return self.driver.CanSlew
 
     def goto(self, ra, dec):
         self.driver.Tracking = True
@@ -86,7 +71,28 @@ class AscomTelescope(Telescope, AscomDevice):
     def pulse_guide(self, direction: int, duration: int):
         self.driver.PulseGuide(direction, duration)
 
-    def get_pier_side(self):
+    @property
+    def can_slew_eq(self) -> bool:
+        return self.driver.CanSlew
+
+    @property
+    def can_slew_alt_az(self) -> bool:
+        return self.driver.CanSlewAltAz
+
+    @property
+    def tracking(self) -> bool:
+        return self.driver.Tracking
+
+    @tracking.setter
+    def tracking(self, value: bool):
+        self.driver.Tracking = value
+
+    @property
+    def can_slew(self) -> bool:
+        return self.driver.CanSlew
+
+    @property
+    def pier_side(self):
         return self.driver.SideOfPier
 
 

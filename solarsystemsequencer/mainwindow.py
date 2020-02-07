@@ -473,7 +473,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope_settings()
 
     def telescope_settings(self):
-        if not self.telescope.can_slew_eq():
+        if not self.telescope.can_slew_eq:
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
@@ -488,7 +488,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.object_combobox.currentText() == "Home":
             self.telescope.goto_home()
         elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
-            self.telescope.set_tracking(False)
+            self.telescope.tracking = False
         else:
             body = get_body(self.object_combobox.currentText().lower(), Time.now())
             self.telescope.goto(body.ra.hour, body.dec.degree)

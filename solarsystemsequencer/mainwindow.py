@@ -684,10 +684,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def camera_settings(self, camera):
         values = {}
         if type(camera) is ascom.AscomCamera:
-            values.update({"Gain": {"Min": camera.min_gain(), "Max": camera.max_gain(), "Current": camera.gain()}})
-            values.update({"Exposure": {"Min": camera.min_exposure() * 1000,
-                                        "Max": camera.max_exposure() * 1000,
-                                        "Current": camera.min_exposure() * 1000}})  # No current value in ASCOM
+            values.update({"Gain": {"Min": camera.min_gain, "Max": camera.max_gain, "Current": camera.gain}})
+            values.update({"Exposure": {"Min": camera.min_exposure * 1000,
+                                        "Max": camera.max_exposure * 1000,
+                                        "Current": camera.min_exposure * 1000}})  # No current value in ASCOM
 
         elif type(camera) is asi.Camera:
             controls = camera.get_controls()
@@ -799,7 +799,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
         if type(self.camera) is ascom.AscomCamera:
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (self.camera.image_width(), self.camera.image_height()), False)
+            out = cv2.VideoWriter(avi_name, -1, 20.0, (self.camera.image_width, self.camera.image_height), False)
             while self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
                 image = self.camera.capture(exp_sec, True)

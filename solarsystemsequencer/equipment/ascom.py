@@ -102,30 +102,6 @@ class AscomCamera(Camera, AscomDevice):
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.Camera)
 
-    def min_gain(self) -> int:
-        return self.driver.GainMin
-
-    def max_gain(self) -> int:
-        return self.driver.GainMax
-
-    def gain(self) -> int:
-        return self.driver.Gain
-
-    def min_exposure(self) -> float:
-        return self.driver.ExposureMin
-
-    def max_exposure(self) -> float:
-        return self.driver.ExposureMax
-
-    def image_width(self) -> int:
-        return self.driver.NumX
-
-    def image_height(self) -> int:
-        return self.driver.NumY
-
-    def exposure_complete(self) -> bool:
-        return self.driver.ImageReady
-
     def capture(self, exposure: float, light: bool) -> np.ndarray:
         self.driver.StartExposure(exposure, light)
         while not self.driver.ImageReady:
@@ -140,9 +116,43 @@ class AscomCamera(Camera, AscomDevice):
     def stop_exposure(self):
         self.driver.StopExposure()
 
+    @property
+    def min_gain(self) -> int:
+        return self.driver.GainMin
+
+    @property
+    def max_gain(self) -> int:
+        return self.driver.GainMax
+
+    @property
+    def gain(self) -> int:
+        return self.driver.Gain
+
+    @property
+    def min_exposure(self) -> float:
+        return self.driver.ExposureMin
+
+    @property
+    def max_exposure(self) -> float:
+        return self.driver.ExposureMax
+
+    @property
+    def image_width(self) -> int:
+        return self.driver.NumX
+
+    @property
+    def image_height(self) -> int:
+        return self.driver.NumY
+
+    @property
+    def exposure_complete(self) -> bool:
+        return self.driver.ImageReady
+
+    @property
     def exposure_progress(self) -> int:
         return self.driver.PercentCompleted
 
+    @property
     def image_array(self) -> List[int]:
         return list(self.driver.ImageArray)
 

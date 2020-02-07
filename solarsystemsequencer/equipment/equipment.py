@@ -51,35 +51,44 @@ class Telescope(Device):
 
 class Camera(Device):
     @abstractmethod
-    def min_gain(self) -> int: pass
-
-    @abstractmethod
-    def max_gain(self) -> int: pass
-
-    @abstractmethod
-    def gain(self) -> int: pass
-
-    @abstractmethod
-    def min_exposure(self) -> float: pass
-
-    @abstractmethod
-    def max_exposure(self) -> float: pass
-
-    @abstractmethod
-    def image_width(self) -> int: pass
-
-    @abstractmethod
-    def image_height(self) -> int: pass
-
-    @abstractmethod
-    def exposure_complete(self) -> bool: pass
-
-    @abstractmethod
     def capture(self, exposure: float, light: bool) -> np.ndarray: pass
 
     @abstractmethod
     def stop_exposure(self): pass
 
+    @property
+    @abstractmethod
+    def min_gain(self) -> int: pass
+
+    @property
+    @abstractmethod
+    def max_gain(self) -> int: pass
+
+    @property
+    @abstractmethod
+    def gain(self) -> int: pass
+
+    @property
+    @abstractmethod
+    def min_exposure(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def max_exposure(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def image_width(self) -> int: pass
+
+    @property
+    @abstractmethod
+    def image_height(self) -> int: pass
+
+    @property
+    @abstractmethod
+    def exposure_complete(self) -> bool: pass
+
+    @property
     @abstractmethod
     def exposure_progress(self) -> int: pass
 

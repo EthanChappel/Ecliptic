@@ -163,7 +163,12 @@ class AscomFilterWheel(FilterWheel, AscomDevice):
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.FilterWheel)
 
-    def wheel_position(self, pos: int):
+    @property
+    def position(self) -> int:
+        return self.driver.Position
+
+    @position.setter
+    def position(self, pos: int):
         self.driver.Position = pos
 
     def rotate_wheel(self, text: Union[str, int]):

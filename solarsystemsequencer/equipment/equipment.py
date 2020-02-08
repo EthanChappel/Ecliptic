@@ -94,8 +94,13 @@ class Camera(Device):
 
 
 class FilterWheel(Device):
+    @property
     @abstractmethod
-    def wheel_position(self, pos: int): pass
+    def position(self): pass
+
+    @position.setter
+    @abstractmethod
+    def position(self, pos: int): pass
 
     @abstractmethod
     def rotate_wheel(self, text: Union[str, int]): pass

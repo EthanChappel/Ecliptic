@@ -871,12 +871,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.focuser_settings()
 
     def focuser_settings(self):
-        self.focuser_position_spinbox.setMaximum(self.focuser.max_step())
+        self.focuser_position_spinbox.setMaximum(self.focuser.max_step)
         self.focuser_position_spinbox.blockSignals(True)
-        self.focuser_position_spinbox.setValue(self.focuser.get_position())
+        self.focuser_position_spinbox.setValue(self.focuser.position)
         self.focuser_position_spinbox.blockSignals(False)
         if self.focuser.has_temp_comp():
-            if self.focuser.is_temp_comp():
+            if self.focuser.temp_comp:
                 self.temp_checkbox.setChecked(True)
             else:
                 self.temp_checkbox.setChecked(False)
@@ -893,15 +893,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def move_focuser(self):
         if self.focuser.is_abs_position():
             position = self.focuser_position_spinbox.text()
-            self.focuser.set_position(position)
+            self.focuser.position = position
 
         # TODO: Implement relative focusing
         else:
-            old_pos = self.focuser.get_position()
+            old_pos = self.focuser.position
             position = int(self.focuser_position_spinbox.text()) - old_pos
             print("\nself.focuser_position_spinbox.text() =", int(self.focuser_position_spinbox.text()),
                   "\nold_pos =", old_pos, "\nposition =", position)
-            self.focuser.set_position(position)
+            self.focuser.position = position
 
     def temp_comp(self):
         state = self.temp_checkbox.isChecked()
@@ -911,7 +911,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.focuser_position_label.setEnabled(True)
             self.focuser_position_spinbox.setEnabled(True)
-        self.focuser.set_temp_comp(state)
+        self.focuser.temp_comp = state
 
     def connect_filters(self):
         if self.wheel_group.isChecked():

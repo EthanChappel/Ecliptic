@@ -107,23 +107,29 @@ class FilterWheel(Device):
 
 
 class Focuser(Device):
-    @abstractmethod
-    def set_position(self, pos: int): pass
-
-    @abstractmethod
-    def get_position(self) -> int: pass
 
     @abstractmethod
     def is_abs_position(self) -> bool: pass
 
     @abstractmethod
-    def max_step(self) -> int: pass
-
-    @abstractmethod
-    def is_temp_comp(self) -> bool: pass
-
-    @abstractmethod
     def has_temp_comp(self) -> bool: pass
 
+    @property
     @abstractmethod
-    def set_temp_comp(self, val: bool): pass
+    def position(self) -> int: pass
+
+    @position.setter
+    @abstractmethod
+    def position(self, value: int): pass
+
+    @property
+    @abstractmethod
+    def max_step(self) -> int: pass
+
+    @property
+    @abstractmethod
+    def temp_comp(self) -> bool: pass
+
+    @temp_comp.setter
+    @abstractmethod
+    def temp_comp(self, value: bool): pass

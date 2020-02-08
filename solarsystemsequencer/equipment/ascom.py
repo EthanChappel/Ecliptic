@@ -191,23 +191,28 @@ class AscomFocuser(Focuser, AscomDevice):
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.Focuser)
 
-    def set_position(self, pos: int):
-        self.driver.Move(pos)
-
-    def get_position(self) -> int:
-        return self.driver.Position
-
     def is_abs_position(self) -> bool:
         return self.driver.Absolute
-
-    def max_step(self) -> int:
-        return self.driver.MaxStep
-
-    def is_temp_comp(self) -> bool:
-        return self.driver.TempComp
 
     def has_temp_comp(self) -> bool:
         return self.driver.TempCompAvailable
 
-    def set_temp_comp(self, val: bool):
-        self.driver.TempComp = val
+    @property
+    def position(self) -> int:
+        return self.driver.Position
+
+    @position.setter
+    def position(self, value: int):
+        self.driver.Move(value)
+
+    @property
+    def max_step(self) -> int:
+        return self.driver.MaxStep
+
+    @property
+    def temp_comp(self) -> bool:
+        return self.driver.TempComp
+
+    @temp_comp.setter
+    def temp_comp(self, value: bool):
+        self.driver.TempComp = value

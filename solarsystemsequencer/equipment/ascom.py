@@ -168,8 +168,8 @@ class AscomFilterWheel(FilterWheel, AscomDevice):
         return self.driver.Position
 
     @position.setter
-    def position(self, pos: int):
-        self.driver.Position = pos
+    def position(self, value: int):
+        self.driver.Position = value
 
     def rotate_wheel(self, text: Union[str, int]):
         try:

@@ -100,7 +100,7 @@ class FilterWheel(Device):
 
     @position.setter
     @abstractmethod
-    def position(self, pos: int): pass
+    def position(self, value: int): pass
 
     @abstractmethod
     def rotate_wheel(self, text: Union[str, int]): pass

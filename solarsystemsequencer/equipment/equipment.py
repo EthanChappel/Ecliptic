@@ -4,9 +4,6 @@ import numpy as np
 
 
 class Device(ABC):
-    @abstractmethod
-    def setup_dialog(self): pass
-
     @property
     @abstractmethod
     def name(self) -> str: pass
@@ -51,7 +48,7 @@ class Telescope(Device):
 
 class Camera(Device):
     @abstractmethod
-    def capture(self, exposure: float, light: bool) -> np.ndarray: pass
+    def get_frame(self, exposure: float, light: bool) -> np.ndarray: pass
 
     @abstractmethod
     def stop_exposure(self): pass
@@ -78,19 +75,29 @@ class Camera(Device):
 
     @property
     @abstractmethod
-    def image_width(self) -> int: pass
+    def roi_resolution(self): pass
+
+    @abstractmethod
+    def set_roi_resolution(self, width: int, height: int): pass
 
     @property
     @abstractmethod
-    def image_height(self) -> int: pass
+    def roi_offset(self): pass
+
+    @abstractmethod
+    def set_roi_offset(self, x: int, y: int): pass
+
+    @property
+    @abstractmethod
+    def bin(self) -> int: pass
+
+    @bin.setter
+    @abstractmethod
+    def bin(self, value: int): pass
 
     @property
     @abstractmethod
     def exposure_complete(self) -> bool: pass
-
-    @property
-    @abstractmethod
-    def exposure_progress(self) -> int: pass
 
 
 class FilterWheel(Device):

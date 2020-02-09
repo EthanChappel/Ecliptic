@@ -102,7 +102,7 @@ class AscomCamera(Camera, AscomDevice):
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.Camera)
 
-    def capture(self, exposure: float, light: bool) -> np.ndarray:
+    def get_frame(self, exposure: float, light: bool) -> np.ndarray:
         self.driver.StartExposure(exposure, light)
         while not self.driver.ImageReady:
             pass
@@ -137,12 +137,24 @@ class AscomCamera(Camera, AscomDevice):
         return self.driver.ExposureMax
 
     @property
-    def image_width(self) -> int:
-        return self.driver.NumX
+    def roi_resolution(self):
+        return self.driver.NumX, self.driver.NumY
+
+    def set_roi_resolution(self, width: int, height: int):
+        self.driver.NumX = width
+        self.driver.NumY = height
 
     @property
-    def image_height(self) -> int:
-        return self.driver.NumY
+    def roi_offset(self):
+        return self.driver.StartX, self.driver.StartY
+
+    def set_roi_offset(self, x: int, y: int):
+        self.driver.StartX = x
+        self.driver.StartY = y
+
+    @property
+    def bin(self) -> int:
+        return self.driver.BinX
 
     @property
     def exposure_complete(self) -> bool:

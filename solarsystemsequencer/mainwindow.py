@@ -592,7 +592,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if type(self.guider) is ascom.AscomCamera:
             while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
-                image = self.guider.capture(exp_sec, True)
+                image = self.guider.get_frame(exp_sec, True)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.guider_preview_label.setPixmap(pix)
@@ -781,7 +781,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if type(self.camera) is ascom.AscomCamera:
             while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = self.camera.capture(exp_sec, True)
+                image = self.camera.get_frame(exp_sec, True)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)
                 self.camera_preview_label.setPixmap(pix)
@@ -799,10 +799,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
         if type(self.camera) is ascom.AscomCamera:
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (self.camera.image_width, self.camera.image_height), False)
+            out = cv2.VideoWriter(avi_name, -1, 20.0, self.camera.roi_resolution, False)
             while self.camera_capture_button.isChecked():
                 exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = self.camera.capture(exp_sec, True)
+                image = self.camera.get_frame(exp_sec, True)
                 out.write(image)
                 image = Image.fromarray(image)
                 pix = ImageQt.toqpixmap(image)

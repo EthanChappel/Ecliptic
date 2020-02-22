@@ -1,5 +1,7 @@
+from typing import Union
 import zwoasi as asi
 from PySide2 import QtWidgets
+from equipment import zwo
 from ui import ui_zwosettings
 
 
@@ -12,7 +14,6 @@ class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
 
     def setup_gui(self):
         self.temperature_spinbox.valueChanged.connect(self.set_temperature)
-        self.brightness_spinbox.valueChanged.connect(self.set_brightness)
         self.gamma_spinbox.valueChanged.connect(self.set_gamma)
         self.red_spinbox.valueChanged.connect(self.set_red)
         self.blue_spinbox.valueChanged.connect(self.set_blue)
@@ -28,16 +29,6 @@ class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
         else:
             self.gamma_label.setVisible(False)
             self.gamma_spinbox.setVisible(False)
-
-        if "Brightness" in values:
-            self.brightness_label.setVisible(True)
-            self.brightness_spinbox.setVisible(True)
-            self.brightness_spinbox.setMinimum(values["Brightness"]["Min"])
-            self.brightness_spinbox.setMaximum(values["Brightness"]["Max"])
-            self.brightness_spinbox.setValue(values["Brightness"]["Current"])
-        else:
-            self.brightness_label.setVisible(False)
-            self.brightness_spinbox.setVisible(False)
 
         if "Bandwidth" in values:
             self.usb_label.setVisible(True)
@@ -125,29 +116,25 @@ class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
         else:
             self.monobin_checkbox.setVisible(False)
 
-    def set_camera(self, camera: asi.Camera):
+    def set_camera(self, camera: Union[zwo.ZwoCamera, None]):
         self.camera = camera
 
     def set_temperature(self):
         temperature = int(self.temperature_spinbox.cleanText())
-        self.camera.set_control_value(asi.ASI_TARGET_TEMP, temperature)
-
-    def set_brightness(self):
-        brightness = int(self.brightness_spinbox.cleanText())
-        self.camera.set_control_value(asi.ASI_BRIGHTNESS, brightness)
+        self.camera._driver.set_control_value(asi.ASI_TARGET_TEMP, temperature)
 
     def set_gamma(self):
         gamma = int(self.gamma_spinbox.cleanText())
-        self.camera.set_control_value(asi.ASI_GAMMA, gamma)
+        self.camera._driver.set_control_value(asi.ASI_GAMMA, gamma)
 
     def set_red(self):
         red = int(self.red_spinbox.cleanText())
-        self.camera.set_control_value(asi.ASI_WB_R, red)
+        self.camera._driver.set_control_value(asi.ASI_WB_R, red)
 
     def set_blue(self):
         blue = int(self.blue_spinbox.cleanText())
-        self.camera.set_control_value(asi.ASI_WB_B, blue)
+        self.camera._driver.set_control_value(asi.ASI_WB_B, blue)
 
     def set_usb(self):
         usb = int(self.usb_spinbox.cleanText())
-        self.camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, usb)
+        self.camera._driver.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, usb)

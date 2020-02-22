@@ -1,102 +1,143 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'zwosettings.ui',
-# licensing of 'zwosettings.ui' applies.
-#
-# Created: Tue Jan 15 03:07:57 2019
-#      by: pyside2-uic  running on PySide2 5.12.0
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'zwosettings.ui'
+##
+## Created by: Qt User Interface Compiler version 5.14.1
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
+    QRect, QSize, QUrl, Qt)
+from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
+    QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
+    QRadialGradient)
+from PySide2.QtWidgets import *
+
 
 class Ui_ZWOSettings(object):
     def setupUi(self, ZWOSettings):
-        ZWOSettings.setObjectName("ZWOSettings")
-        ZWOSettings.resize(244, 172)
-        ZWOSettings.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        ZWOSettings.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(ZWOSettings)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.spinbox_gridlayout = QtWidgets.QGridLayout()
-        self.spinbox_gridlayout.setObjectName("spinbox_gridlayout")
-        self.temperature_label = QtWidgets.QLabel(ZWOSettings)
-        self.temperature_label.setObjectName("temperature_label")
+        if ZWOSettings.objectName():
+            ZWOSettings.setObjectName(u"ZWOSettings")
+        ZWOSettings.resize(429, 196)
+        ZWOSettings.setFrameShape(QFrame.StyledPanel)
+        ZWOSettings.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout = QHBoxLayout(ZWOSettings)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.spinbox_gridlayout = QGridLayout()
+        self.spinbox_gridlayout.setObjectName(u"spinbox_gridlayout")
+        self.red_label = QLabel(ZWOSettings)
+        self.red_label.setObjectName(u"red_label")
+
+        self.spinbox_gridlayout.addWidget(self.red_label, 2, 0, 1, 1)
+
+        self.gamma_label = QLabel(ZWOSettings)
+        self.gamma_label.setObjectName(u"gamma_label")
+
+        self.spinbox_gridlayout.addWidget(self.gamma_label, 1, 0, 1, 1)
+
+        self.gamma_spinbox = QSpinBox(ZWOSettings)
+        self.gamma_spinbox.setObjectName(u"gamma_spinbox")
+
+        self.spinbox_gridlayout.addWidget(self.gamma_spinbox, 1, 1, 1, 1)
+
+        self.blue_spinbox = QSpinBox(ZWOSettings)
+        self.blue_spinbox.setObjectName(u"blue_spinbox")
+
+        self.spinbox_gridlayout.addWidget(self.blue_spinbox, 3, 1, 1, 1)
+
+        self.red_spinbox = QSpinBox(ZWOSettings)
+        self.red_spinbox.setObjectName(u"red_spinbox")
+
+        self.spinbox_gridlayout.addWidget(self.red_spinbox, 2, 1, 1, 1)
+
+        self.blue_label = QLabel(ZWOSettings)
+        self.blue_label.setObjectName(u"blue_label")
+
+        self.spinbox_gridlayout.addWidget(self.blue_label, 3, 0, 1, 1)
+
+        self.temperature_label = QLabel(ZWOSettings)
+        self.temperature_label.setObjectName(u"temperature_label")
+
         self.spinbox_gridlayout.addWidget(self.temperature_label, 0, 0, 1, 1)
-        self.temperature_spinbox = QtWidgets.QSpinBox(ZWOSettings)
-        self.temperature_spinbox.setObjectName("temperature_spinbox")
+
+        self.temperature_spinbox = QSpinBox(ZWOSettings)
+        self.temperature_spinbox.setObjectName(u"temperature_spinbox")
+
         self.spinbox_gridlayout.addWidget(self.temperature_spinbox, 0, 1, 1, 1)
-        self.brightness_label = QtWidgets.QLabel(ZWOSettings)
-        self.brightness_label.setObjectName("brightness_label")
-        self.spinbox_gridlayout.addWidget(self.brightness_label, 1, 0, 1, 1)
-        self.brightness_spinbox = QtWidgets.QSpinBox(ZWOSettings)
-        self.brightness_spinbox.setObjectName("brightness_spinbox")
-        self.spinbox_gridlayout.addWidget(self.brightness_spinbox, 1, 1, 1, 1)
-        self.gamma_label = QtWidgets.QLabel(ZWOSettings)
-        self.gamma_label.setObjectName("gamma_label")
-        self.spinbox_gridlayout.addWidget(self.gamma_label, 2, 0, 1, 1)
-        self.gamma_spinbox = QtWidgets.QSpinBox(ZWOSettings)
-        self.gamma_spinbox.setObjectName("gamma_spinbox")
-        self.spinbox_gridlayout.addWidget(self.gamma_spinbox, 2, 1, 1, 1)
-        self.red_label = QtWidgets.QLabel(ZWOSettings)
-        self.red_label.setObjectName("red_label")
-        self.spinbox_gridlayout.addWidget(self.red_label, 3, 0, 1, 1)
-        self.red_spinbox = QtWidgets.QSpinBox(ZWOSettings)
-        self.red_spinbox.setObjectName("red_spinbox")
-        self.spinbox_gridlayout.addWidget(self.red_spinbox, 3, 1, 1, 1)
-        self.blue_label = QtWidgets.QLabel(ZWOSettings)
-        self.blue_label.setObjectName("blue_label")
-        self.spinbox_gridlayout.addWidget(self.blue_label, 4, 0, 1, 1)
-        self.blue_spinbox = QtWidgets.QSpinBox(ZWOSettings)
-        self.blue_spinbox.setObjectName("blue_spinbox")
-        self.spinbox_gridlayout.addWidget(self.blue_spinbox, 4, 1, 1, 1)
-        self.usb_label = QtWidgets.QLabel(ZWOSettings)
-        self.usb_label.setObjectName("usb_label")
-        self.spinbox_gridlayout.addWidget(self.usb_label, 5, 0, 1, 1)
-        self.usb_spinbox = QtWidgets.QSpinBox(ZWOSettings)
-        self.usb_spinbox.setObjectName("usb_spinbox")
-        self.spinbox_gridlayout.addWidget(self.usb_spinbox, 5, 1, 1, 1)
+
+        self.usb_spinbox = QSpinBox(ZWOSettings)
+        self.usb_spinbox.setObjectName(u"usb_spinbox")
+
+        self.spinbox_gridlayout.addWidget(self.usb_spinbox, 4, 1, 1, 1)
+
+        self.usb_label = QLabel(ZWOSettings)
+        self.usb_label.setObjectName(u"usb_label")
+
+        self.spinbox_gridlayout.addWidget(self.usb_label, 4, 0, 1, 1)
+
+
         self.horizontalLayout.addLayout(self.spinbox_gridlayout)
-        self.line = QtWidgets.QFrame(ZWOSettings)
-        self.line.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line.setObjectName("line")
+
+        self.line = QFrame(ZWOSettings)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.VLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+
         self.horizontalLayout.addWidget(self.line)
-        self.checkbox_gridlayout = QtWidgets.QGridLayout()
-        self.checkbox_gridlayout.setObjectName("checkbox_gridlayout")
-        self.highspeed_checkbox = QtWidgets.QCheckBox(ZWOSettings)
-        self.highspeed_checkbox.setObjectName("highspeed_checkbox")
+
+        self.checkbox_gridlayout = QGridLayout()
+        self.checkbox_gridlayout.setObjectName(u"checkbox_gridlayout")
+        self.highspeed_checkbox = QCheckBox(ZWOSettings)
+        self.highspeed_checkbox.setObjectName(u"highspeed_checkbox")
+
         self.checkbox_gridlayout.addWidget(self.highspeed_checkbox, 0, 0, 1, 1)
-        self.verticalflip_checkbox = QtWidgets.QCheckBox(ZWOSettings)
-        self.verticalflip_checkbox.setObjectName("verticalflip_checkbox")
+
+        self.verticalflip_checkbox = QCheckBox(ZWOSettings)
+        self.verticalflip_checkbox.setObjectName(u"verticalflip_checkbox")
+
         self.checkbox_gridlayout.addWidget(self.verticalflip_checkbox, 4, 0, 1, 1)
-        self.monobin_checkbox = QtWidgets.QCheckBox(ZWOSettings)
-        self.monobin_checkbox.setObjectName("monobin_checkbox")
+
+        self.monobin_checkbox = QCheckBox(ZWOSettings)
+        self.monobin_checkbox.setObjectName(u"monobin_checkbox")
+
         self.checkbox_gridlayout.addWidget(self.monobin_checkbox, 2, 0, 1, 1)
-        self.hardwarebin_checkbox = QtWidgets.QCheckBox(ZWOSettings)
-        self.hardwarebin_checkbox.setObjectName("hardwarebin_checkbox")
+
+        self.hardwarebin_checkbox = QCheckBox(ZWOSettings)
+        self.hardwarebin_checkbox.setObjectName(u"hardwarebin_checkbox")
+
         self.checkbox_gridlayout.addWidget(self.hardwarebin_checkbox, 1, 0, 1, 1)
-        self.horizontalflip_checkbox = QtWidgets.QCheckBox(ZWOSettings)
-        self.horizontalflip_checkbox.setObjectName("horizontalflip_checkbox")
+
+        self.horizontalflip_checkbox = QCheckBox(ZWOSettings)
+        self.horizontalflip_checkbox.setObjectName(u"horizontalflip_checkbox")
+
         self.checkbox_gridlayout.addWidget(self.horizontalflip_checkbox, 3, 0, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.checkbox_gridlayout.addItem(spacerItem, 5, 0, 1, 1)
+
+        self.checkbox_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.checkbox_gridlayout.addItem(self.checkbox_spacer, 5, 0, 1, 1)
+
+
         self.horizontalLayout.addLayout(self.checkbox_gridlayout)
 
+
         self.retranslateUi(ZWOSettings)
-        QtCore.QMetaObject.connectSlotsByName(ZWOSettings)
+
+        QMetaObject.connectSlotsByName(ZWOSettings)
+    # setupUi
 
     def retranslateUi(self, ZWOSettings):
-        ZWOSettings.setWindowTitle(QtWidgets.QApplication.translate("ZWOSettings", "Frame", None, -1))
-        self.temperature_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Temperature", None, -1))
-        self.brightness_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Brightness", None, -1))
-        self.gamma_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Gamma", None, -1))
-        self.red_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Red", None, -1))
-        self.blue_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "Blue", None, -1))
-        self.usb_label.setText(QtWidgets.QApplication.translate("ZWOSettings", "USB Bandwidth", None, -1))
-        self.highspeed_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "High Speed", None, -1))
-        self.verticalflip_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Vertical Flip", None, -1))
-        self.monobin_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Mono Bin", None, -1))
-        self.hardwarebin_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Hardware Bin", None, -1))
-        self.horizontalflip_checkbox.setText(QtWidgets.QApplication.translate("ZWOSettings", "Horizontal Flip", None, -1))
+        ZWOSettings.setWindowTitle(QCoreApplication.translate("ZWOSettings", u"Frame", None))
+        self.red_label.setText(QCoreApplication.translate("ZWOSettings", u"Red", None))
+        self.gamma_label.setText(QCoreApplication.translate("ZWOSettings", u"Gamma", None))
+        self.blue_label.setText(QCoreApplication.translate("ZWOSettings", u"Blue", None))
+        self.temperature_label.setText(QCoreApplication.translate("ZWOSettings", u"Temperature", None))
+        self.usb_label.setText(QCoreApplication.translate("ZWOSettings", u"USB Bandwidth", None))
+        self.highspeed_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"High Speed", None))
+        self.verticalflip_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Vertical Flip", None))
+        self.monobin_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Mono Bin", None))
+        self.hardwarebin_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Hardware Bin", None))
+        self.horizontalflip_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Horizontal Flip", None))
+    # retranslateUi
 

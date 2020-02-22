@@ -18,6 +18,7 @@ from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
 from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
+from equipment import zwo
 
 if sys.platform.startswith("win"):
     from equipment import ascom
@@ -510,7 +511,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
                 elif guider_dialog.asi_selected and guider_dialog.accepted:
-                    self.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
+                    self.guider = zwo.ZwoCamera(asi.list_cameras().index(guider_dialog.asi_camera))
                     values = self.camera_settings(self.guider)
                     self.guider_settings_frame.set_camera(self.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
@@ -528,7 +529,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.guider_menu.removeAction(self.ascomguidersettings_action)
                     self.guider.connected = False
                     self.guider.dispose()
-                elif type(self.guider) is asi.Camera:
+                elif type(self.guider) is zwo.ZwoCamera:
                     self.guider_menu.removeAction(self.guider_settings_action)
                     self.guider.close()
             except AttributeError as e:
@@ -545,14 +546,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setup_guider_controls(self.camera_settings(self.guider))
 
     def set_guider_exposure(self):
-        if type(self.guider) is asi.Camera:
-            exp_us = int(self.guider_exposure_spinbox.cleanText()) * 1000
-            self.guider.set_control_value(asi.ASI_EXPOSURE, exp_us)
+        self.guider.exposure = int(self.guider_exposure_spinbox.cleanText())
 
     def set_guider_gain(self):
-        if type(self.guider) is asi.Camera:
-            gain = int(self.guider_gain_spinbox.cleanText())
-            self.guider.set_control_value(asi.ASI_GAIN, gain)
+        self.guider.gain = int(self.guider_gain_spinbox.cleanText())
 
     def setup_guider_controls(self, values):
         if "Gain" in values:
@@ -589,21 +586,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_thread.start()
 
     def guider_preview(self):
-        if type(self.guider) is ascom.AscomCamera:
-            while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
-                exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
-                image = self.guider.get_frame(exp_sec, True)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.guider_preview_label.setPixmap(pix)
-        else:
-            self.guider.start_video_capture()
-            while self.guider_loop_button.isChecked():
-                timeout = int(self.guider_exposure_spinbox.cleanText()) * 2 + 500
-                image = self.guider.capture_video_frame(timeout=timeout)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.guider_preview_label.setPixmap(pix)
+        self.guider.video_mode = True
+        while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
+            image = self.guider.get_frame()
+            image = Image.fromarray(image)
+            pix = ImageQt.toqpixmap(image)
+            self.guider_preview_label.setPixmap(pix)
         self.guider_preview_label.clear()
 
     def connect_camera(self):
@@ -619,7 +607,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                 elif camera_dialog.asi_selected and camera_dialog.accepted:
-                    self.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
+                    self.camera = zwo.ZwoCamera(asi.list_cameras().index(camera_dialog.asi_camera))
                     values = self.camera_settings(self.camera)
                     self.camera_settings_frame.set_camera(self.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
@@ -639,9 +627,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
                     self.camera.connected = False
                     self.camera.dispose()
-                elif type(self.camera) is asi.Camera:
+                elif type(self.camera) is zwo.ZwoCamera:
                     self.camera_settings_menu.removeAction(self.camera_settings_action)
-                    self.camera.close()
+                    self.camera.connected = False
             except AttributeError as e:
                 print(e)
             finally:
@@ -689,84 +677,70 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                         "Max": camera.max_exposure * 1000,
                                         "Current": camera.min_exposure * 1000}})  # No current value in ASCOM
 
-        elif type(camera) is asi.Camera:
-            controls = camera.get_controls()
+        elif type(camera) is zwo.ZwoCamera:
+            controls = camera._driver.get_controls()
             if controls["Gain"]["IsAutoSupported"]:
-                values.update({"Gain": {"Min": controls["Gain"]["MinValue"],
-                                        "Max": controls["Gain"]["MaxValue"],
-                                        "Current": camera.get_control_value(asi.ASI_GAIN)[0]}})
+                values.update({"Gain": {"Min": camera.min_gain,
+                                        "Max": camera.max_gain,
+                                        "Current": camera._driver.get_control_value(asi.ASI_GAIN)[0]}})
 
             if controls["Exposure"]["IsAutoSupported"]:
-                values.update({"Exposure": {"Min": controls["Exposure"]["MinValue"] / 1000,
-                                            "Max": controls["Exposure"]["MaxValue"] / 1000,
-                                            "Current": camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000}})
-
-            if controls["Gamma"]["IsAutoSupported"]:
-                values.update({"Gamma": {"Min": controls["Gamma"]["MinValue"],
-                                         "Max": controls["Gamma"]["MaxValue"],
-                                         "Current": camera.get_control_value(asi.ASI_GAMMA)[0]}})
-
-            if controls["Brightness"]["IsAutoSupported"]:
-                values.update({"Brightness": {"Min": controls["Brightness"]["MinValue"],
-                                              "Max": controls["Brightness"]["MaxValue"],
-                                              "Current": camera.get_control_value(asi.ASI_BRIGHTNESS)[0]}})
+                values.update({"Exposure": {"Min": camera.min_exposure / 1000,
+                                            "Max": camera.max_exposure / 1000,
+                                            "Current": camera.exposure / 1000}})
 
             if controls["BandWidth"]["IsAutoSupported"]:
                 values.update({"Bandwidth": {"Min": controls["BandWidth"]["MinValue"],
                                              "Max": controls["BandWidth"]["MaxValue"],
-                                             "Current": camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0]}})
+                                             "Current": camera._driver.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0]}})
 
             if controls["Flip"]["IsAutoSupported"]:
                 values.update({"Flip": {"Min": controls["Flip"]["MinValue"],
                                         "Max": controls["Flip"]["MaxValue"],
-                                        "Current": camera.get_control_value(asi.ASI_FLIP)[0]}})
+                                        "Current": camera._driver.get_control_value(asi.ASI_FLIP)[0]}})
 
             if controls["HighSpeedMode"]["IsAutoSupported"]:
                 values.update({"High Speed": {"Min": controls["HighSpeedMode"]["MinValue"],
                                               "Max": controls["HighSpeedMode"]["MaxValue"],
-                                              "Current": camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0]}})
+                                              "Current": camera._driver.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0]}})
 
             if controls["Temperature"]["IsAutoSupported"]:
                 values.update({"Temperature": {"Min": controls["Temperature"]["MinValue"],
                                                "Max": controls["Temperature"]["MaxValue"],
-                                               "Current": camera.get_control_value(asi.ASI_TARGET_TEMP)[0]}})
+                                               "Current": camera._driver.get_control_value(asi.ASI_TARGET_TEMP)[0]}})
 
-            if camera.get_camera_property()["IsColorCam"]:
+            if camera._driver.get_camera_property()["IsColorCam"]:
                 if controls["WB_R"]["IsAutoSupported"]:
                     values.update({"Red": {"Min": controls["WB_R"]["MinValue"],
                                            "Max": controls["WB_R"]["MaxValue"],
-                                           "Current": camera.get_control_value(asi.ASI_WB_R)[0]}})
+                                           "Current": camera._driver.get_control_value(asi.ASI_WB_R)[0]}})
 
                 if controls["WB_B"]["IsAutoSupported"]:
                     values.update({"Blue": {"Min": controls["WB_B"]["MinValue"],
                                             "Max": controls["WB_B"]["MaxValue"],
-                                            "Current": camera.get_control_value(asi.ASI_WB_B)[0]}})
+                                            "Current": camera._driver.get_control_value(asi.ASI_WB_B)[0]}})
 
             if "HardwareBin" in controls:
                 # TODO: Determine if HardwareBin is correlated with color cameras
                 if controls["HardwareBin"]["IsAutoSupported"]:
                     values.update({"Hardware Bin": {"Min": controls["HardwareBin"]["MinValue"],
                                                     "Max": controls["HardwareBin"]["MaxValue"],
-                                                    "Current": camera.get_control_value(asi.ASI_HARDWARE_BIN)[0]}})
+                                                    "Current": camera._driver.get_control_value(asi.ASI_HARDWARE_BIN)[0]}})
 
             if "Mono bin" in controls:
                 # TODO: Determine if Mono bin is correlated with color cameras
                 if controls["Mono bin"]["IsAutoSupported"]:
                     values.update({"Mono Bin": {"Min": controls["Mono bin"]["MinValue"],
                                                 "Max": controls["Mono bin"]["MaxValue"],
-                                                "Current": camera.get_control_value(asi.ASI_MONO_BIN)[0]}})
+                                                "Current": camera.bin}})
 
         return values
 
     def set_camera_exposure(self):
-        if type(self.camera) is asi.Camera:
-            exp_us = int(self.camera_exposure_spinbox.cleanText()) * 1000
-            self.camera.set_control_value(asi.ASI_EXPOSURE, exp_us)
+        self.camera.exposure = int(self.camera_exposure_spinbox.cleanText())
 
     def set_camera_gain(self):
-        if type(self.camera) is asi.Camera:
-            gain = int(self.camera_gain_spinbox.cleanText())
-            self.camera.set_control_value(asi.ASI_GAIN, gain)
+        self.camera.gain = int(self.camera_gain_spinbox.cleanText())
 
     def camera_loop(self):
         if self.camera_loop_button.isChecked():
@@ -778,47 +752,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_thread.start()
 
     def camera_preview(self):
-        if type(self.camera) is ascom.AscomCamera:
-            while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
-                exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = self.camera.get_frame(exp_sec, True)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
-        else:
-            self.camera.start_video_capture()
-            while self.camera_loop_button.isChecked():
-                timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
-                image = self.camera.capture_video_frame(timeout=timeout)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
+        # TODO: Try fixing interpreter crash by updating preview from main thread.
+        self.camera.video_mode = True
+        while self.camera_loop_button.isChecked():
+            image = self.camera.get_frame()
+            image = Image.fromarray(image)
+            pix = ImageQt.toqpixmap(image)
+            self.camera_preview_label.setPixmap(pix)
+        self.camera.video_mode = False
         self.camera_preview_label.clear()
 
     def camera_record(self):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
-        if type(self.camera) is ascom.AscomCamera:
-            out = cv2.VideoWriter(avi_name, -1, 20.0, self.camera.roi_resolution, False)
-            while self.camera_capture_button.isChecked():
-                exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = self.camera.get_frame(exp_sec, True)
-                out.write(image)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
-        else:
-            print(0)
-            width = self.camera.get_camera_property()["MaxWidth"]
-            height = self.camera.get_camera_property()["MaxHeight"]
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (width, height), False)
-            while self.camera_capture_button.isChecked():
-                timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
-                image = self.camera.capture_video_frame(timeout=timeout)
-                out.write(image)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
+        out = cv2.VideoWriter(avi_name, 0, 0, tuple(self.camera.roi_resolution), False)
+        while self.camera_capture_button.isChecked():
+            image = self.camera.get_frame()
+            out.write(image)
+            image = Image.fromarray(image)
+            pix = ImageQt.toqpixmap(image)
+            self.camera_preview_label.setPixmap(pix)
         out.release()
         if os.path.getsize(avi_name) == 0:
             os.remove(avi_name)
@@ -832,8 +785,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             json.dump(appglobals.settings, f, indent=4)
 
     def change_camera_save_dir(self):
-        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory",
-                                                                       appglobals.settings["Save Directory"])
+        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(
+            self,
+            "Select Directory",
+            appglobals.settings["Save Directory"],
+            QtWidgets.QFileDialog.DontUseNativeDialog
+        )
+
         if str(camera_dir_dialog) == "":
             pass
         else:

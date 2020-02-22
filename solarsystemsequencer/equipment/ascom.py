@@ -101,9 +101,10 @@ class AscomCamera(Camera, AscomDevice):
 
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.Camera)
+        self._exposure = 0
 
-    def get_frame(self, exposure: float, light: bool) -> np.ndarray:
-        self.driver.StartExposure(exposure, light)
+    def get_frame(self) -> np.ndarray:
+        self.driver.StartExposure(self.exposure / 1000, True)
         while not self.driver.ImageReady:
             pass
         image = self.driver.ImageArray
@@ -117,6 +118,14 @@ class AscomCamera(Camera, AscomDevice):
         self.driver.StopExposure()
 
     @property
+    def gain(self) -> int:
+        return self.driver.Gain
+
+    @gain.setter
+    def gain(self, value: int):
+        self.driver.Gain = value
+
+    @property
     def min_gain(self) -> int:
         return self.driver.GainMin
 
@@ -125,8 +134,12 @@ class AscomCamera(Camera, AscomDevice):
         return self.driver.GainMax
 
     @property
-    def gain(self) -> int:
-        return self.driver.Gain
+    def exposure(self) -> float:
+        return self._exposure
+
+    @exposure.setter
+    def exposure(self, value: float):
+        self._exposure = value
 
     @property
     def min_exposure(self) -> float:
@@ -167,6 +180,14 @@ class AscomCamera(Camera, AscomDevice):
     @property
     def image_array(self) -> List[int]:
         return list(self.driver.ImageArray)
+
+    @property
+    def video_mode(self):
+        return None
+
+    @video_mode.setter
+    def video_mode(self, value: bool):
+        pass
 
 
 class AscomFilterWheel(FilterWheel, AscomDevice):

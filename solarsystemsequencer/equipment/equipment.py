@@ -47,11 +47,29 @@ class Telescope(Device):
 
 
 class Camera(Device):
+    @property
     @abstractmethod
-    def get_frame(self, exposure: float, light: bool) -> np.ndarray: pass
+    def video_mode(self):
+        return None
+
+    @video_mode.setter
+    @abstractmethod
+    def video_mode(self, value: bool):
+        pass
+
+    @abstractmethod
+    def get_frame(self) -> np.ndarray: pass
 
     @abstractmethod
     def stop_exposure(self): pass
+
+    @property
+    @abstractmethod
+    def gain(self) -> int: pass
+
+    @gain.setter
+    @abstractmethod
+    def gain(self, value: int): pass
 
     @property
     @abstractmethod
@@ -63,7 +81,10 @@ class Camera(Device):
 
     @property
     @abstractmethod
-    def gain(self) -> int: pass
+    def exposure(self) -> float: pass
+
+    @exposure.setter
+    def exposure(self, value: int): pass
 
     @property
     @abstractmethod

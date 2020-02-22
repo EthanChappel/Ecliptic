@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-numpy = "==1.16.3"
-opencv-python = "==4.1.0.25"
+numpy = "==1.18.1"
+opencv-python = "==4.2.0.32"
 pythonnet = {version = "==2.4.0",sys_platform = "=='win32'"}
 zwoasi = "==0.0.22"
-Pillow = "==6.0.0"
-pyside2 = "==5.12.3"
-astropy = "==3.1.2"
+Pillow = "==7.0.0"
+pyside2 = "==5.14.1"
+astropy = "==4.0"
 
 [dev-packages]
 pylint = "*"

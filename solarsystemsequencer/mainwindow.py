@@ -506,19 +506,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 if not guider_dialog.asi_selected and guider_dialog.accepted:
                     self.guider = ascom.AscomCamera()
-                    values = self.camera_settings(self.guider)
                     name = self.guider.name
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
                 elif guider_dialog.asi_selected and guider_dialog.accepted:
                     self.guider = zwo.ZwoCamera(asi.list_cameras().index(guider_dialog.asi_camera))
-                    values = self.camera_settings(self.guider)
                     self.guider_settings_frame.set_camera(self.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
                     self.guider_menu.addAction(self.guider_settings_action)
                 else:
                     raise Exception
-                self.setup_guider_controls(values)
+                self.setup_guider_controls()
             except Exception as e:
                 print(e)
                 self.guider_group.setChecked(False)
@@ -543,7 +541,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider.connected = False
         self.guider.setup_dialog()
         self.guider.connected = True
-        self.setup_guider_controls(self.camera_settings(self.guider))
+        self.setup_guider_controls()
 
     def set_guider_exposure(self):
         self.guider.exposure = int(self.guider_exposure_spinbox.cleanText())
@@ -551,30 +549,31 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_guider_gain(self):
         self.guider.gain = int(self.guider_gain_spinbox.cleanText())
 
-    def setup_guider_controls(self, values):
-        if "Gain" in values:
-            self.guider_gain_spinbox.setMinimum(values["Gain"]["Min"])
-            self.guider_gain_spinbox.setMaximum(values["Gain"]["Max"])
-            self.guider_gain_slider.setMinimum(values["Gain"]["Min"])
-            self.guider_gain_slider.setMaximum(values["Gain"]["Max"])
-            self.guider_gain_spinbox.setValue(values["Gain"]["Current"])
+    def setup_guider_controls(self):
+        if self.guider.has_gain:
+            self.guider_gain_spinbox.setMinimum(self.guider.min_gain)
+            self.guider_gain_spinbox.setMaximum(self.guider.max_gain)
+            self.guider_gain_slider.setMinimum(self.guider.min_gain)
+            self.guider_gain_slider.setMaximum(self.guider.max_gain)
+            self.guider_gain_spinbox.setValue(self.guider.gain)
         else:
             self.guider_gain_label.setEnabled(False)
             self.guider_gain_spinbox.setEnabled(False)
             self.guider_gain_slider.setEnabled(False)
 
-        if "Exposure" in values:
-            self.guider_exposure_spinbox.setMinimum(values["Exposure"]["Min"])
-            self.guider_exposure_spinbox.setMaximum(values["Exposure"]["Max"])
-            self.guider_exposure_slider.setMinimum(values["Exposure"]["Min"])
-            self.guider_exposure_slider.setMaximum(values["Exposure"]["Max"])
-            self.guider_exposure_spinbox.setValue(values["Exposure"]["Current"])
+        if self.guider.has_exposure:
+            self.guider_exposure_spinbox.setMinimum(self.guider.min_exposure)
+            self.guider_exposure_spinbox.setMaximum(self.guider.max_exposure)
+            self.guider_exposure_slider.setMinimum(self.guider.min_exposure)
+            self.guider_exposure_slider.setMaximum(self.guider.max_exposure)
+            self.guider_exposure_spinbox.setValue(self.guider.exposure)
         else:
             self.guider_exposure_label.setEnabled(False)
             self.guider_exposure_spinbox.setEnabled(False)
             self.guider_exposure_slider.setEnabled(False)
 
-        self.guider_settings_frame.setup_controls(values)
+        if self.guider is zwo.ZwoCamera:
+            self.guider_settings_frame.setup_controls(self.guider)
 
     def guider_loop(self):
         if self.guider_loop_button.isChecked():
@@ -602,20 +601,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 if not camera_dialog.asi_selected and camera_dialog.accepted:
                     self.camera = ascom.AscomCamera()
-                    values = self.camera_settings(self.camera)
                     name = self.camera.name
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
                 elif camera_dialog.asi_selected and camera_dialog.accepted:
                     self.camera = zwo.ZwoCamera(asi.list_cameras().index(camera_dialog.asi_camera))
-                    values = self.camera_settings(self.camera)
                     self.camera_settings_frame.set_camera(self.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.camera_settings_action)
                 else:
                     raise Exception
-                self.setup_camera_controls(values)
+                self.setup_camera_controls()
             except Exception as e:
                 print(e)
                 self.camera_group.setChecked(False)
@@ -637,104 +634,38 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_settings_frame.set_camera(self.camera)
                 self.camera_name_label.setText("Not Connected")
 
-    def setup_camera_controls(self, values):
+    def setup_camera_controls(self):
         # TODO: Test these statements with more cameras that support different features
-        if "Gain" in values:
-            self.camera_gain_spinbox.setMinimum(values["Gain"]["Min"])
-            self.camera_gain_spinbox.setMaximum(values["Gain"]["Max"])
-            self.camera_gain_slider.setMinimum(values["Gain"]["Min"])
-            self.camera_gain_slider.setMaximum(values["Gain"]["Max"])
-            self.camera_gain_spinbox.setValue(values["Gain"]["Current"])
+        if self.camera.has_gain:
+            self.camera_gain_spinbox.setMinimum(self.camera.min_gain)
+            self.camera_gain_spinbox.setMaximum(self.camera.max_gain)
+            self.camera_gain_slider.setMinimum(self.camera.min_gain)
+            self.camera_gain_slider.setMaximum(self.camera.max_gain)
+            self.camera_gain_spinbox.setValue(self.camera.gain)
         else:
             self.camera_gain_label.setEnabled(False)
             self.camera_gain_spinbox.setEnabled(False)
             self.camera_gain_slider.setEnabled(False)
 
-        if "Exposure" in values:
-            self.camera_exposure_spinbox.setMinimum(values["Exposure"]["Min"])
-            self.camera_exposure_spinbox.setMaximum(values["Exposure"]["Max"])
-            self.camera_exposure_slider.setMinimum(values["Exposure"]["Min"])
-            self.camera_exposure_slider.setMaximum(values["Exposure"]["Max"])
-            self.camera_exposure_spinbox.setValue(values["Exposure"]["Current"])
+        if self.camera.has_exposure:
+            self.camera_exposure_spinbox.setMinimum(self.camera.min_exposure)
+            self.camera_exposure_spinbox.setMaximum(self.camera.max_exposure)
+            self.camera_exposure_slider.setMinimum(self.camera.min_exposure)
+            self.camera_exposure_slider.setMaximum(self.camera.max_exposure)
+            self.camera_exposure_spinbox.setValue(self.camera.exposure)
         else:
             self.camera_exposure_label.setEnabled(False)
             self.camera_exposure_spinbox.setEnabled(False)
             self.camera_exposure_slider.setEnabled(False)
 
-        self.camera_settings_frame.setup_controls(values)
+        if self.camera is zwo.ZwoCamera:
+            self.camera_settings_frame.setup_controls(self.camera)
 
     def setup_camera(self):
         self.camera.connected = False
         self.camera.setup_dialog()
         self.camera.connected = True
-        self.setup_camera_controls(self.camera_settings(self.camera))
-
-    def camera_settings(self, camera):
-        values = {}
-        if type(camera) is ascom.AscomCamera:
-            values.update({"Gain": {"Min": camera.min_gain, "Max": camera.max_gain, "Current": camera.gain}})
-            values.update({"Exposure": {"Min": camera.min_exposure * 1000,
-                                        "Max": camera.max_exposure * 1000,
-                                        "Current": camera.min_exposure * 1000}})  # No current value in ASCOM
-
-        elif type(camera) is zwo.ZwoCamera:
-            controls = camera._driver.get_controls()
-            if controls["Gain"]["IsAutoSupported"]:
-                values.update({"Gain": {"Min": camera.min_gain,
-                                        "Max": camera.max_gain,
-                                        "Current": camera._driver.get_control_value(asi.ASI_GAIN)[0]}})
-
-            if controls["Exposure"]["IsAutoSupported"]:
-                values.update({"Exposure": {"Min": camera.min_exposure / 1000,
-                                            "Max": camera.max_exposure / 1000,
-                                            "Current": camera.exposure / 1000}})
-
-            if controls["BandWidth"]["IsAutoSupported"]:
-                values.update({"Bandwidth": {"Min": controls["BandWidth"]["MinValue"],
-                                             "Max": controls["BandWidth"]["MaxValue"],
-                                             "Current": camera._driver.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0]}})
-
-            if controls["Flip"]["IsAutoSupported"]:
-                values.update({"Flip": {"Min": controls["Flip"]["MinValue"],
-                                        "Max": controls["Flip"]["MaxValue"],
-                                        "Current": camera._driver.get_control_value(asi.ASI_FLIP)[0]}})
-
-            if controls["HighSpeedMode"]["IsAutoSupported"]:
-                values.update({"High Speed": {"Min": controls["HighSpeedMode"]["MinValue"],
-                                              "Max": controls["HighSpeedMode"]["MaxValue"],
-                                              "Current": camera._driver.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0]}})
-
-            if controls["Temperature"]["IsAutoSupported"]:
-                values.update({"Temperature": {"Min": controls["Temperature"]["MinValue"],
-                                               "Max": controls["Temperature"]["MaxValue"],
-                                               "Current": camera._driver.get_control_value(asi.ASI_TARGET_TEMP)[0]}})
-
-            if camera._driver.get_camera_property()["IsColorCam"]:
-                if controls["WB_R"]["IsAutoSupported"]:
-                    values.update({"Red": {"Min": controls["WB_R"]["MinValue"],
-                                           "Max": controls["WB_R"]["MaxValue"],
-                                           "Current": camera._driver.get_control_value(asi.ASI_WB_R)[0]}})
-
-                if controls["WB_B"]["IsAutoSupported"]:
-                    values.update({"Blue": {"Min": controls["WB_B"]["MinValue"],
-                                            "Max": controls["WB_B"]["MaxValue"],
-                                            "Current": camera._driver.get_control_value(asi.ASI_WB_B)[0]}})
-
-            if "HardwareBin" in controls:
-                # TODO: Determine if HardwareBin is correlated with color cameras
-                if controls["HardwareBin"]["IsAutoSupported"]:
-                    values.update({"Hardware Bin": {"Min": controls["HardwareBin"]["MinValue"],
-                                                    "Max": controls["HardwareBin"]["MaxValue"],
-                                                    "Current": camera._driver.get_control_value(asi.ASI_HARDWARE_BIN)[0]}})
-
-            if "Mono bin" in controls:
-                # TODO: Determine if Mono bin is correlated with color cameras
-                if controls["Mono bin"]["IsAutoSupported"]:
-                    values.update({"Mono Bin": {"Min": controls["Mono bin"]["MinValue"],
-                                                "Max": controls["Mono bin"]["MaxValue"],
-                                                "Current": camera.bin}})
-
-        return values
+        self.setup_camera_controls()
 
     def set_camera_exposure(self):
         self.camera.exposure = int(self.camera_exposure_spinbox.cleanText())

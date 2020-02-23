@@ -83,6 +83,20 @@
    </item>
    <item>
     <layout class="QGridLayout" name="checkbox_gridlayout">
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="horizontalflip_checkbox">
+       <property name="text">
+        <string>Horizontal Flip</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="hardwarebin_checkbox">
+       <property name="text">
+        <string>Bin</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QCheckBox" name="highspeed_checkbox">
        <property name="text">
@@ -91,34 +105,6 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QCheckBox" name="verticalflip_checkbox">
-       <property name="text">
-        <string>Vertical Flip</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QCheckBox" name="monobin_checkbox">
-       <property name="text">
-        <string>Mono Bin</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="hardwarebin_checkbox">
-       <property name="text">
-        <string>Hardware Bin</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QCheckBox" name="horizontalflip_checkbox">
-       <property name="text">
-        <string>Horizontal Flip</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
       <spacer name="checkbox_spacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -130,6 +116,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="verticalflip_checkbox">
+       <property name="text">
+        <string>Vertical Flip</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

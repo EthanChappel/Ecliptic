@@ -89,34 +89,29 @@ class Ui_ZWOSettings(object):
 
         self.checkbox_gridlayout = QGridLayout()
         self.checkbox_gridlayout.setObjectName(u"checkbox_gridlayout")
-        self.highspeed_checkbox = QCheckBox(ZWOSettings)
-        self.highspeed_checkbox.setObjectName(u"highspeed_checkbox")
+        self.horizontalflip_checkbox = QCheckBox(ZWOSettings)
+        self.horizontalflip_checkbox.setObjectName(u"horizontalflip_checkbox")
 
-        self.checkbox_gridlayout.addWidget(self.highspeed_checkbox, 0, 0, 1, 1)
-
-        self.verticalflip_checkbox = QCheckBox(ZWOSettings)
-        self.verticalflip_checkbox.setObjectName(u"verticalflip_checkbox")
-
-        self.checkbox_gridlayout.addWidget(self.verticalflip_checkbox, 4, 0, 1, 1)
-
-        self.monobin_checkbox = QCheckBox(ZWOSettings)
-        self.monobin_checkbox.setObjectName(u"monobin_checkbox")
-
-        self.checkbox_gridlayout.addWidget(self.monobin_checkbox, 2, 0, 1, 1)
+        self.checkbox_gridlayout.addWidget(self.horizontalflip_checkbox, 2, 0, 1, 1)
 
         self.hardwarebin_checkbox = QCheckBox(ZWOSettings)
         self.hardwarebin_checkbox.setObjectName(u"hardwarebin_checkbox")
 
         self.checkbox_gridlayout.addWidget(self.hardwarebin_checkbox, 1, 0, 1, 1)
 
-        self.horizontalflip_checkbox = QCheckBox(ZWOSettings)
-        self.horizontalflip_checkbox.setObjectName(u"horizontalflip_checkbox")
+        self.highspeed_checkbox = QCheckBox(ZWOSettings)
+        self.highspeed_checkbox.setObjectName(u"highspeed_checkbox")
 
-        self.checkbox_gridlayout.addWidget(self.horizontalflip_checkbox, 3, 0, 1, 1)
+        self.checkbox_gridlayout.addWidget(self.highspeed_checkbox, 0, 0, 1, 1)
 
         self.checkbox_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.checkbox_gridlayout.addItem(self.checkbox_spacer, 5, 0, 1, 1)
+        self.checkbox_gridlayout.addItem(self.checkbox_spacer, 4, 0, 1, 1)
+
+        self.verticalflip_checkbox = QCheckBox(ZWOSettings)
+        self.verticalflip_checkbox.setObjectName(u"verticalflip_checkbox")
+
+        self.checkbox_gridlayout.addWidget(self.verticalflip_checkbox, 3, 0, 1, 1)
 
 
         self.horizontalLayout.addLayout(self.checkbox_gridlayout)
@@ -134,10 +129,9 @@ class Ui_ZWOSettings(object):
         self.blue_label.setText(QCoreApplication.translate("ZWOSettings", u"Blue", None))
         self.temperature_label.setText(QCoreApplication.translate("ZWOSettings", u"Temperature", None))
         self.usb_label.setText(QCoreApplication.translate("ZWOSettings", u"USB Bandwidth", None))
+        self.horizontalflip_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Horizontal Flip", None))
+        self.hardwarebin_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Bin", None))
         self.highspeed_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"High Speed", None))
         self.verticalflip_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Vertical Flip", None))
-        self.monobin_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Mono Bin", None))
-        self.hardwarebin_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Hardware Bin", None))
-        self.horizontalflip_checkbox.setText(QCoreApplication.translate("ZWOSettings", u"Horizontal Flip", None))
     # retranslateUi
 

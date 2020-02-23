@@ -14,127 +14,99 @@ class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
 
     def setup_gui(self):
         self.temperature_spinbox.valueChanged.connect(self.set_temperature)
-        self.gamma_spinbox.valueChanged.connect(self.set_gamma)
         self.red_spinbox.valueChanged.connect(self.set_red)
         self.blue_spinbox.valueChanged.connect(self.set_blue)
         self.usb_spinbox.valueChanged.connect(self.set_usb)
 
-    def setup_controls(self, values):
-        if "Gamma" in values:
-            self.gamma_label.setVisible(True)
-            self.gamma_spinbox.setVisible(True)
-            self.gamma_spinbox.setMinimum(values["Gamma"]["Min"])
-            self.gamma_spinbox.setMaximum(values["Gamma"]["Max"])
-            self.gamma_spinbox.setValue(values["Gamma"]["Current"])
-        else:
-            self.gamma_label.setVisible(False)
-            self.gamma_spinbox.setVisible(False)
-
-        if "Bandwidth" in values:
+    def setup_controls(self, camera):
+        if camera.has_bandwidth:
             self.usb_label.setVisible(True)
             self.usb_spinbox.setVisible(True)
-            self.usb_spinbox.setMinimum(values["Bandwidth"]["Min"])
-            self.usb_spinbox.setMaximum(values["Bandwidth"]["Max"])
-            self.usb_spinbox.setValue(values["Bandwidth"]["Current"])
+            self.usb_spinbox.setMinimum(camera.min_bandwidth)
+            self.usb_spinbox.setMaximum(camera.max_bandwidth)
+            self.usb_spinbox.setValue(camera.bandwidth)
         else:
             self.usb_label.setVisible(False)
             self.usb_spinbox.setVisible(False)
 
-        if "Flip" in values:
+        if camera.has_flip:
             self.horizontalflip_checkbox.setVisible(True)
             self.verticalflip_checkbox.setVisible(True)
-            if values["Flip"]["Current"] == 0:
+            if camera.flip == 0:
                 self.horizontalflip_checkbox.setChecked(False)
                 self.verticalflip_checkbox.setChecked(False)
-            elif values["Flip"]["Current"] == 1:
+            elif camera.flip == 1:
                 self.horizontalflip_checkbox.setChecked(True)
                 self.verticalflip_checkbox.setChecked(False)
-            elif values["Flip"]["Current"] == 2:
+            elif camera.flip == 2:
                 self.horizontalflip_checkbox.setChecked(False)
                 self.verticalflip_checkbox.setChecked(True)
-            elif values["Flip"]["Current"] == 3:
+            elif camera.flip == 3:
                 self.horizontalflip_checkbox.setChecked(True)
                 self.verticalflip_checkbox.setChecked(True)
         else:
             self.horizontalflip_checkbox.setVisible(False)
             self.verticalflip_checkbox.setVisible(False)
 
-        if "High Speed" in values:
+        if camera.has_high_speed:
             self.highspeed_checkbox.setVisible(True)
-            if values["High Speed"]["Current"] == 0:
+            if camera.high_speed == 0:
                 self.highspeed_checkbox.setChecked(False)
-            elif values["High Speed"]["Current"] == 1:
+            elif camera.high_speed == 1:
                 self.highspeed_checkbox.setChecked(True)
         else:
             self.highspeed_checkbox.setVisible(False)
 
-        if "Temperature" in values:
+        if camera.has_temperature:
             self.temperature_label.setVisible(True)
             self.temperature_spinbox.setVisible(True)
-            self.temperature_spinbox.setMinimum(values["Temperature"]["Min"])
-            self.temperature_spinbox.setMaximum(values["Temperature"]["Max"])
-            self.temperature_spinbox.setValue(values["Temperature"]["Current"])
+            self.temperature_spinbox.setMinimum(camera.min_temperature)
+            self.temperature_spinbox.setMaximum(camera.max_temperature)
+            self.temperature_spinbox.setValue(camera.temperature)
         else:
             self.temperature_label.setVisible(False)
             self.temperature_spinbox.setVisible(False)
 
-        if "Red" in values:
+        if camera.has_red_wb:
             self.red_label.setVisible(True)
             self.red_spinbox.setVisible(True)
-            self.red_spinbox.setMinimum(values["Red"]["Min"])
-            self.red_spinbox.setMaximum(values["Red"]["Max"])
-            self.red_spinbox.setValue(values["Red"]["Current"])
+            self.red_spinbox.setMinimum(camera.min_red_wb)
+            self.red_spinbox.setMaximum(camera.max_red_wb)
+            self.red_spinbox.setValue(camera.red_wb)
         else:
             self.red_label.setVisible(False)
             self.red_spinbox.setVisible(False)
 
-        if "Blue" in values:
+        if camera.has_blue_wb:
             self.blue_label.setVisible(True)
             self.blue_spinbox.setVisible(True)
-            self.blue_spinbox.setMinimum(values["Blue"]["Min"])
-            self.blue_spinbox.setMaximum(values["Blue"]["Max"])
-            self.blue_spinbox.setValue(values["Blue"]["Current"])
+            self.blue_spinbox.setMinimum(camera.min_blue_wb)
+            self.blue_spinbox.setMaximum(camera.max_blue_wb)
+            self.blue_spinbox.setValue(camera.blue_wb)
         else:
             self.blue_label.setVisible(False)
             self.blue_spinbox.setVisible(False)
 
-        if "Hardware Bin" in values:
+        if camera.has_bin:
             self.hardwarebin_checkbox.setVisible(True)
-            if values["Hardware Bin"]["Current"] == 0:
+            if camera.bin == 0:
                 self.hardwarebin_checkbox.setChecked(False)
-            elif values["Hardware Bin"]["Current"] == 1:
+            elif camera.bin == 1:
                 self.hardwarebin_checkbox.setChecked(True)
         else:
             self.hardwarebin_checkbox.setVisible(False)
-
-        if "Mono Bin" in values:
-            self.monobin_checkbox.setVisible(True)
-            if values["Mono Bin"]["Current"] == 0:
-                self.monobin_checkbox.setChecked(False)
-            if values["Mono Bin"]["Current"] == 1:
-                self.monobin_checkbox.setChecked(True)
-        else:
-            self.monobin_checkbox.setVisible(False)
 
     def set_camera(self, camera: Union[zwo.ZwoCamera, None]):
         self.camera = camera
 
     def set_temperature(self):
-        temperature = int(self.temperature_spinbox.cleanText())
-        self.camera._driver.set_control_value(asi.ASI_TARGET_TEMP, temperature)
-
-    def set_gamma(self):
-        gamma = int(self.gamma_spinbox.cleanText())
-        self.camera._driver.set_control_value(asi.ASI_GAMMA, gamma)
+        self.camera.temperature = int(self.temperature_spinbox.cleanText())
 
     def set_red(self):
-        red = int(self.red_spinbox.cleanText())
-        self.camera._driver.set_control_value(asi.ASI_WB_R, red)
+        self.camera.red_wb = int(self.red_spinbox.cleanText())
 
     def set_blue(self):
-        blue = int(self.blue_spinbox.cleanText())
-        self.camera._driver.set_control_value(asi.ASI_WB_B, blue)
+        self.camera.blue_wb = int(self.blue_spinbox.cleanText())
 
     def set_usb(self):
-        usb = int(self.usb_spinbox.cleanText())
-        self.camera._driver.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, usb)
+        self.camera.bandwidth = int(self.usb_spinbox.cleanText())

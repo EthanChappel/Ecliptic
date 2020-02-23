@@ -52,20 +52,24 @@ class ZwoCamera(Camera):
         return self._controls['Gain']['IsAutoSupported']
 
     @property
-    def exposure(self) -> float:
-        return self._driver.get_control_value(asi.ASI_EXPOSURE)[0]
+    def exposure(self) -> int:
+        # Convert from microseconds to milliseconds.
+        return self._driver.get_control_value(asi.ASI_EXPOSURE)[0] // 1000
 
     @exposure.setter
     def exposure(self, value: int):
-        self._driver.set_control_value(asi.ASI_EXPOSURE, value)
+        # Convert from milliseconds to microseconds.
+        self._driver.set_control_value(asi.ASI_EXPOSURE, value * 1000)
 
     @property
-    def min_exposure(self) -> float:
-        return self._controls['Exposure']['MinValue']
+    def min_exposure(self) -> int:
+        # Convert from microseconds to milliseconds.
+        return self._controls['Exposure']['MinValue'] // 1000
 
     @property
-    def max_exposure(self) -> float:
-        return self._controls['Exposure']['MaxValue']
+    def max_exposure(self) -> int:
+        # Convert from microseconds to milliseconds.
+        return self._controls['Exposure']['MaxValue'] // 1000
 
     @property
     def has_exposure(self) -> bool:

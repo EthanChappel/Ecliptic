@@ -8,6 +8,7 @@ import cv2
 import zwoasi as asi
 from PIL import Image, ImageQt
 from PySide2 import QtCore, QtGui, QtWidgets
+import numpy
 import appglobals
 import connectcamera
 import zwosettings
@@ -18,6 +19,7 @@ from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
 from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
+from thread import CameraThread
 from equipment import zwo
 
 if sys.platform.startswith("win"):
@@ -580,18 +582,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.guider_start_button.isChecked():
                 self.guider_thread = threading.Thread(target=self.guider_preview)  # To be implemented
             else:
-                self.guider_thread = threading.Thread(target=self.guider_preview)
+                self.guider_thread = CameraThread(self.guider, self.guider_loop_button)
+                self.guider_thread.exposure_done.connect(self.guider_preview)
             self.guider_thread.daemon = True
             self.guider_thread.start()
 
-    def guider_preview(self):
-        self.guider.video_mode = True
-        while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
-            image = self.guider.get_frame()
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.guider_preview_label.setPixmap(pix)
-        self.guider_preview_label.clear()
+    def guider_preview(self, frame: numpy.ndarray):
+        image = Image.fromarray(frame)
+        pix = ImageQt.toqpixmap(image)
+        self.guider_preview_label.setPixmap(pix)
 
     def connect_camera(self):
         if self.camera_group.isChecked():
@@ -678,20 +677,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.camera_capture_button.isChecked():
                 self.camera_thread = threading.Thread(target=self.camera_record)
             else:
-                self.camera_thread = threading.Thread(target=self.camera_preview)
+                self.camera_thread = CameraThread(self.camera, self.camera_loop_button)
+                self.camera_thread.exposure_done.connect(self.camera_preview)
             self.camera_thread.daemon = True
             self.camera_thread.start()
 
-    def camera_preview(self):
-        # TODO: Try fixing interpreter crash by updating preview from main thread.
-        self.camera.video_mode = True
-        while self.camera_loop_button.isChecked():
-            image = self.camera.get_frame()
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.camera_preview_label.setPixmap(pix)
-        self.camera.video_mode = False
-        self.camera_preview_label.clear()
+    def camera_preview(self, frame: numpy.ndarray):
+        image = Image.fromarray(frame)
+        pix = ImageQt.toqpixmap(image)
+        self.camera_preview_label.setPixmap(pix)
 
     def camera_record(self):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")

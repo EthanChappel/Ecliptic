@@ -19,7 +19,7 @@ palette.setColor(QtGui.QPalette.Dark, QtGui.QColor(75, 75, 75))
 palette.setColor(QtGui.QPalette.Text, QtGui.QColor(255, 255, 255))
 palette.setColor(QtGui.QPalette.Link, QtGui.QColor(255, 50, 50))
 palette.setColor(QtGui.QPalette.Base, QtGui.QColor(95, 95, 95))
-palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(200, 80, 80))
+palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(80, 170, 170))
 palette.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor(255, 255, 255))
 
 palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Button, QtGui.QColor(75, 75, 75))

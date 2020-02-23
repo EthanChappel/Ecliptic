@@ -25,7 +25,7 @@ pipenv install
 	* Astrophotography
 		* [AstroBin](http://www.astrobin.com/users/Ethan/)
 		* [Flickr](https://www.flickr.com/photos/ethanchappel/)
-		* [Instagram](https://www.instagram.com/chappel_astro/)
+		* [Instagram](https://www.instagram.com/chappelastro/)
 		* [Twitter](https://twitter.com/ChappelAstro)
 		* [Website](https://www.chappelastro.com)
 	* Personal

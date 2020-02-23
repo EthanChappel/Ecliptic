@@ -5,8 +5,8 @@ import mainwindow
 
 sys.dont_write_bytecode = True
 
-# TODO: Scale icons properly at high dpi
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
 app = QtWidgets.QApplication(sys.argv)
 
 palette = QtGui.QPalette()

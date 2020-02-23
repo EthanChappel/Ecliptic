@@ -32,14 +32,6 @@ class ZwoCamera(Camera):
         self._driver.stop_exposure()
 
     @property
-    def min_gain(self) -> int:
-        return self._controls["Gain"]["MinValue"]
-
-    @property
-    def max_gain(self) -> int:
-        return self._controls["Gain"]["MaxValue"]
-
-    @property
     def gain(self) -> int:
         return self._driver.get_control_value(asi.ASI_GAIN)[0]
 
@@ -48,12 +40,16 @@ class ZwoCamera(Camera):
         self._driver.set_control_value(asi.ASI_GAIN, value)
 
     @property
-    def min_exposure(self) -> float:
-        return self._controls["Exposure"]["MinValue"]
+    def min_gain(self) -> int:
+        return self._controls['Gain']['MinValue']
 
     @property
-    def max_exposure(self) -> float:
-        return self._controls["Exposure"]["MaxValue"]
+    def max_gain(self) -> int:
+        return self._controls['Gain']['MaxValue']
+
+    @property
+    def has_gain(self) -> bool:
+        return self._controls['Gain']['IsAutoSupported']
 
     @property
     def exposure(self) -> float:
@@ -62,6 +58,18 @@ class ZwoCamera(Camera):
     @exposure.setter
     def exposure(self, value: int):
         self._driver.set_control_value(asi.ASI_EXPOSURE, value)
+
+    @property
+    def min_exposure(self) -> float:
+        return self._controls['Exposure']['MinValue']
+
+    @property
+    def max_exposure(self) -> float:
+        return self._controls['Exposure']['MaxValue']
+
+    @property
+    def has_exposure(self) -> bool:
+        return self._controls['Exposure']['IsAutoSupported']
 
     @property
     def roi_resolution(self):
@@ -87,6 +95,15 @@ class ZwoCamera(Camera):
         self._driver.set_roi_format(*f, value, self.image_type)
 
     @property
+    def has_bin(self) -> bool:
+        # TODO: Determine if HardwareBin and Mono bin is correlated with color cameras
+        if 'HardwareBin' in self._controls:
+            return self._controls['HardwareBin']['IsAutoSupported']
+        elif 'Mono bin' in self._controls:
+            return self._controls['Mono bin']['IsAutoSupported']
+        return False
+
+    @property
     def exposure_complete(self) -> bool:
         return self._driver.get_exposure_status() == 2
 
@@ -95,5 +112,161 @@ class ZwoCamera(Camera):
         return self._info['Name']
 
     @property
-    def connected(self):
+    def connected(self) -> bool:
         return True
+
+    @property
+    def bandwidth(self) -> int:
+        return self._driver.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0]
+
+    @bandwidth.setter
+    def bandwidth(self, value: int):
+        self._driver.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, value)
+
+    @property
+    def min_bandwidth(self) -> int:
+        return self._controls["BandWidth"]["MinValue"]
+
+    @property
+    def max_bandwidth(self) -> int:
+        return self._controls["BandWidth"]["MaxValue"]
+
+    @property
+    def has_bandwidth(self) -> bool:
+        return self._controls['BandWidth']['IsAutoSupported']
+
+    @property
+    def flip(self) -> int:
+        return self._driver.get_control_value(asi.ASI_FLIP)[0]
+
+    @flip.setter
+    def flip(self, value: int):
+        self._driver.set_control_value(asi.ASI_FLIP, value)
+
+    @property
+    def min_flip(self) -> int:
+        return self._controls["Flip"]["MinValue"]
+
+    @property
+    def max_flip(self) -> int:
+        return self._controls["Flip"]["MaxValue"]
+
+    @property
+    def has_flip(self) -> bool:
+        return self._controls['Flip']['IsAutoSupported']
+
+    @property
+    def high_speed(self) -> bool:
+        return self._driver.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0]
+
+    @high_speed.setter
+    def high_speed(self, value: bool):
+        self._driver.set_control_value(asi.ASI_HIGH_SPEED_MODE, value)
+
+    @property
+    def min_high_speed(self) -> bool:
+        return self._controls['HighSpeedMode']['MinValue']
+
+    @property
+    def max_high_speed(self) -> bool:
+        return self._controls['HighSpeedMode']['MaxValue']
+
+    @property
+    def has_high_speed(self) -> bool:
+        return self._controls['HighSpeedMode']['IsAutoSupported']
+
+    @property
+    def temperature(self) -> float:
+        return self._driver.get_control_value(asi.ASI_TEMPERATURE)[0]
+
+    @property
+    def min_temperature(self) -> float:
+        return self._controls['Temperature']['MinValue']
+
+    @property
+    def max_temperature(self) -> float:
+        return self._controls['Temperature']['MaxValue']
+
+    @property
+    def has_temperature(self) -> bool:
+        return self._controls['Temperature']['IsAutoSupported']
+
+    @property
+    def target_temperature(self) -> float:
+        return self._driver.get_control_value(asi.ASI_TARGET_TEMP)[0]
+
+    @target_temperature.setter
+    def target_temperature(self, value: float):
+        self._driver.set_control_value(asi.ASI_TARGET_TEMP, value)
+
+    @property
+    def has_target_temperature(self) -> bool:
+        try:
+            t = self._driver.get_control_value(asi.ASI_TARGET_TEMP)[0]
+            return True
+        except asi.ZWO_IOError:
+            return False
+
+    @property
+    def red_wb(self) -> int:
+        return self._driver.get_control_value(asi.ASI_WB_R)[0]
+
+    @red_wb.setter
+    def red_wb(self, value: int):
+        self._driver.set_control_value(asi.ASI_WB_R, value)
+
+    @property
+    def min_red_wb(self) -> int:
+        return self._controls['WB_R']['MinValue']
+
+    @property
+    def max_red_wb(self) -> int:
+        return self._controls['WB_R']['MaxValue']
+
+    @property
+    def has_red_wb(self) -> bool:
+        if self._info["IsColorCam"]:
+            return self._controls['WB_R']['IsAutoSupported']
+        return False
+
+    @property
+    def blue_wb(self) -> int:
+        return self._driver.get_control_value(asi.ASI_WB_B)[0]
+
+    @blue_wb.setter
+    def blue_wb(self, value: int):
+        self._driver.set_control_value(asi.ASI_WB_B, value)
+
+    @property
+    def min_blue_wb(self) -> int:
+        return self._controls['WB_B']['MinValue']
+
+    @property
+    def max_blue_wb(self) -> int:
+        return self._controls['WB_B']['MaxValue']
+
+    @property
+    def has_blue_wb(self) -> bool:
+        if self._info['IsColorCam']:
+            return self._controls['WB_B']['IsAutoSupported']
+        return False
+
+    @property
+    def is_color(self) -> bool:
+        return self._info['IsColorCam']
+
+    @property
+    def has_usb3(self) -> bool:
+        return self._info['IsUSB3Camera']
+
+    @property
+    def is_usb3_host(self) -> bool:
+        return self._info['IsUSB3Host']
+
+    @property
+    def has_guide_port(self) -> bool:
+        return self._info['ST4Port']
+
+    @property
+    def has_cooler(self) -> bool:
+        return self._info['IsCoolerCam']

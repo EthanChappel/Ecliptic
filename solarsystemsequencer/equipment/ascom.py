@@ -6,9 +6,9 @@ import appglobals
 from equipment.equipment import Device, Telescope, Camera, FilterWheel, Focuser
 import clr
 clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
+clr.AddReference("ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
 clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
-import ASCOM.DriverAccess
-import ASCOM.Utilities
+import ASCOM
 
 
 class AscomDevice(Device):
@@ -102,6 +102,7 @@ class AscomCamera(Camera, AscomDevice):
     def __init__(self):
         super().__init__(ASCOM.DriverAccess.Camera)
         self._exposure = 0
+        self._target_temperature = None
 
     def get_frame(self) -> np.ndarray:
         self.driver.StartExposure(self.exposure / 1000, True)
@@ -134,6 +135,14 @@ class AscomCamera(Camera, AscomDevice):
         return self.driver.GainMax
 
     @property
+    def has_gain(self) -> bool:
+        try:
+            self.driver.Gain
+            return True
+        except ASCOM.Exceptions.PropertyNotImplementedException:
+            return False
+
+    @property
     def exposure(self) -> float:
         return self._exposure
 
@@ -148,6 +157,10 @@ class AscomCamera(Camera, AscomDevice):
     @property
     def max_exposure(self) -> float:
         return self.driver.ExposureMax
+
+    @property
+    def has_exposure(self) -> bool:
+        return True
 
     @property
     def roi_resolution(self):
@@ -188,6 +201,54 @@ class AscomCamera(Camera, AscomDevice):
     @video_mode.setter
     def video_mode(self, value: bool):
         pass
+
+    @property
+    def high_speed(self) -> int:
+        return self.driver.FastReadout
+
+    @property
+    def min_high_speed(self) -> int:
+        if self.driver.CanFastReadout:
+            return 0
+        return None
+
+    @property
+    def max_high_speed(self) -> int:
+        if self.driver.CanFastReadout:
+            return 1
+        return None
+
+    @property
+    def has_high_speed(self) -> bool:
+        return self.driver.CanFastReadout
+
+    @property
+    def temperature(self) -> float:
+        return self.driver.CCDTemperature
+
+    @property
+    def min_temperature(self) -> int:
+        return None
+
+    @property
+    def max_temperature(self) -> int:
+        return None
+
+    @property
+    def has_temperature(self) -> bool:
+        return self.driver.SupportedActions
+
+    @property
+    def target_temperature(self) -> float:
+        return self._target_temperature
+
+    @target_temperature.setter
+    def target_temperature(self, value: float):
+        self._target_temperature = self.driver.SetCCDTemperature(value)
+
+    @property
+    def has_target_temperature(self) -> bool:
+        return self.driver.CanSetCCDTemperature
 
 
 class AscomFilterWheel(FilterWheel, AscomDevice):

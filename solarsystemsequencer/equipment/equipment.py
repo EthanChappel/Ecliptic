@@ -83,7 +83,12 @@ class Camera(Device):
     @abstractmethod
     def exposure(self) -> float: pass
 
+    @property
+    @abstractmethod
+    def has_gain(self) -> bool: pass
+
     @exposure.setter
+    @abstractmethod
     def exposure(self, value: int): pass
 
     @property
@@ -93,6 +98,10 @@ class Camera(Device):
     @property
     @abstractmethod
     def max_exposure(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def has_exposure(self) -> bool: pass
 
     @property
     @abstractmethod
@@ -119,6 +128,54 @@ class Camera(Device):
     @property
     @abstractmethod
     def exposure_complete(self) -> bool: pass
+
+    @property
+    @abstractmethod
+    def high_speed(self) -> bool: pass
+
+    @high_speed.setter
+    @abstractmethod
+    def high_speed(self, value: bool): pass
+
+    @property
+    @abstractmethod
+    def min_high_speed(self) -> bool: pass
+
+    @property
+    @abstractmethod
+    def max_high_speed(self) -> bool: pass
+
+    @property
+    @abstractmethod
+    def has_high_speed(self) -> bool: pass
+
+    @property
+    @abstractmethod
+    def temperature(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def min_temperature(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def max_temperature(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def has_temperature(self) -> bool: pass
+
+    @property
+    @abstractmethod
+    def target_temperature(self) -> float: pass
+
+    @target_temperature.setter
+    @abstractmethod
+    def target_temperature(self, value: float): pass
+
+    @property
+    @abstractmethod
+    def has_target_temperature(self) -> bool: pass
 
 
 class FilterWheel(Device):

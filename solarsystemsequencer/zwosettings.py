@@ -1,5 +1,4 @@
 from typing import Union
-import zwoasi as asi
 from PySide2 import QtWidgets
 from equipment import zwo
 from ui import ui_zwosettings

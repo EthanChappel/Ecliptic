@@ -15,9 +15,9 @@ once the repository has been cloned, install the prerequisites with either
 ```
 pip install -r requirements.txt
 ```
-or if you use [Pipenv](https://pipenv.readthedocs.io/en/latest/)
+or if you use [Poetry](https://python-poetry.org/)
 ```
-pipenv install
+poetry install
 ```
 
 ## Author

@@ -2,37 +2,52 @@
 import os
 import sys
 import threading
+from datetime import datetime
 from typing import List, Dict
 import cv2
-import ephem
 import zwoasi as asi
 from PIL import Image, ImageQt
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
+import numpy
 import appglobals
 import connectcamera
-import modifylocation
-import targetswindow
 import zwosettings
 import guiderparameters
 import schedulebrain
 from computetargets import ComputeTargets
+from PySide2.QtCore import QStringListModel
+from PySide2.QtWidgets import QTableWidgetItem
+from astropy.time import Time
+from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
+from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
+from thread import CameraThread
+from equipment import zwo
 
 if sys.platform.startswith("win"):
     from equipment import ascom
 
 
+EXPOSURE_UNIT = "ms"
+GAIN_UNIT = "e/adu"
+INTEGRATION_UNIT = "s"
+CUTOFF_UNIT = "nm"
+
+
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
 
-        self.firstclose = True
+        self.telescope = None
+        self.camera = None
+        self.guider = None
+        self.wheel = None
+        self.focuser = None
+
         self.camera_thread = None
         self.guider_thread = None
 
         self.menu = QtWidgets.QMenu()
-        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(":/icons/logo.svg"))
-        self.was_hidden = False
         self.status_coords_label = QtWidgets.QLabel()
         self.setupUi(self)
 
@@ -56,32 +71,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.mountmodes_tuple = ("Stop", "Home")
 
+        # Models for schedule table columns.
+        self.target_list_model = QStringListModel()
+        self.filter_list_model = QStringListModel()
+
+        # Create Delegates for columns in schedule table.
+        self.time_delegate = QTimeEditItemDelegate(self)
+        self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
+        self.filter_delegate = QComboBoxItemDelegate(self, self.filter_list_model)
+        self.exposure_delegate = QSpinBoxItemDelegate(self, suffix=EXPOSURE_UNIT)
+        self.gain_delegate = QSpinBoxItemDelegate(self, suffix=GAIN_UNIT)
+        self.integration_delegate = QSpinBoxItemDelegate(self, suffix=INTEGRATION_UNIT)
+
+        # Create Delegates for columns in filters table.
+        self.position_delegate = QSpinBoxItemDelegate(self)
+        self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
+        self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
+
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
-
-        self.target_dialog = targetswindow.TargetsDialog()
 
         self.setup_gui()
 
     def setup_gui(self):
-        # Center window on screen
-        window_size = self.frameGeometry()
-        desktop = QtWidgets.QDesktopWidget().availableGeometry().center()
-        window_size.moveCenter(desktop)
-        self.move(window_size.topLeft())
-
-        # Tray icon
-        self.menu.addAction(self.exit_action)
-        show_action = self.menu.addAction("Open")
-        self.menu.addMenu(self.menu_equipment)
-        show_action.triggered.connect(self.show)
-        self.tray_icon.setContextMenu(self.menu)
-        self.tray_icon.show()
-
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
         self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
         self.tabifyDockWidget(self.guider_dockwidget, self.camera_dockwidget)
         self.tabifyDockWidget(self.camera_dockwidget, self.filters_dockwidget)
+        self.tabifyDockWidget(self.filters_dockwidget, self.settings_dockwidget)
         self.schedule_dockwidget.raise_()
         self.camera_dockwidget.setVisible(False)
         self.guider_dockwidget.setVisible(False)
@@ -100,31 +117,48 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
 
         # Connects pressed event that moves mount to the directional buttons
-        self.slewnorth_button.pressed.connect(lambda: self.slew(1, self.mount_trackrate_spin.cleanText()))
-        self.slewnorth_button.pressed.connect(lambda: self.slew(1, self.mount_trackrate_spin.cleanText()))
-        self.sleweast_button.pressed.connect(lambda: self.slew(0, self.mount_trackrate_spin.cleanText()))
+        self.slewnorth_button.pressed.connect(
+            lambda: self.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
+        )
+        self.slewnorth_button.pressed.connect(
+            lambda: self.telescope.move_axis(1, self.mount_trackrate_spin.cleanText())
+        )
+        self.sleweast_button.pressed.connect(
+            lambda: self.telescope.move_axis(0, self.mount_trackrate_spin.cleanText())
+        )
         self.slewsouth_button.pressed.connect(
-            lambda: self.slew(1, -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: self.telescope.move_axis(1, -1 * float(self.mount_trackrate_spin.cleanText()))
+        )
         self.slewwest_button.pressed.connect(
-            lambda: self.slew(0, -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: self.telescope.move_axis(0, -1 * float(self.mount_trackrate_spin.cleanText()))
+        )
         self.slewnortheast_button.pressed.connect(
-            lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(),
-                                       self.mount_trackrate_spin.cleanText()))
+            lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(), self.mount_trackrate_spin.cleanText())
+        )
         self.slewsoutheast_button.pressed.connect(
-            lambda: self.slew_diagonal(self.mount_trackrate_spin.cleanText(),
-                                       -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: self.slew_diagonal(
+                self.mount_trackrate_spin.cleanText(),
+                -1 * float(self.mount_trackrate_spin.cleanText())
+            )
+        )
         self.slewsouthwest_button.pressed.connect(
-            lambda: self.slew_diagonal(-1 * float(self.mount_trackrate_spin.cleanText()),
-                                       -1 * float(self.mount_trackrate_spin.cleanText())))
+            lambda: self.slew_diagonal(
+                -1 * float(self.mount_trackrate_spin.cleanText()),
+                -1 * float(self.mount_trackrate_spin.cleanText())
+            )
+        )
         self.slewnorthwest_button.pressed.connect(
-            lambda: self.slew_diagonal(-1 * float(self.mount_trackrate_spin.cleanText()),
-                                       self.mount_trackrate_spin.cleanText()))
+            lambda: self.slew_diagonal(
+                -1 * float(self.mount_trackrate_spin.cleanText()),
+                self.mount_trackrate_spin.cleanText()
+            )
+        )
 
         # Connects clicked event that stops mount to the directional buttons
-        self.slewnorth_button.released.connect(lambda: self.slew(1, 0.0))
-        self.sleweast_button.released.connect(lambda: self.slew(0, 0.0))
-        self.slewsouth_button.released.connect(lambda: self.slew(1, 0.0))
-        self.slewwest_button.released.connect(lambda: self.slew(0, 0.0))
+        self.slewnorth_button.released.connect(lambda: self.telescope.move_axis(1, 0.0))
+        self.sleweast_button.released.connect(lambda: self.telescope.move_axis(0, 0.0))
+        self.slewsouth_button.released.connect(lambda: self.telescope.move_axis(1, 0.0))
+        self.slewwest_button.released.connect(lambda: self.telescope.move_axis(0, 0.0))
         self.slewnortheast_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewsoutheast_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewsouthwest_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
@@ -143,9 +177,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.removerow_button.clicked.connect(self.remove_schedule_row)
 
         # Connect functions to actions
-        self.location_action.triggered.connect(self.location_set)
-        self.targets_action.triggered.connect(self.open_target_gui)
-        self.exit_action.triggered.connect(self.close_app)
+        self.location_action.triggered.connect(lambda: self.settings_dockwidget.raise_())
 
         # Add targets to object_combobox
         self.object_combobox.addItems(self.mountmodes_tuple)
@@ -153,13 +185,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set label to show latitude and longitude and show it on status bar
         self.status_coords_label.setText(
-            "Latitude: " + str(appglobals.location["Latitude"][0]) + "°" +
-            str(appglobals.location["Latitude"][1]) + "\'" +
-            str(appglobals.location["Latitude"][2]) + "\"" +
-            ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
-            str(appglobals.location["Longitude"][1]) + "\'" +
-            str(appglobals.location["Longitude"][2]) + "\"")
+            "Latitude: %d°%d\'%d\", Longitude: %d°%d\'%d\"" % (
+                appglobals.location["Latitude"][0],
+                appglobals.location["Latitude"][1],
+                appglobals.location["Latitude"][2],
+                appglobals.location["Longitude"][0],
+                appglobals.location["Longitude"][1],
+                appglobals.location["Longitude"][2]
+            )
+        )
         self.statusbar.addWidget(self.status_coords_label)
+
+        # Fill location widgets with saved values.
+        self.lat_d_spin.setValue(appglobals.location["Latitude"][0])
+        self.long_d_spin.setValue(appglobals.location["Longitude"][0])
+        self.lat_m_spin.setValue(appglobals.location["Latitude"][1])
+        self.long_m_spin.setValue(appglobals.location["Longitude"][1])
+        self.lat_s_spin.setValue(appglobals.location["Latitude"][2])
+        self.long_s_spin.setValue(appglobals.location["Longitude"][2])
+
+        # Save location when changed.
+        self.lat_d_spin.valueChanged.connect(self.location_set)
+        self.lat_m_spin.valueChanged.connect(self.location_set)
+        self.lat_s_spin.valueChanged.connect(self.location_set)
+        self.long_d_spin.valueChanged.connect(self.location_set)
+        self.long_m_spin.valueChanged.connect(self.location_set)
+        self.long_s_spin.valueChanged.connect(self.location_set)
 
         # Allow table headers to fit schedule_table
         self.schedule_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
@@ -210,53 +261,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.schedulebrain_button.clicked.connect(self.generate_schedule)
 
+        # Set the choices for the targets column.
+        self.target_list_model.setStringList(self.mountmodes_tuple + appglobals.targets_tuple)
+
+        # Set the choices for the filters column.
+        filter_names = []
+        for f in appglobals.filters:
+            filter_names.append(f["Name"])
+        self.filter_list_model.setStringList(filter_names)
+
+        # Set item delegates for columns in schedule table.
+        self.schedule_table.setItemDelegateForColumn(0, self.time_delegate)
+        self.schedule_table.setItemDelegateForColumn(1, self.target_delegate)
+        self.schedule_table.setItemDelegateForColumn(2, self.filter_delegate)
+        self.schedule_table.setItemDelegateForColumn(3, self.exposure_delegate)
+        self.schedule_table.setItemDelegateForColumn(4, self.gain_delegate)
+        self.schedule_table.setItemDelegateForColumn(5, self.integration_delegate)
+
+        self.filter_table.setItemDelegateForColumn(2, self.position_delegate)
+        self.filter_table.setItemDelegateForColumn(3, self.lower_cutoff_delegate)
+        self.filter_table.setItemDelegateForColumn(4, self.upper_cutoff_delegate)
+
+        # Save whenever cell is changed.
+        self.schedule_table.itemChanged.connect(self.save_schedule)
+        self.filter_table.itemChanged.connect(self.save_filters)
+
     def add_schedule_row(self):
         """Add row in schedule_table."""
         self.row_count = self.schedule_table.rowCount()
         self.schedule_table.insertRow(self.row_count)
-
-        # Create QTimeEdit for Time Column
-        time_timeedit = QtWidgets.QTimeEdit()
-        time_timeedit.setDisplayFormat("HH:mm:ss")
-
-        # Create QComboBox for Target Column
-        target_combobox = QtWidgets.QComboBox()
-        target_combobox.addItems(self.mountmodes_tuple)
-        target_combobox.addItems(appglobals.targets_tuple)
-        target_combobox.setCurrentIndex(-1)
-
-        # Create QComboBox for Filter Column
-        filter_combobox = QtWidgets.QComboBox()
-        for f in appglobals.filters:
-            filter_combobox.addItem(f.get("Name"))
-        filter_combobox.setCurrentIndex(-1)
-
-        # Create QSpinBox for Exposure Column
-        exposure_spinbox = QtWidgets.QSpinBox()
-        exposure_spinbox.setSuffix("ms")
-
-        # Create QSpinBox for Gain Column
-        gain_spinbox = QtWidgets.QSpinBox()
-        gain_spinbox.setSuffix("e/adu")
-
-        # Create QSpinBox for Integration Column
-        integration_spinbox = QtWidgets.QSpinBox()
-        integration_spinbox.setSuffix("s")
-
-        time_timeedit.editingFinished.connect(self.save_schedule)
-        target_combobox.currentIndexChanged.connect(self.save_schedule)
-        filter_combobox.currentIndexChanged.connect(self.save_schedule)
-        exposure_spinbox.editingFinished.connect(self.save_schedule)
-        gain_spinbox.editingFinished.connect(self.save_schedule)
-        integration_spinbox.editingFinished.connect(self.save_schedule)
-
-        # Add widgets to their cells in schedule_table
-        self.schedule_table.setCellWidget(self.row_count, 0, time_timeedit)
-        self.schedule_table.setCellWidget(self.row_count, 1, target_combobox)
-        self.schedule_table.setCellWidget(self.row_count, 2, filter_combobox)
-        self.schedule_table.setCellWidget(self.row_count, 3, exposure_spinbox)
-        self.schedule_table.setCellWidget(self.row_count, 4, gain_spinbox)
-        self.schedule_table.setCellWidget(self.row_count, 5, integration_spinbox)
 
     def remove_schedule_row(self):
         """Remove selected rows from schedule_table."""
@@ -277,17 +310,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             schedule_dict = {}
             for col in range(self.schedule_table.columnCount()):
                 header = str(self.schedule_table.horizontalHeaderItem(col).text())
-                try:
-                    value = str(self.schedule_table.cellWidget(row, col).currentText())
-                except AttributeError:
-                    try:
-                        value = str(self.schedule_table.cellWidget(row, col).cleanText())
-                    except AttributeError:
-                        value = str(self.schedule_table.cellWidget(row, col).text())
+                item = self.schedule_table.item(row, col)
+                value = None
+
+                # Save existing items with numeric strings as integers.
+                if item is None:
+                    pass
+                elif col > 2 and item.text() not in ("", "None"):
+                    value = int(item.text())
+                elif isinstance(item.text(), str) and item.text() not in ("", "None"):
+                    value = item.text()
+
                 schedule_dict.update({header: value})
             schedule_list.append(schedule_dict)
             appglobals.schedule.update({self.schedule_dateedit.text(): schedule_list})
-        print(sys._getframe(1).f_code.co_name)
         with open("schedule.json", "w") as f:
             json.dump(appglobals.schedule, f, indent=4)
 
@@ -299,32 +335,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for f in appglobals.schedule[date]:
                 self.add_schedule_row()
 
-                self.schedule_table.cellWidget(count, 0).blockSignals(True)
-                self.schedule_table.cellWidget(count, 1).blockSignals(True)
-                self.schedule_table.cellWidget(count, 2).blockSignals(True)
-                self.schedule_table.cellWidget(count, 3).blockSignals(True)
-                self.schedule_table.cellWidget(count, 4).blockSignals(True)
-                self.schedule_table.cellWidget(count, 5).blockSignals(True)
-
-                time = QtCore.QTime.fromString(f["Time"])
-                target = self.schedule_table.cellWidget(count, 1).findText(f["Target"], QtCore.Qt.MatchFixedString)
-                set_filter = self.schedule_table.cellWidget(count, 2).findText(f["Filter"], QtCore.Qt.MatchFixedString)
-
-                print(time.toString(), target, set_filter, int(f["Exposure"]), int(f["Gain"]), int(f["Integration"]))
-
-                self.schedule_table.cellWidget(count, 0).setTime(time)
-                self.schedule_table.cellWidget(count, 1).setCurrentIndex(target)
-                self.schedule_table.cellWidget(count, 2).setCurrentIndex(set_filter)
-                self.schedule_table.cellWidget(count, 3).setValue(int(f["Exposure"]))
-                self.schedule_table.cellWidget(count, 4).setValue(int(f["Gain"]))
-                self.schedule_table.cellWidget(count, 5).setValue(int(f["Integration"]))
-
-                self.schedule_table.cellWidget(count, 0).blockSignals(False)
-                self.schedule_table.cellWidget(count, 1).blockSignals(False)
-                self.schedule_table.cellWidget(count, 2).blockSignals(False)
-                self.schedule_table.cellWidget(count, 3).blockSignals(False)
-                self.schedule_table.cellWidget(count, 4).blockSignals(False)
-                self.schedule_table.cellWidget(count, 5).blockSignals(False)
+                self.schedule_table.setItem(count, 0, QTableWidgetItem(f["Time"]))
+                self.schedule_table.setItem(count, 1, QTableWidgetItem(f["Target"]))
+                self.schedule_table.setItem(count, 2, QTableWidgetItem(f["Filter"]))
+                self.schedule_table.setItem(count, 3, QTableWidgetItem(str(f["Exposure"])))
+                self.schedule_table.setItem(count, 4, QTableWidgetItem(str(f["Gain"])))
+                self.schedule_table.setItem(count, 5, QTableWidgetItem(str(f["Integration"])))
                 count += 1
 
     def generate_schedule(self):
@@ -335,34 +351,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Add row in filter_table."""
         self.row_count = self.filter_table.rowCount()
         self.filter_table.insertRow(self.row_count)
-
-        name_lineedit = QtWidgets.QLineEdit()
-        pos_spinbox = QtWidgets.QSpinBox()
-        lower_spinbox = QtWidgets.QSpinBox()
-        upper_spinbox = QtWidgets.QSpinBox()
-        brand_lineedit = QtWidgets.QLineEdit()
-
-        name_lineedit.editingFinished.connect(self.save_filters)
-        pos_spinbox.editingFinished.connect(self.save_filters)
-        lower_spinbox.editingFinished.connect(self.save_filters)
-        upper_spinbox.editingFinished.connect(self.save_filters)
-        brand_lineedit.editingFinished.connect(self.save_filters)
-
-        lower_spinbox.setSuffix("nm")
-        upper_spinbox.setSuffix("nm")
-
-        pos_spinbox.setMinimum(0)
-        lower_spinbox.setMinimum(0)
-        upper_spinbox.setMinimum(0)
-
-        lower_spinbox.setMaximum(1999)
-        upper_spinbox.setMaximum(2000)
-
-        self.filter_table.setCellWidget(self.row_count, 0, name_lineedit)
-        self.filter_table.setCellWidget(self.row_count, 1, brand_lineedit)
-        self.filter_table.setCellWidget(self.row_count, 2, pos_spinbox)
-        self.filter_table.setCellWidget(self.row_count, 3, lower_spinbox)
-        self.filter_table.setCellWidget(self.row_count, 4, upper_spinbox)
 
     def remove_filter_row(self):
         """Remove selected rows from filter_table."""
@@ -383,26 +371,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             filter_dict = {}
             for col in range(self.filter_table.columnCount()):
                 header = str(self.filter_table.horizontalHeaderItem(col).text())
-                try:
-                    value = str(self.filter_table.cellWidget(row, col).cleanText())
-                except AttributeError:
-                    value = str(self.filter_table.cellWidget(row, col).text())
+                item = self.filter_table.item(row, col)
+                value = None
+
+                # Save existing items with numeric strings as integers.
+                if item is None:
+                    pass
+                elif col > 1 and item.text() not in ("", "None"):
+                    value = int(item.text())
+                elif isinstance(item.text(), str) and item.text() not in ("", "None"):
+                    value = item.text()
                 filter_dict.update({header: value})
             filter_list.append(filter_dict)
         with open("filters.json", "a") as f:
             json.dump(filter_list, f, indent=0)
         with open("filters.json", "r") as f:
             appglobals.filters = json.load(f)
-        for row in range(self.schedule_table.rowCount()):
-            cbox = self.schedule_table.cellWidget(row, 2)
-            text = cbox.currentText()
-            cbox.blockSignals(True)
-            cbox.clear()
-            for f in appglobals.filters:
-                cbox.addItem(f["Name"])
-            index = cbox.findText(text)
-            cbox.blockSignals(False)
-            cbox.setCurrentIndex(index)
+
+        # Update filter model
+        filter_names = []
+        for f in appglobals.filters:
+            filter_names.append(f["Name"])
+        self.filter_list_model.setStringList(filter_names)
+
         self.position_combobox.blockSignals(True)
         text = self.position_combobox.currentText()
         text2 = self.camera_filter_combobox.currentText()
@@ -424,44 +415,37 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for f in filters:
             self.add_filter_row()
 
-            self.filter_table.cellWidget(count, 0).blockSignals(True)
-            self.filter_table.cellWidget(count, 1).blockSignals(True)
-            self.filter_table.cellWidget(count, 2).blockSignals(True)
-            self.filter_table.cellWidget(count, 3).blockSignals(True)
-            self.filter_table.cellWidget(count, 4).blockSignals(True)
+            self.filter_table.setItem(count, 0, QTableWidgetItem(f["Name"]))
+            self.filter_table.setItem(count, 1, QTableWidgetItem(f["Brand"]))
+            self.filter_table.setItem(count, 2, QTableWidgetItem(str(f["Wheel Position"])))
+            self.filter_table.setItem(count, 3, QTableWidgetItem(str(f["Lower Cutoff"])))
+            self.filter_table.setItem(count, 4, QTableWidgetItem(str(f["Upper Cutoff"])))
 
-            self.filter_table.cellWidget(count, 0).setText(f["Name"])
-            self.filter_table.cellWidget(count, 1).setText(f["Brand"])
-            self.filter_table.cellWidget(count, 2).setValue(int(f["Wheel Position"]))
-            self.filter_table.cellWidget(count, 3).setValue(int(f["Lower Cutoff"]))
-            self.filter_table.cellWidget(count, 4).setValue(int(f["Upper Cutoff"]))
-
-            self.filter_table.cellWidget(count, 0).blockSignals(False)
-            self.filter_table.cellWidget(count, 1).blockSignals(False)
-            self.filter_table.cellWidget(count, 2).blockSignals(False)
-            self.filter_table.cellWidget(count, 3).blockSignals(False)
-            self.filter_table.cellWidget(count, 4).blockSignals(False)
             count += 1
 
     def location_set(self):
         """Set observing location."""
-        location_dialog = modifylocation.LocationDialog()
-        location_dialog.exec_()
-        if os.path.exists("location.json"):
-            with open("location.json", "r") as f:
-                appglobals.location = json.load(f)
-        self.status_coords_label.setText(
-            "Latitude: " + str(appglobals.location["Latitude"][0]) + "°" +
-            str(appglobals.location["Latitude"][1]) + "\'" +
-            str(appglobals.location["Latitude"][2]) + "\"" +
-            ",  Longitude: " + str(appglobals.location["Longitude"][0]) + "°" +
-            str(appglobals.location["Longitude"][1]) + "\'" +
-            str(appglobals.location["Longitude"][2]) + "\"")
-        self.target_dialog.generate(appglobals.location["Latitude"], appglobals.location["Longitude"])
+        appglobals.location["Latitude"] = [
+            self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()
+        ]
+        appglobals.location["Longitude"] = [
+            self.long_d_spin.value(), self.long_m_spin.value(), self.long_s_spin.value()
+        ]
 
-    def open_target_gui(self):
-        """Show window with chart of planet elevations throughout the day."""
-        self.target_dialog.show()
+        if os.path.exists("location.json"):
+            os.remove("location.json")
+        with open("location.json", "a") as f:
+            json.dump(appglobals.location, f, indent=0)
+        self.status_coords_label.setText(
+            "Latitude: %d°%d\'%d\", Longitude: %d°%d\'%d\"" % (
+                appglobals.location["Latitude"][0],
+                appglobals.location["Latitude"][1],
+                appglobals.location["Latitude"][2],
+                appglobals.location["Longitude"][0],
+                appglobals.location["Longitude"][1],
+                appglobals.location["Longitude"][2]
+            )
+        )
 
     @staticmethod
     def connect_fail_dialog(name: str):
@@ -472,61 +456,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
 
-    # <editor-fold desc="Telescope">
-
     def connect_telescope(self):
         if self.mount_group.isChecked():
             name = "The telescope"
             try:
-                appglobals.telescope = ascom.Telescope()
+                self.telescope = ascom.AscomTelescope()
                 self.telescope_settings()
-                name = appglobals.telescope.name_()
+                name = self.telescope.name
                 self.telescope_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Telescope Connected", "{} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
                 self.mount_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.mount_group.isChecked():
             try:
-                appglobals.telescope.disconnect()
-                appglobals.telescope.dispose()
+                self.telescope.connected = False
+                self.telescope.dispose()
             except AttributeError as e:
                 print(e)
-            appglobals.telescope = None
+            self.telescope = None
             self.telescope_name_label.setText("Not Connected")
 
     def setup_telescope(self):
-        appglobals.telescope.disconnect()
-        appglobals.telescope.setup_dialog()
-        appglobals.telescope.connect()
+        self.telescope.connected = False
+        self.telescope.setup_dialog()
+        self.telescope.connected = True
         self.telescope_settings()
 
     def telescope_settings(self):
-        if not appglobals.telescope.canslew_eq():
+        if not self.telescope.can_slew_eq:
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
             messagebox.exec_()
             self.telescope_action.setChecked(False)
-
-    def compute_target(self, target: str, time: ephem.Date, print_: bool=False) -> Dict[str, float]:
-        if target == "Stop" or target == "Home" or target == "":
-            self.goto_target()
-        else:
-            compute_alt = ComputeTargets(time, appglobals.location["Latitude"], appglobals.location["Longitude"])
-            alt = compute_alt.object_alt(target)
-            if print_:
-                print("Target: %-5s, Time: %-19s, RA: %-11s, Dec°: %-11s, Az: %-11s, Alt°: %-11s"
-                      % (target, str(time), str(ephem.hours(alt["ra"])), str(ephem.degrees(alt["dec"])),
-                         str(ephem.degrees(alt["az"])), str(ephem.degrees(alt["alt"]))))
-            return alt
 
     def goto_target(self):
         goto_thread = threading.Thread(target=self.goto_target_thread)
@@ -534,35 +497,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def goto_target_thread(self):
         if self.object_combobox.currentText() == "Home":
-            appglobals.telescope.home()
+            self.telescope.goto_home()
         elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
-            appglobals.telescope.stop_tracking()
+            self.telescope.tracking = False
         else:
-            coords = self.compute_target(self.object_combobox.currentText(), ephem.now())
-            ra_split = str(ephem.hours(coords["ra"]))
-            ra_split = ra_split.split(":")
-            ra_decimal = int(ra_split[0]) + (int(ra_split[1]) / 60) + (float(ra_split[2]) / 3600)
-            dec_split = str(ephem.degrees(coords["dec"]))
-            dec_split = dec_split.split(":")
+            body = get_body(self.object_combobox.currentText().lower(), Time.now())
+            self.telescope.goto(body.ra.hour, body.dec.degree)
 
-            if int(dec_split[0]) >= 0:
-                dec_decimal = int(dec_split[0]) + (int(dec_split[1]) / 60) + (float(dec_split[2]) / 3600)
-            else:
-                dec_decimal = int(dec_split[0]) + ((-1 * int(dec_split[1])) / 60) + (-1 * float(dec_split[2]) / 3600)
-            appglobals.telescope.goto(ra_decimal, dec_decimal)
-
-    @staticmethod
-    def slew(axis: int, rate: float):
-        appglobals.telescope.move_axis(axis, rate)
-
-    @staticmethod
-    def slew_diagonal(rate1: float, rate2: float):
-        appglobals.telescope.move_axis(0, rate1)
-        appglobals.telescope.move_axis(1, rate2)
-
-    # </editor-fold>
-
-    # <editor-fold desc="Guider">
+    def slew_diagonal(self, rate1: float, rate2: float):
+        self.telescope.move_axis(0, rate1)
+        self.telescope.move_axis(1, rate2)
 
     def connect_guider(self):
         if self.guider_group.isChecked():
@@ -570,119 +514,91 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             guider_dialog.exec_()
             name = "The guider"
             try:
-                if guider_dialog.ascom_radio.isChecked() and guider_dialog.accepted:
-                    appglobals.guider = ascom.Camera()
-                    values = self.camera_settings(appglobals.guider)
-                    name = appglobals.guider.name_()
+                if not guider_dialog.asi_selected and guider_dialog.accepted:
+                    self.guider = ascom.AscomCamera()
+                    name = self.guider.name
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
-                    if self.isHidden():
-                        self.tray_icon.showMessage("Guider Connected", "{} has been connected.".format(name),
-                                                   QtWidgets.QSystemTrayIcon.Information)
-                elif guider_dialog.asi_radio.isChecked() and guider_dialog.accepted:
-                    appglobals.guider = asi.Camera(asi.list_cameras().index(guider_dialog.asi_camera))
-                    values = self.camera_settings(appglobals.guider)
-                    self.guider_settings_frame.set_camera(appglobals.guider)
+                elif guider_dialog.asi_selected and guider_dialog.accepted:
+                    self.guider = zwo.ZwoCamera(asi.list_cameras().index(guider_dialog.asi_camera))
+                    self.guider_settings_frame.set_camera(self.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
                     self.guider_menu.addAction(self.guider_settings_action)
                 else:
                     raise Exception
-                self.setup_guider_controls(values)
+                self.setup_guider_controls()
             except Exception as e:
                 print(e)
                 self.guider_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.guider_group.isChecked():
             try:
-                if type(appglobals.guider) is ascom.Camera:
+                if type(self.guider) is ascom.AscomCamera:
                     self.guider_menu.removeAction(self.ascomguidersettings_action)
-                    appglobals.guider.disconnect()
-                    appglobals.guider.dispose()
-                elif type(appglobals.guider) is asi.Camera:
+                    self.guider.connected = False
+                    self.guider.dispose()
+                elif type(self.guider) is zwo.ZwoCamera:
                     self.guider_menu.removeAction(self.guider_settings_action)
-                    appglobals.guider.close()
+                    self.guider.close()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.guider = None
-                self.guider_settings_frame.set_camera(appglobals.guider)
+                self.guider = None
+                self.guider_settings_frame.set_camera(self.guider)
                 self.guider_name_label.setText("Not Connected")
 
     def setup_guider(self):
-        appglobals.guider.disconnect()
-        appglobals.guider.setup_dialog()
-        appglobals.guider.connect()
-        self.setup_guider_controls(self.camera_settings(appglobals.guider))
+        self.guider.connected = False
+        self.guider.setup_dialog()
+        self.guider.connected = True
+        self.setup_guider_controls()
 
     def set_guider_exposure(self):
-        if type(appglobals.guider) is asi.Camera:
-            exp_us = int(self.guider_exposure_spinbox.cleanText()) * 1000
-            appglobals.guider.set_control_value(asi.ASI_EXPOSURE, exp_us)
+        self.guider.exposure = int(self.guider_exposure_spinbox.cleanText())
 
     def set_guider_gain(self):
-        if type(appglobals.guider) is asi.Camera:
-            gain = int(self.guider_gain_spinbox.cleanText())
-            appglobals.guider.set_control_value(asi.ASI_GAIN, gain)
+        self.guider.gain = int(self.guider_gain_spinbox.cleanText())
 
-    def setup_guider_controls(self, values):
-        if "Gain" in values:
-            self.guider_gain_spinbox.setMinimum(values["Gain"]["Min"])
-            self.guider_gain_spinbox.setMaximum(values["Gain"]["Max"])
-            self.guider_gain_slider.setMinimum(values["Gain"]["Min"])
-            self.guider_gain_slider.setMaximum(values["Gain"]["Max"])
-            self.guider_gain_spinbox.setValue(values["Gain"]["Current"])
+    def setup_guider_controls(self):
+        if self.guider.has_gain:
+            self.guider_gain_spinbox.setMinimum(self.guider.min_gain)
+            self.guider_gain_spinbox.setMaximum(self.guider.max_gain)
+            self.guider_gain_slider.setMinimum(self.guider.min_gain)
+            self.guider_gain_slider.setMaximum(self.guider.max_gain)
+            self.guider_gain_spinbox.setValue(self.guider.gain)
         else:
             self.guider_gain_label.setEnabled(False)
             self.guider_gain_spinbox.setEnabled(False)
             self.guider_gain_slider.setEnabled(False)
 
-        if "Exposure" in values:
-            self.guider_exposure_spinbox.setMinimum(values["Exposure"]["Min"])
-            self.guider_exposure_spinbox.setMaximum(values["Exposure"]["Max"])
-            self.guider_exposure_slider.setMinimum(values["Exposure"]["Min"])
-            self.guider_exposure_slider.setMaximum(values["Exposure"]["Max"])
-            self.guider_exposure_spinbox.setValue(values["Exposure"]["Current"])
+        if self.guider.has_exposure:
+            self.guider_exposure_spinbox.setMinimum(self.guider.min_exposure)
+            self.guider_exposure_spinbox.setMaximum(self.guider.max_exposure)
+            self.guider_exposure_slider.setMinimum(self.guider.min_exposure)
+            self.guider_exposure_slider.setMaximum(self.guider.max_exposure)
+            self.guider_exposure_spinbox.setValue(self.guider.exposure)
         else:
             self.guider_exposure_label.setEnabled(False)
             self.guider_exposure_spinbox.setEnabled(False)
             self.guider_exposure_slider.setEnabled(False)
 
-        self.guider_settings_frame.setup_controls(values)
+        if self.guider is zwo.ZwoCamera:
+            self.guider_settings_frame.setup_controls(self.guider)
 
     def guider_loop(self):
         if self.guider_loop_button.isChecked():
             if self.guider_start_button.isChecked():
                 self.guider_thread = threading.Thread(target=self.guider_preview)  # To be implemented
             else:
-                self.guider_thread = threading.Thread(target=self.guider_preview)
+                self.guider_thread = CameraThread(self.guider, self.guider_loop_button)
+                self.guider_thread.exposure_done.connect(self.guider_preview)
             self.guider_thread.daemon = True
             self.guider_thread.start()
 
-    def guider_preview(self):
-        if type(appglobals.guider) is ascom.Camera:
-            while self.guider_loop_button.isChecked():  # and not self.camera_capture_button.isChecked():
-                exp_sec = float(self.guider_exposure_spinbox.cleanText()) / 1000
-                image = appglobals.guider.capture(exp_sec, True)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.guider_preview_label.setPixmap(pix)
-        else:
-            appglobals.guider.start_video_capture()
-            while self.guider_loop_button.isChecked():
-                timeout = int(self.guider_exposure_spinbox.cleanText()) * 2 + 500
-                image = appglobals.guider.capture_video_frame(timeout=timeout)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.guider_preview_label.setPixmap(pix)
-        self.guider_preview_label.clear()
-
-    # </editor-fold>
-
-    # <editor-fold desc="Camera">
+    def guider_preview(self, frame: numpy.ndarray):
+        image = Image.fromarray(frame)
+        pix = ImageQt.toqpixmap(image)
+        self.guider_preview_label.setPixmap(pix)
 
     def connect_camera(self):
         if self.camera_group.isChecked():
@@ -690,220 +606,105 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             camera_dialog = connectcamera.ConnectCamera()
             camera_dialog.exec_()
             try:
-                if camera_dialog.ascom_radio.isChecked() and camera_dialog.accepted:
-                    appglobals.camera = ascom.Camera()
-                    values = self.camera_settings(appglobals.camera)
-                    name = appglobals.camera.name_()
+                if not camera_dialog.asi_selected and camera_dialog.accepted:
+                    self.camera = ascom.AscomCamera()
+                    name = self.camera.name
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
-                    if self.isHidden():
-                        self.tray_icon.showMessage("Camera Connected", "{} has been connected.".format(name),
-                                                   QtWidgets.QSystemTrayIcon.Information)
-                elif camera_dialog.asi_radio.isChecked() and camera_dialog.accepted:
-                    appglobals.camera = asi.Camera(asi.list_cameras().index(camera_dialog.asi_camera))
-                    values = self.camera_settings(appglobals.camera)
-                    self.camera_settings_frame.set_camera(appglobals.camera)
+                elif camera_dialog.asi_selected and camera_dialog.accepted:
+                    self.camera = zwo.ZwoCamera(asi.list_cameras().index(camera_dialog.asi_camera))
+                    self.camera_settings_frame.set_camera(self.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.camera_settings_action)
                 else:
                     raise Exception
-                self.setup_camera_controls(values)
+                self.setup_camera_controls()
             except Exception as e:
                 print(e)
                 self.camera_group.setChecked(False)
-                if self.isVisible() and camera_dialog.accepted:
-                    self.connect_fail_dialog(name)
-                elif self.isHidden() and camera_dialog.accepted:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
 
         elif not self.camera_group.isChecked():
             try:
-                if type(appglobals.camera) is ascom.Camera:
+                if type(self.camera) is ascom.AscomCamera:
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
-                    appglobals.camera.disconnect()
-                    appglobals.camera.dispose()
-                elif type(appglobals.camera) is asi.Camera:
+                    self.camera.connected = False
+                    self.camera.dispose()
+                elif type(self.camera) is zwo.ZwoCamera:
                     self.camera_settings_menu.removeAction(self.camera_settings_action)
-                    appglobals.camera.close()
+                    self.camera.connected = False
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.camera = None
-                self.camera_settings_frame.set_camera(appglobals.camera)
+                self.camera = None
+                self.camera_settings_frame.set_camera(self.camera)
                 self.camera_name_label.setText("Not Connected")
 
-    def setup_camera_controls(self, values):
+    def setup_camera_controls(self):
         # TODO: Test these statements with more cameras that support different features
-        if "Gain" in values:
-            self.camera_gain_spinbox.setMinimum(values["Gain"]["Min"])
-            self.camera_gain_spinbox.setMaximum(values["Gain"]["Max"])
-            self.camera_gain_slider.setMinimum(values["Gain"]["Min"])
-            self.camera_gain_slider.setMaximum(values["Gain"]["Max"])
-            self.camera_gain_spinbox.setValue(values["Gain"]["Current"])
+        if self.camera.has_gain:
+            self.camera_gain_spinbox.setMinimum(self.camera.min_gain)
+            self.camera_gain_spinbox.setMaximum(self.camera.max_gain)
+            self.camera_gain_slider.setMinimum(self.camera.min_gain)
+            self.camera_gain_slider.setMaximum(self.camera.max_gain)
+            self.camera_gain_spinbox.setValue(self.camera.gain)
         else:
             self.camera_gain_label.setEnabled(False)
             self.camera_gain_spinbox.setEnabled(False)
             self.camera_gain_slider.setEnabled(False)
 
-        if "Exposure" in values:
-            self.camera_exposure_spinbox.setMinimum(values["Exposure"]["Min"])
-            self.camera_exposure_spinbox.setMaximum(values["Exposure"]["Max"])
-            self.camera_exposure_slider.setMinimum(values["Exposure"]["Min"])
-            self.camera_exposure_slider.setMaximum(values["Exposure"]["Max"])
-            self.camera_exposure_spinbox.setValue(values["Exposure"]["Current"])
+        if self.camera.has_exposure:
+            self.camera_exposure_spinbox.setMinimum(self.camera.min_exposure)
+            self.camera_exposure_spinbox.setMaximum(self.camera.max_exposure)
+            self.camera_exposure_slider.setMinimum(self.camera.min_exposure)
+            self.camera_exposure_slider.setMaximum(self.camera.max_exposure)
+            self.camera_exposure_spinbox.setValue(self.camera.exposure)
         else:
             self.camera_exposure_label.setEnabled(False)
             self.camera_exposure_spinbox.setEnabled(False)
             self.camera_exposure_slider.setEnabled(False)
 
-        self.camera_settings_frame.setup_controls(values)
+        if self.camera is zwo.ZwoCamera:
+            self.camera_settings_frame.setup_controls(self.camera)
 
     def setup_camera(self):
-        appglobals.camera.disconnect()
-        appglobals.camera.setup_dialog()
-        appglobals.camera.connect()
-        self.setup_camera_controls(self.camera_settings(appglobals.camera))
-
-    def camera_settings(self, camera):
-        values = {}
-        if type(camera) is ascom.Camera:
-            values.update({"Gain": {"Min": camera.gain_min(), "Max": camera.gain_max(), "Current": camera.gain()}})
-            values.update({"Exposure": {"Min": camera.exposure_min() * 1000,
-                                        "Max": camera.exposure_max() * 1000,
-                                        "Current": camera.exposure_min() * 1000}})  # No current value in ASCOM
-
-        elif type(camera) is asi.Camera:
-            controls = camera.get_controls()
-            if controls["Gain"]["IsAutoSupported"]:
-                values.update({"Gain": {"Min": controls["Gain"]["MinValue"],
-                                        "Max": controls["Gain"]["MaxValue"],
-                                        "Current": camera.get_control_value(asi.ASI_GAIN)[0]}})
-
-            if controls["Exposure"]["IsAutoSupported"]:
-                values.update({"Exposure": {"Min": controls["Exposure"]["MinValue"] / 1000,
-                                            "Max": controls["Exposure"]["MaxValue"] / 1000,
-                                            "Current": camera.get_control_value(asi.ASI_EXPOSURE)[0] / 1000}})
-
-            if controls["Gamma"]["IsAutoSupported"]:
-                values.update({"Gamma": {"Min": controls["Gamma"]["MinValue"],
-                                         "Max": controls["Gamma"]["MaxValue"],
-                                         "Current": camera.get_control_value(asi.ASI_GAMMA)[0]}})
-
-            if controls["Brightness"]["IsAutoSupported"]:
-                values.update({"Brightness": {"Min": controls["Brightness"]["MinValue"],
-                                              "Max": controls["Brightness"]["MaxValue"],
-                                              "Current": camera.get_control_value(asi.ASI_BRIGHTNESS)[0]}})
-
-            if controls["BandWidth"]["IsAutoSupported"]:
-                values.update({"Bandwidth": {"Min": controls["BandWidth"]["MinValue"],
-                                             "Max": controls["BandWidth"]["MaxValue"],
-                                             "Current": camera.get_control_value(asi.ASI_BANDWIDTHOVERLOAD)[0]}})
-
-            if controls["Flip"]["IsAutoSupported"]:
-                values.update({"Flip": {"Min": controls["Flip"]["MinValue"],
-                                        "Max": controls["Flip"]["MaxValue"],
-                                        "Current": camera.get_control_value(asi.ASI_FLIP)[0]}})
-
-            if controls["HighSpeedMode"]["IsAutoSupported"]:
-                values.update({"High Speed": {"Min": controls["HighSpeedMode"]["MinValue"],
-                                              "Max": controls["HighSpeedMode"]["MaxValue"],
-                                              "Current": camera.get_control_value(asi.ASI_HIGH_SPEED_MODE)[0]}})
-
-            if controls["Temperature"]["IsAutoSupported"]:
-                values.update({"Temperature": {"Min": controls["Temperature"]["MinValue"],
-                                               "Max": controls["Temperature"]["MaxValue"],
-                                               "Current": camera.get_control_value(asi.ASI_TARGET_TEMP)[0]}})
-
-            if camera.get_camera_property()["IsColorCam"]:
-                if controls["WB_R"]["IsAutoSupported"]:
-                    values.update({"Red": {"Min": controls["WB_R"]["MinValue"],
-                                           "Max": controls["WB_R"]["MaxValue"],
-                                           "Current": camera.get_control_value(asi.ASI_WB_R)[0]}})
-
-                if controls["WB_B"]["IsAutoSupported"]:
-                    values.update({"Blue": {"Min": controls["WB_B"]["MinValue"],
-                                            "Max": controls["WB_B"]["MaxValue"],
-                                            "Current": camera.get_control_value(asi.ASI_WB_B)[0]}})
-
-            if "HardwareBin" in controls:
-                # TODO: Determine if HardwareBin is correlated with color cameras
-                if controls["HardwareBin"]["IsAutoSupported"]:
-                    values.update({"Hardware Bin": {"Min": controls["HardwareBin"]["MinValue"],
-                                                    "Max": controls["HardwareBin"]["MaxValue"],
-                                                    "Current": camera.get_control_value(asi.ASI_HARDWARE_BIN)[0]}})
-
-            if "Mono bin" in controls:
-                # TODO: Determine if Mono bin is correlated with color cameras
-                if controls["Mono bin"]["IsAutoSupported"]:
-                    values.update({"Mono Bin": {"Min": controls["Mono bin"]["MinValue"],
-                                                "Max": controls["Mono bin"]["MaxValue"],
-                                                "Current": camera.get_control_value(asi.ASI_MONO_BIN)[0]}})
-
-        return values
+        self.camera.connected = False
+        self.camera.setup_dialog()
+        self.camera.connected = True
+        self.setup_camera_controls()
 
     def set_camera_exposure(self):
-        if type(appglobals.camera) is asi.Camera:
-            exp_us = int(self.camera_exposure_spinbox.cleanText()) * 1000
-            appglobals.camera.set_control_value(asi.ASI_EXPOSURE, exp_us)
+        self.camera.exposure = int(self.camera_exposure_spinbox.cleanText())
 
     def set_camera_gain(self):
-        if type(appglobals.camera) is asi.Camera:
-            gain = int(self.camera_gain_spinbox.cleanText())
-            appglobals.camera.set_control_value(asi.ASI_GAIN, gain)
+        self.camera.gain = int(self.camera_gain_spinbox.cleanText())
 
     def camera_loop(self):
         if self.camera_loop_button.isChecked():
             if self.camera_capture_button.isChecked():
                 self.camera_thread = threading.Thread(target=self.camera_record)
             else:
-                self.camera_thread = threading.Thread(target=self.camera_preview)
+                self.camera_thread = CameraThread(self.camera, self.camera_loop_button)
+                self.camera_thread.exposure_done.connect(self.camera_preview)
             self.camera_thread.daemon = True
             self.camera_thread.start()
 
-    def camera_preview(self):
-        if type(appglobals.camera) is ascom.Camera:
-            while self.camera_loop_button.isChecked() and not self.camera_capture_button.isChecked():
-                exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = appglobals.camera.capture(exp_sec, True)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
-        else:
-            appglobals.camera.start_video_capture()
-            while self.camera_loop_button.isChecked():
-                timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
-                image = appglobals.camera.capture_video_frame(timeout=timeout)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
-        self.camera_preview_label.clear()
+    def camera_preview(self, frame: numpy.ndarray):
+        image = Image.fromarray(frame)
+        pix = ImageQt.toqpixmap(image)
+        self.camera_preview_label.setPixmap(pix)
 
     def camera_record(self):
-        name_format = str(ephem.now()).replace("/", "-").replace(":", "", 1).replace(":", "_")
+        name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
-        if type(appglobals.camera) is ascom.Camera:
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (appglobals.camera.num_x(), appglobals.camera.num_y()), False)
-            while self.camera_capture_button.isChecked():
-                exp_sec = float(self.camera_exposure_spinbox.cleanText()) / 1000
-                image = appglobals.camera.capture(exp_sec, True)
-                out.write(image)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
-        else:
-            print(0)
-            width = appglobals.camera.get_camera_property()["MaxWidth"]
-            height = appglobals.camera.get_camera_property()["MaxHeight"]
-            out = cv2.VideoWriter(avi_name, -1, 20.0, (width, height), False)
-            while self.camera_capture_button.isChecked():
-                timeout = int(self.camera_exposure_spinbox.cleanText()) * 2 + 500
-                image = appglobals.camera.capture_video_frame(timeout=timeout)
-                out.write(image)
-                image = Image.fromarray(image)
-                pix = ImageQt.toqpixmap(image)
-                self.camera_preview_label.setPixmap(pix)
+        out = cv2.VideoWriter(avi_name, 0, 0, tuple(self.camera.roi_resolution), False)
+        while self.camera_capture_button.isChecked():
+            image = self.camera.get_frame()
+            out.write(image)
+            image = Image.fromarray(image)
+            pix = ImageQt.toqpixmap(image)
+            self.camera_preview_label.setPixmap(pix)
         out.release()
         if os.path.getsize(avi_name) == 0:
             os.remove(avi_name)
@@ -917,69 +718,63 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             json.dump(appglobals.settings, f, indent=4)
 
     def change_camera_save_dir(self):
-        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory",
-                                                                       appglobals.settings["Save Directory"])
+        camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(
+            self,
+            "Select Directory",
+            appglobals.settings["Save Directory"],
+            QtWidgets.QFileDialog.DontUseNativeDialog
+        )
+
         if str(camera_dir_dialog) == "":
             pass
         else:
             appglobals.settings["Save Directory"] = str(camera_dir_dialog)
             self.save_settings()
 
-    # </editor-fold>
-
-    # <editor-fold desc="Focuser">
-
     def connect_focuser(self):
         if self.focuser_group.isChecked():
             name = "The focuser"
             try:
-                appglobals.focuser = ascom.Focuser()
+                self.focuser = ascom.AscomFocuser()
                 self.focuser_settings()
-                name = appglobals.focuser.name_()
+                name = self.focuser.name
                 self.focuser_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Focuser Connected", "{} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
                 self.focuser_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.focuser_group.isChecked():
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
-                appglobals.focuser.disconnect()
-                appglobals.focuser.dispose()
+                self.focuser.connected = False
+                self.focuser.dispose()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.focuser = None
+                self.focuser = None
                 self.focuser_name_label.setText("Not Connected")
 
     def setup_focuser(self):
-        appglobals.focuser.disconnect()
-        appglobals.focuser.setup_dialog()
-        appglobals.focuser.connect()
+        self.focuser.connected = False
+        self.focuser.setup_dialog()
+        self.focuser.connected = True
         self.focuser_settings()
 
     def focuser_settings(self):
-        self.focuser_position_spinbox.setMaximum(appglobals.focuser.max_step())
+        self.focuser_position_spinbox.setMaximum(self.focuser.max_step)
         self.focuser_position_spinbox.blockSignals(True)
-        self.focuser_position_spinbox.setValue(appglobals.focuser.position())
+        self.focuser_position_spinbox.setValue(self.focuser.position)
         self.focuser_position_spinbox.blockSignals(False)
-        if appglobals.focuser.temp_comp_available():
-            if appglobals.focuser.is_temp_comp():
+        if self.focuser.has_temp_comp():
+            if self.focuser.temp_comp:
                 self.temp_checkbox.setChecked(True)
             else:
                 self.temp_checkbox.setChecked(False)
             self.temp_checkbox.setVisible(True)
         else:
             self.temp_checkbox.setVisible(False)
-        if not appglobals.focuser.absolute():
+        if not self.focuser.is_abs_position():
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
@@ -987,17 +782,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.focuser_action.setChecked(False)
 
     def move_focuser(self):
-        if appglobals.focuser.absolute():
+        if self.focuser.is_abs_position():
             position = self.focuser_position_spinbox.text()
-            appglobals.focuser.move(position)
+            self.focuser.position = position
 
         # TODO: Implement relative focusing
         else:
-            old_pos = appglobals.focuser.position()
+            old_pos = self.focuser.position
             position = int(self.focuser_position_spinbox.text()) - old_pos
             print("\nself.focuser_position_spinbox.text() =", int(self.focuser_position_spinbox.text()),
                   "\nold_pos =", old_pos, "\nposition =", position)
-            appglobals.focuser.move(position)
+            self.focuser.position = position
 
     def temp_comp(self):
         state = self.temp_checkbox.isChecked()
@@ -1007,77 +802,43 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.focuser_position_label.setEnabled(True)
             self.focuser_position_spinbox.setEnabled(True)
-        appglobals.focuser.temp_comp(state)
-
-    # </editor-fold>
-
-    # <editor-fold desc="Filter Wheel">
+        self.focuser.temp_comp = state
 
     def connect_filters(self):
         if self.wheel_group.isChecked():
             name = "The filter wheel"
             try:
-                appglobals.wheel = ascom.FilterWheel()
-                name = appglobals.wheel.name_()
+                self.wheel = ascom.AscomFilterWheel()
+                name = self.wheel.name
                 self.wheel_name_label.setText(name)
-                if self.isHidden():
-                    self.tray_icon.showMessage("Filter Wheel Connected", "{} has been connected.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Information)
             except Exception as e:
                 print(e)
                 self.wheel_group.setChecked(False)
-                if self.isVisible():
-                    self.connect_fail_dialog(name)
-                else:
-                    self.tray_icon.showMessage("Connection Failed", "{} failed to connect.".format(name),
-                                               QtWidgets.QSystemTrayIcon.Warning)
+                self.connect_fail_dialog(name)
         elif not self.wheel_group.isChecked():
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
-                appglobals.wheel.disconnect()
-                appglobals.wheel.dispose()
+                self.wheel.connected = False
+                self.wheel.dispose()
             except AttributeError as e:
                 print(e)
             finally:
-                appglobals.wheel = None
+                self.wheel = None
                 self.wheel_name_label.setText("Not Connected")
 
-    @staticmethod
-    def setup_filterwheel():
-        appglobals.wheel.disconnect()
-        appglobals.wheel.setup_dialog()
-        appglobals.wheel.connect()
+    def setup_filterwheel(self):
+        self.wheel.connected = False
+        self.wheel.setup_dialog()
+        self.wheel.connected = True
         # self.filterwheel_settings()
 
     def change_filter(self):
         try:
             text = self.position_combobox.currentText()
-            appglobals.wheel.rotate_wheel(text)
+            self.wheel.rotate_wheel(text)
         except AttributeError as e:
             print(e)
-
-    # </editor-fold>
-
-    def close_app(self):
-        self.mount_group.setChecked(False)
-        self.guider_group.setChecked(False)
-        self.camera_group.setChecked(False)
-        self.focuser_group.setChecked(False)
-        self.wheel_group.setChecked(False)
-        sys.exit()
-
-    def closeEvent(self, event: QtGui.QCloseEvent):
-        """Override default closeEvent method."""
-        event.ignore()
-        self.setVisible(False)
-        self.target_dialog.setVisible(False)
-        for dock in self.findChildren(QtWidgets.QDockWidget):
-            dock.setVisible(False)
-        if self.firstclose:
-            self.firstclose = False
-            self.tray_icon.showMessage("Running in background", "Solar System Sequencer is still running in the "
-                                                                "background.", QtWidgets.QSystemTrayIcon.Information)
 
     def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""

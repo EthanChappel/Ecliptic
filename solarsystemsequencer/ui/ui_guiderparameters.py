@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'guiderparameters.ui'
+# Form implementation generated from reading ui file 'guiderparameters.ui',
+# licensing of 'guiderparameters.ui' applies.
 #
-# Created: Wed Jul 12 15:26:10 2017
-#      by: PyQt5 UI code generator 5.2.1
+# Created: Tue Jan 15 03:06:16 2019
+#      by: pyside2-uic  running on PySide2 5.12.0
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_GuiderParameters(object):
     def setupUi(self, GuiderParameters):
@@ -73,7 +74,7 @@ class Ui_GuiderParameters(object):
         self.northoffset_spinbox.setMinimum(-180)
         self.northoffset_spinbox.setMaximum(180)
         self.northoffset_spinbox.setObjectName("northoffset_spinbox")
-        self.gridLayout.addWidget(self.northoffset_spinbox, 3, 0, 1, 1, QtCore.Qt.AlignTop)
+        self.gridLayout.addWidget(self.northoffset_spinbox, 3, 0, 1, 1)
         self.northoffset_label = QtWidgets.QLabel(GuiderParameters)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
@@ -81,7 +82,7 @@ class Ui_GuiderParameters(object):
         sizePolicy.setHeightForWidth(self.northoffset_label.sizePolicy().hasHeightForWidth())
         self.northoffset_label.setSizePolicy(sizePolicy)
         self.northoffset_label.setObjectName("northoffset_label")
-        self.gridLayout.addWidget(self.northoffset_label, 2, 0, 1, 1, QtCore.Qt.AlignBottom)
+        self.gridLayout.addWidget(self.northoffset_label, 2, 0, 1, 1)
         self.line = QtWidgets.QFrame(GuiderParameters)
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -89,18 +90,17 @@ class Ui_GuiderParameters(object):
         self.gridLayout.addWidget(self.line, 1, 0, 1, 2)
 
         self.retranslateUi(GuiderParameters)
-        self.northoffset_spinbox.valueChanged['int'].connect(self.northoffset_dial.setValue)
-        self.northoffset_dial.valueChanged['int'].connect(self.northoffset_spinbox.setValue)
+        QtCore.QObject.connect(self.northoffset_spinbox, QtCore.SIGNAL("valueChanged(int)"), self.northoffset_dial.setValue)
+        QtCore.QObject.connect(self.northoffset_dial, QtCore.SIGNAL("valueChanged(int)"), self.northoffset_spinbox.setValue)
         QtCore.QMetaObject.connectSlotsByName(GuiderParameters)
 
     def retranslateUi(self, GuiderParameters):
-        _translate = QtCore.QCoreApplication.translate
-        GuiderParameters.setWindowTitle(_translate("GuiderParameters", "Frame"))
-        self.ra_label.setText(_translate("GuiderParameters", "Right Ascension"))
-        self.ra_spinbox.setSuffix(_translate("GuiderParameters", "\""))
-        self.dec_label.setText(_translate("GuiderParameters", "Declination"))
-        self.dec_spinBox.setSuffix(_translate("GuiderParameters", "\""))
-        self.every_label.setText(_translate("GuiderParameters", "every"))
-        self.seconds_spinbox.setSuffix(_translate("GuiderParameters", "s"))
-        self.northoffset_label.setText(_translate("GuiderParameters", "North Offset"))
+        GuiderParameters.setWindowTitle(QtWidgets.QApplication.translate("GuiderParameters", "Frame", None, -1))
+        self.ra_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "Right Ascension", None, -1))
+        self.ra_spinbox.setSuffix(QtWidgets.QApplication.translate("GuiderParameters", "\"", None, -1))
+        self.dec_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "Declination", None, -1))
+        self.dec_spinBox.setSuffix(QtWidgets.QApplication.translate("GuiderParameters", "\"", None, -1))
+        self.every_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "every", None, -1))
+        self.seconds_spinbox.setSuffix(QtWidgets.QApplication.translate("GuiderParameters", "s", None, -1))
+        self.northoffset_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "North Offset", None, -1))
 

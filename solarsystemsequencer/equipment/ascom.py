@@ -1,174 +1,310 @@
-import os
-import json
 from typing import List, Union
 import numpy as np
 import appglobals
+from equipment.equipment import Device, Telescope, Camera, FilterWheel, Focuser
 import clr
-clr.AddReference("lib/ASCOM.DriverAccess")
-clr.AddReference("lib/ASCOM.Utilities")
-import ASCOM.DriverAccess
-import ASCOM.Utilities
+clr.AddReference("ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
+clr.AddReference("ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
+clr.AddReference("ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL")
+import ASCOM
 
 
-class Device:
-    def __init__(self, device):
-        super(Device, self).__init__()
-        self.device = device
-        self.choose_dialog = ASCOM.Utilities.Chooser()
-        self.choose_dialog.DeviceType = device
-        self.choose = self.choose_dialog.Choose()
+class AscomDevice(Device):
+    _device_type = None
 
-    def name_(self) -> str:
-        return self.device.Name
-
-    def connect(self):
-        self.device.Connected = True
-
-    def connected(self) -> bool:
-        return self.device.Connected
-
-    def disconnect(self):
-        self.device.Connected = False
+    def __init__(self, device: type):
+        self.driver = device(self.chooser(type(self)._device_type))
+        self.driver.Connected = True
 
     def dispose(self):
-        self.device.Dispose()
-        del self.device
+        self.driver.Dispose()
+        del self.driver
 
     def setup_dialog(self):
-        self.device.SetupDialog()
+        self.driver.SetupDialog()
+
+    @staticmethod
+    def chooser(device_type: str) -> str:
+        choose_dialog = ASCOM.Utilities.Chooser()
+        choose_dialog.DeviceType = device_type
+        return choose_dialog.Choose()
+
+    @property
+    def name(self) -> str:
+        return self.driver.Name
+
+    @property
+    def connected(self):
+        return self.driver.Connected
+
+    @connected.setter
+    def connected(self, value: bool):
+        self.driver.Connected = value
 
 
-class Telescope(Device):
+class AscomTelescope(Telescope, AscomDevice):
+    _device_type = "Telescope"
+
     def __init__(self):
-        super(Telescope, self).__init__("Telescope")
-        self.device = ASCOM.DriverAccess.Telescope(self.choose)
+        super().__init__(ASCOM.DriverAccess.Telescope)
 
-    def canslew_eq(self) -> bool:
-        return self.device.CanSlew
+    def goto_home(self):
+        self.driver.Unpark()
+        self.driver.FindHome()
 
-    def canslew_altaz(self) -> bool:
-        return self.device.CanSlewAltAz
-
-    def home(self):
-        self.device.Unpark()
-        self.device.FindHome()
-
-    def park(self):
-        self.device.Park()
-
-    def can_slew(self) -> bool:
-        return self.device.CanSlew
-
-    def stop_tracking(self):
-        self.device.Tracking = False
+    def set_parked(self, parked: bool):
+        if parked:
+            self.driver.Park()
+        else:
+            self.driver.Unpark()
 
     def goto(self, ra, dec):
-        self.device.Tracking = True
-        self.device.SlewToCoordinates(ra, dec)
+        self.driver.Tracking = True
+        self.driver.SlewToCoordinates(ra, dec)
 
-    def move_axis(self, axis, rate):
-        self.device.Tracking = True
-        self.device.MoveAxis(axis, rate)
+    def move_axis(self, axis: int, rate: float):
+        self.driver.Tracking = True
+        self.driver.MoveAxis(axis, rate)
+
+    def pulse_guide(self, direction: int, duration: int):
+        self.driver.PulseGuide(direction, duration)
+
+    @property
+    def can_slew_eq(self) -> bool:
+        return self.driver.CanSlew
+
+    @property
+    def can_slew_alt_az(self) -> bool:
+        return self.driver.CanSlewAltAz
+
+    @property
+    def tracking(self) -> bool:
+        return self.driver.Tracking
+
+    @tracking.setter
+    def tracking(self, value: bool):
+        self.driver.Tracking = value
+
+    @property
+    def can_slew(self) -> bool:
+        return self.driver.CanSlew
+
+    @property
+    def pier_side(self):
+        return self.driver.SideOfPier
 
 
-class Camera(Device):
+class AscomCamera(Camera, AscomDevice):
+    _device_type = "Camera"
+
     def __init__(self):
-        super(Camera, self).__init__("Camera")
-        self.device = ASCOM.DriverAccess.Camera(self.choose)
-        self.connect()
+        super().__init__(ASCOM.DriverAccess.Camera)
+        self._exposure = 0
+        self._target_temperature = None
 
-    def gain_min(self) -> int:
-        return self.device.GainMin
-
-    def gain_max(self) -> int:
-        return self.device.GainMax
-
-    def gain(self) -> int:
-        return self.device.Gain
-
-    def exposure_min(self) -> float:
-        return self.device.ExposureMin
-
-    def exposure_max(self) -> float:
-        return self.device.ExposureMax
-
-    def num_x(self) -> int:
-        return self.device.NumX
-
-    def num_y(self) -> int:
-        return self.device.NumY
-
-    def image_ready(self) -> bool:
-        return self.device.ImageReady
-
-    def capture(self, exposure: float, light: bool) -> np.ndarray:
-        self.device.StartExposure(exposure, light)
-        while not self.device.ImageReady:
+    def get_frame(self) -> np.ndarray:
+        self.driver.StartExposure(self.exposure / 1000, True)
+        while not self.driver.ImageReady:
             pass
-        image = self.device.ImageArray
-        width, height = self.device.NumX, self.device.NumY
+        image = self.driver.ImageArray
+        width, height = self.driver.NumX, self.driver.NumY
         image = np.asarray(list(image), dtype=np.uint8).reshape(width, height)  # list(image) is slow
         image = np.rot90(image, 1)
         image = np.flipud(image)
         return image
 
     def stop_exposure(self):
-        self.device.StopExposure()
+        self.driver.StopExposure()
 
-    def percent_completed(self) -> int:
-        return self.device.PercentCompleted
+    @property
+    def gain(self) -> int:
+        return self.driver.Gain
 
+    @gain.setter
+    def gain(self, value: int):
+        self.driver.Gain = value
+
+    @property
+    def min_gain(self) -> int:
+        return self.driver.GainMin
+
+    @property
+    def max_gain(self) -> int:
+        return self.driver.GainMax
+
+    @property
+    def has_gain(self) -> bool:
+        try:
+            self.driver.Gain
+            return True
+        except ASCOM.Exceptions.PropertyNotImplementedException:
+            return False
+
+    @property
+    def exposure(self) -> float:
+        return self._exposure
+
+    @exposure.setter
+    def exposure(self, value: float):
+        self._exposure = value
+
+    @property
+    def min_exposure(self) -> float:
+        return self.driver.ExposureMin
+
+    @property
+    def max_exposure(self) -> float:
+        return self.driver.ExposureMax
+
+    @property
+    def has_exposure(self) -> bool:
+        return True
+
+    @property
+    def roi_resolution(self):
+        return self.driver.NumX, self.driver.NumY
+
+    def set_roi_resolution(self, width: int, height: int):
+        self.driver.NumX = width
+        self.driver.NumY = height
+
+    @property
+    def roi_offset(self):
+        return self.driver.StartX, self.driver.StartY
+
+    def set_roi_offset(self, x: int, y: int):
+        self.driver.StartX = x
+        self.driver.StartY = y
+
+    @property
+    def bin(self) -> int:
+        return self.driver.BinX
+
+    @property
+    def exposure_complete(self) -> bool:
+        return self.driver.ImageReady
+
+    @property
+    def exposure_progress(self) -> int:
+        return self.driver.PercentCompleted
+
+    @property
     def image_array(self) -> List[int]:
-        image = list(self.device.ImageArray)
-        return image
+        return list(self.driver.ImageArray)
+
+    @property
+    def video_mode(self):
+        return None
+
+    @video_mode.setter
+    def video_mode(self, value: bool):
+        pass
+
+    @property
+    def high_speed(self) -> int:
+        return self.driver.FastReadout
+
+    @property
+    def min_high_speed(self) -> int:
+        if self.driver.CanFastReadout:
+            return 0
+        return None
+
+    @property
+    def max_high_speed(self) -> int:
+        if self.driver.CanFastReadout:
+            return 1
+        return None
+
+    @property
+    def has_high_speed(self) -> bool:
+        return self.driver.CanFastReadout
+
+    @property
+    def temperature(self) -> float:
+        return self.driver.CCDTemperature
+
+    @property
+    def min_temperature(self) -> int:
+        return None
+
+    @property
+    def max_temperature(self) -> int:
+        return None
+
+    @property
+    def has_temperature(self) -> bool:
+        return self.driver.SupportedActions
+
+    @property
+    def target_temperature(self) -> float:
+        return self._target_temperature
+
+    @target_temperature.setter
+    def target_temperature(self, value: float):
+        self._target_temperature = self.driver.SetCCDTemperature(value)
+
+    @property
+    def has_target_temperature(self) -> bool:
+        return self.driver.CanSetCCDTemperature
 
 
-class FilterWheel(Device):
+class AscomFilterWheel(FilterWheel, AscomDevice):
+    _device_type = "FilterWheel"
+
     def __init__(self):
-        super(FilterWheel, self).__init__("FilterWheel")
-        self.device = ASCOM.DriverAccess.FilterWheel(self.choose)
-        self.connect()
+        super().__init__(ASCOM.DriverAccess.FilterWheel)
 
-    def wheel_position(self, pos: int):
-        self.device.Position = pos
+    @property
+    def position(self) -> int:
+        return self.driver.Position
+
+    @position.setter
+    def position(self, value: int):
+        self.driver.Position = value
 
     def rotate_wheel(self, text: Union[str, int]):
         try:
-            self.device.Position = text
+            self.driver.Position = text
         except Exception:
             for f in appglobals.filters:
                 if f["Name"] == text:
                     wheel_pos = f["Wheel Position"]
                     try:
-                        self.device.Position = wheel_pos
+                        self.driver.Position = wheel_pos
                         break
                     except Exception:
                         pass
 
 
-class Focuser(Device):
+class AscomFocuser(Focuser, AscomDevice):
+    _device_type = "Focuser"
+
     def __init__(self):
-        super(Focuser, self).__init__("Focuser")
-        self.device = ASCOM.DriverAccess.Focuser(self.choose)
-        self.connect()
+        super().__init__(ASCOM.DriverAccess.Focuser)
 
-    def move(self, pos: int):
-        self.device.Move(pos)
+    def is_abs_position(self) -> bool:
+        return self.driver.Absolute
 
+    def has_temp_comp(self) -> bool:
+        return self.driver.TempCompAvailable
+
+    @property
     def position(self) -> int:
-        return self.device.Position
+        return self.driver.Position
 
-    def absolute(self) -> bool:
-        return self.device.Absolute
+    @position.setter
+    def position(self, value: int):
+        self.driver.Move(value)
 
+    @property
     def max_step(self) -> int:
-        return self.device.MaxStep
+        return self.driver.MaxStep
 
-    def is_temp_comp(self) -> bool:
-        return self.device.TempComp
+    @property
+    def temp_comp(self) -> bool:
+        return self.driver.TempComp
 
-    def temp_comp_available(self) -> bool:
-        return self.device.TempCompAvailable
-
-    def temp_comp(self, val: bool):
-        self.device.TempComp = val
+    @temp_comp.setter
+    def temp_comp(self, value: bool):
+        self.driver.TempComp = value

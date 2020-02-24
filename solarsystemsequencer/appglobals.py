@@ -1,11 +1,5 @@
 import json
-from PyQt5 import QtWidgets
-
-telescope = None
-camera = None
-guider = None
-wheel = None
-focuser = None
+from PySide2 import QtWidgets
 
 targets_tuple = ("Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
 

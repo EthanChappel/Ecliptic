@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "SolarSystemSequencer"
+version = "0.1.0"
+description = "Work-in-progress project for automating the acquisition of planetary images."
+authors = ["EthanChappel <EthanChappel@users.noreply.github.com>"]
+license = "GPL-3.0"
+
+[tool.poetry.dependencies]
+python = "~3.7"
+pyside2 = "^5.14.1"
+numpy = "^1.18.1"
+astropy = "^4.0"
+pillow = "^7.0.0"
+pythonnet = {version = "^2.4.0", platform = "win32"}
+zwoasi = "^0.0.22"
+opencv-python = "^4.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

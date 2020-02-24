@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 from ui import ui_schedulebrain
 from brains import sched_brain
 import targetfilters

@@ -1,5 +1,5 @@
 import json
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtWidgets
 from ui import ui_targetfilters
 import appglobals
 

@@ -1,9 +1,9 @@
-from PySide2 import QtCore
-import numpy
+from PySide2 import QtCore, QtGui
+from PIL import Image, ImageQt
 
 
 class CameraThread(QtCore.QThread):
-    exposure_done = QtCore.Signal(numpy.ndarray)
+    exposure_done = QtCore.Signal(QtGui.QPixmap)
 
     def __init__(self, camera, widget, parent=None):
         super().__init__(parent)
@@ -16,6 +16,8 @@ class CameraThread(QtCore.QThread):
 
         while self.widget.isChecked():
             frame = self.camera.get_frame()
-            self.exposure_done.emit(frame)
+            image = Image.fromarray(frame)
+            pix = ImageQt.toqpixmap(image)
+            self.exposure_done.emit(pix)
 
         self.camera.video_mode = False

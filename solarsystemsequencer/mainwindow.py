@@ -682,10 +682,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_thread.daemon = True
             self.camera_thread.start()
 
-    def camera_preview(self, frame: numpy.ndarray):
-        image = Image.fromarray(frame)
-        pix = ImageQt.toqpixmap(image)
-        self.camera_preview_label.setPixmap(pix)
+    def camera_preview(self, pixmap: QtGui.QPixmap):
+        self.camera_preview_label.setPixmap(pixmap)
 
     def camera_record(self):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")

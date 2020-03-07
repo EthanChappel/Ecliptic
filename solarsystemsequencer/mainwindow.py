@@ -18,7 +18,7 @@ from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
-from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
+from ui.delegates import QDateEditItemDelegate, QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
 from thread import CameraThread
 from equipment import zwo
 
@@ -74,12 +74,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filter_list_model = QStringListModel()
 
         # Create Delegates for columns in schedule table.
+        self.date_delegate = QDateEditItemDelegate(self)
         self.time_delegate = QTimeEditItemDelegate(self)
         self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
-        self.filter_delegate = QComboBoxItemDelegate(self, self.filter_list_model)
-        self.exposure_delegate = QSpinBoxItemDelegate(self, suffix=EXPOSURE_UNIT)
-        self.gain_delegate = QSpinBoxItemDelegate(self, suffix=GAIN_UNIT)
-        self.integration_delegate = QSpinBoxItemDelegate(self, suffix=INTEGRATION_UNIT)
+        # TODO: Create delegate for parameters column.
 
         # Create Delegates for columns in filters table.
         self.position_delegate = QSpinBoxItemDelegate(self)
@@ -214,9 +212,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.schedule_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.filter_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
-        # Set schedule_dateedit to today
-        self.schedule_dateedit.setDateTime(QtCore.QDateTime.currentDateTime())
-
         self.focuser_position_spinbox.setKeyboardTracking(False)
         self.focuser_position_spinbox.lineEdit().returnPressed.connect(self.move_focuser)
         self.focuser_position_spinbox.valueChanged.connect(self.move_focuser)
@@ -236,11 +231,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.addrow_button_2.clicked.connect(self.add_filter_row)
         self.removerow_button_2.clicked.connect(self.remove_filter_row)
 
-        date = self.schedule_dateedit.text()
-        self.load_schedule(date)
         self.load_filters(appglobals.filters)
-
-        self.schedule_dateedit.dateChanged.connect(lambda: self.load_schedule(str(self.schedule_dateedit.text())))
 
         self.schedule_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
         self.filter_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
@@ -267,12 +258,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filter_list_model.setStringList(filter_names)
 
         # Set item delegates for columns in schedule table.
-        self.schedule_table.setItemDelegateForColumn(0, self.time_delegate)
-        self.schedule_table.setItemDelegateForColumn(1, self.target_delegate)
-        self.schedule_table.setItemDelegateForColumn(2, self.filter_delegate)
-        self.schedule_table.setItemDelegateForColumn(3, self.exposure_delegate)
-        self.schedule_table.setItemDelegateForColumn(4, self.gain_delegate)
-        self.schedule_table.setItemDelegateForColumn(5, self.integration_delegate)
+        self.schedule_table.setItemDelegateForColumn(0, self.date_delegate)
+        self.schedule_table.setItemDelegateForColumn(1, self.time_delegate)
+        self.schedule_table.setItemDelegateForColumn(2, self.target_delegate)
+        # TODO: Set delegate for parameters column.
 
         self.filter_table.setItemDelegateForColumn(2, self.position_delegate)
         self.filter_table.setItemDelegateForColumn(3, self.lower_cutoff_delegate)
@@ -313,7 +302,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if item is None:
                     pass
                 elif col > 2 and item.text() not in ("", "None"):
-                    value = int(item.text())
+                    value = item.text()
                 elif isinstance(item.text(), str) and item.text() not in ("", "None"):
                     value = item.text()
 

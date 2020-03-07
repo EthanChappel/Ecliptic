@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -278,14 +278,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def remove_schedule_row(self):
         """Remove selected rows from schedule_table."""
-        index_list = []
-        date = self.schedule_dateedit.text()
-        for model_index in self.schedule_table.selectionModel().selectedRows():
+        for model_index in self.schedule_table.selectionModel().selection().indexes():
             index = QtCore.QPersistentModelIndex(model_index)
-            index_list.append(index)
-        for index in index_list:
             self.schedule_table.removeRow(index.row())
-            del appglobals.schedule[date][index.row()]
         self.save_schedule()
 
     def save_schedule(self):
@@ -335,11 +330,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def remove_filter_row(self):
         """Remove selected rows from filter_table."""
-        index_list = []
-        for model_index in self.filter_table.selectionModel().selectedRows():
+        for model_index in self.filter_table.selectionModel().selection().indexes():
             index = QtCore.QPersistentModelIndex(model_index)
-            index_list.append(index)
-        for index in index_list:
             self.filter_table.removeRow(index.row())
         self.save_filters()
 

@@ -1,6 +1,29 @@
 from PySide2 import QtCore
 from PySide2.QtCore import Qt, QStringListModel
-from PySide2.QtWidgets import QStyledItemDelegate, QTimeEdit, QSpinBox, QComboBox
+from PySide2.QtWidgets import QStyledItemDelegate, QDateEdit, QTimeEdit, QSpinBox, QComboBox
+
+
+class QDateEditItemDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None, time_spec=Qt.UTC):
+        super().__init__(parent=parent)
+        self.time_spec = time_spec
+        self.format = "yyyy-MM-dd"
+
+    def createEditor(self, parent, option, index):
+        editor = QDateEdit(parent)
+        editor.setDisplayFormat(self.format)
+        editor.setTimeSpec(self.time_spec)
+        editor.setCalendarPopup(True)
+        return editor
+
+    def setEditorData(self, editor, index):
+        editor.setDate(QtCore.QDate.fromString(index.model().data(index, Qt.EditRole)))
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.date().toString(self.format), Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        editor.setGeometry(option.rect)
 
 
 class QTimeEditItemDelegate(QStyledItemDelegate):

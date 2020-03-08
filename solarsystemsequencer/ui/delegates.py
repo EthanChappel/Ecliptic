@@ -17,7 +17,7 @@ class QDateEditItemDelegate(QStyledItemDelegate):
         return editor
 
     def setEditorData(self, editor, index):
-        editor.setDate(QtCore.QDate.fromString(index.model().data(index, Qt.EditRole)))
+        editor.setDate(QtCore.QDate.fromString(index.model().data(index, Qt.EditRole), self.format))
 
     def setModelData(self, editor, model, index):
         model.setData(index, editor.date().toString(self.format), Qt.EditRole)

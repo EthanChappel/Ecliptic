@@ -30,10 +30,11 @@ class QTimeEditItemDelegate(QStyledItemDelegate):
     def __init__(self, parent=None, time_spec=Qt.UTC):
         super().__init__(parent=parent)
         self.time_spec = time_spec
+        self.format = "HH:mm"
 
     def createEditor(self, parent, option, index):
         editor = QTimeEdit(parent)
-        editor.setDisplayFormat("HH:mm:ss")
+        editor.setDisplayFormat(self.format)
         editor.setTimeSpec(self.time_spec)
         return editor
 
@@ -41,7 +42,7 @@ class QTimeEditItemDelegate(QStyledItemDelegate):
         editor.setTime(QtCore.QTime.fromString(index.model().data(index, Qt.EditRole)))
 
     def setModelData(self, editor, model, index):
-        model.setData(index, editor.time().toString(), Qt.EditRole)
+        model.setData(index, editor.time().toString(self.format), Qt.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)

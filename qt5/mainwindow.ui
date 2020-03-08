@@ -1474,6 +1474,11 @@
        </column>
        <column>
         <property name="text">
+         <string>Duration</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Target</string>
         </property>
         <property name="toolTip">

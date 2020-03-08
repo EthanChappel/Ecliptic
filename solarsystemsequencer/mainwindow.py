@@ -27,6 +27,7 @@ if sys.platform.startswith("win"):
 
 
 EXPOSURE_UNIT = "ms"
+DURATION_UNIT = "min"
 GAIN_UNIT = "e/adu"
 INTEGRATION_UNIT = "s"
 CUTOFF_UNIT = "nm"
@@ -75,7 +76,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Create Delegates for columns in schedule table.
         self.date_delegate = QDateEditItemDelegate(self)
-        self.time_delegate = QTimeEditItemDelegate(self)
+        self.start_time_delegate = QTimeEditItemDelegate(self)
+        self.duration_delegate = QSpinBoxItemDelegate(self, suffix=DURATION_UNIT)
         self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
         # TODO: Create delegate for parameters column.
 
@@ -259,8 +261,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Set item delegates for columns in schedule table.
         self.schedule_table.setItemDelegateForColumn(0, self.date_delegate)
-        self.schedule_table.setItemDelegateForColumn(1, self.time_delegate)
-        self.schedule_table.setItemDelegateForColumn(2, self.target_delegate)
+        self.schedule_table.setItemDelegateForColumn(1, self.start_time_delegate)
+        self.schedule_table.setItemDelegateForColumn(2, self.duration_delegate)
+        self.schedule_table.setItemDelegateForColumn(3, self.target_delegate)
         # TODO: Set delegate for parameters column.
 
         self.filter_table.setItemDelegateForColumn(2, self.position_delegate)

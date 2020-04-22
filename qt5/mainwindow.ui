@@ -1453,7 +1453,16 @@
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
        <attribute name="horizontalHeaderCascadingSectionResizes">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>150</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
         <bool>true</bool>
        </attribute>
        <attribute name="verticalHeaderCascadingSectionResizes">
@@ -1461,20 +1470,12 @@
        </attribute>
        <column>
         <property name="text">
-         <string>Date</string>
+         <string notr="true">ID</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Time</string>
-        </property>
-        <property name="toolTip">
-         <string>Time to initiate the event.</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Duration</string>
+         <string>Date &amp; Time</string>
         </property>
        </column>
        <column>
@@ -1490,7 +1491,7 @@
          <string>Parameters</string>
         </property>
         <property name="toolTip">
-         <string>The filter to use</string>
+         <string/>
         </property>
        </column>
       </widget>

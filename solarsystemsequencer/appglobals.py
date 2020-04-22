@@ -38,15 +38,3 @@ except json.decoder.JSONDecodeError:
     messagebox.setIcon(QtWidgets.QMessageBox.Information)
     messagebox.exec_()
     filters = []
-
-try:
-    with open("schedule.json", "r") as f:
-            schedule = json.load(f)
-except FileNotFoundError:
-    schedule = {}
-except json.decoder.JSONDecodeError:
-    messagebox = QtWidgets.QMessageBox()
-    messagebox.setText("The schedule data seems to be broken.")
-    messagebox.setIcon(QtWidgets.QMessageBox.Information)
-    messagebox.exec_()
-    schedule = {}

@@ -856,9 +856,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(0, 0, 0, -1)
         self.schedule_table = QTableWidget(self.dockwidget_contents)
-        if (self.schedule_table.columnCount() < 5):
-            self.schedule_table.setColumnCount(5)
+        if (self.schedule_table.columnCount() < 4):
+            self.schedule_table.setColumnCount(4)
         __qtablewidgetitem = QTableWidgetItem()
+        __qtablewidgetitem.setText(u"ID");
         self.schedule_table.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
         self.schedule_table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
@@ -866,11 +867,12 @@ class Ui_MainWindow(object):
         self.schedule_table.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         __qtablewidgetitem3 = QTableWidgetItem()
         self.schedule_table.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.schedule_table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.schedule_table.setObjectName(u"schedule_table")
         self.schedule_table.setFrameShape(QFrame.NoFrame)
+        self.schedule_table.setSortingEnabled(True)
         self.schedule_table.horizontalHeader().setCascadingSectionResizes(True)
+        self.schedule_table.horizontalHeader().setDefaultSectionSize(150)
+        self.schedule_table.horizontalHeader().setStretchLastSection(True)
         self.schedule_table.verticalHeader().setCascadingSectionResizes(True)
 
         self.verticalLayout_7.addWidget(self.schedule_table)
@@ -1090,16 +1092,16 @@ class Ui_MainWindow(object):
         self.filter_table = QTableWidget(self.filters_dockwidgetcontents)
         if (self.filter_table.columnCount() < 5):
             self.filter_table.setColumnCount(5)
+        __qtablewidgetitem4 = QTableWidgetItem()
+        self.filter_table.setHorizontalHeaderItem(0, __qtablewidgetitem4)
         __qtablewidgetitem5 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(0, __qtablewidgetitem5)
+        self.filter_table.setHorizontalHeaderItem(1, __qtablewidgetitem5)
         __qtablewidgetitem6 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(1, __qtablewidgetitem6)
+        self.filter_table.setHorizontalHeaderItem(2, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(2, __qtablewidgetitem7)
+        self.filter_table.setHorizontalHeaderItem(3, __qtablewidgetitem7)
         __qtablewidgetitem8 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(3, __qtablewidgetitem8)
-        __qtablewidgetitem9 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(4, __qtablewidgetitem9)
+        self.filter_table.setHorizontalHeaderItem(4, __qtablewidgetitem8)
         self.filter_table.setObjectName(u"filter_table")
         self.filter_table.setFrameShape(QFrame.NoFrame)
         self.filter_table.setLineWidth(0)
@@ -1470,25 +1472,15 @@ class Ui_MainWindow(object):
         self.menu_equipment.setTitle(QCoreApplication.translate("MainWindow", u"Equipment", None))
         self.help_menu.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
         self.schedule_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Schedule", None))
-        ___qtablewidgetitem = self.schedule_table.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Date", None));
-        ___qtablewidgetitem1 = self.schedule_table.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Time", None));
+        ___qtablewidgetitem = self.schedule_table.horizontalHeaderItem(1)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Date & Time", None));
+        ___qtablewidgetitem1 = self.schedule_table.horizontalHeaderItem(2)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Target", None));
 #if QT_CONFIG(tooltip)
-        ___qtablewidgetitem1.setToolTip(QCoreApplication.translate("MainWindow", u"Time to initiate the event.", None));
+        ___qtablewidgetitem1.setToolTip(QCoreApplication.translate("MainWindow", u"The target to aim at.", None));
 #endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem2 = self.schedule_table.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Duration", None));
-        ___qtablewidgetitem3 = self.schedule_table.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Target", None));
-#if QT_CONFIG(tooltip)
-        ___qtablewidgetitem3.setToolTip(QCoreApplication.translate("MainWindow", u"The target to aim at.", None));
-#endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem4 = self.schedule_table.horizontalHeaderItem(4)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Parameters", None));
-#if QT_CONFIG(tooltip)
-        ___qtablewidgetitem4.setToolTip(QCoreApplication.translate("MainWindow", u"The filter to use", None));
-#endif // QT_CONFIG(tooltip)
+        ___qtablewidgetitem2 = self.schedule_table.horizontalHeaderItem(3)
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Parameters", None));
 #if QT_CONFIG(tooltip)
         self.addrow_button.setToolTip(QCoreApplication.translate("MainWindow", u"Add row", None))
 #endif // QT_CONFIG(tooltip)
@@ -1508,22 +1500,22 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.guidersetref_button.setText("")
         self.filters_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Filters", None))
-        ___qtablewidgetitem5 = self.filter_table.horizontalHeaderItem(0)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"Name", None));
+        ___qtablewidgetitem3 = self.filter_table.horizontalHeaderItem(0)
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Name", None));
 #if QT_CONFIG(tooltip)
-        ___qtablewidgetitem5.setToolTip(QCoreApplication.translate("MainWindow", u"The name of the filter", None));
+        ___qtablewidgetitem3.setToolTip(QCoreApplication.translate("MainWindow", u"The name of the filter", None));
 #endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem6 = self.filter_table.horizontalHeaderItem(1)
-        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Brand", None));
-        ___qtablewidgetitem7 = self.filter_table.horizontalHeaderItem(2)
-        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Wheel Position", None));
+        ___qtablewidgetitem4 = self.filter_table.horizontalHeaderItem(1)
+        ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Brand", None));
+        ___qtablewidgetitem5 = self.filter_table.horizontalHeaderItem(2)
+        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"Wheel Position", None));
 #if QT_CONFIG(tooltip)
-        ___qtablewidgetitem7.setToolTip(QCoreApplication.translate("MainWindow", u"The position the filter lies in the filter wheel", None));
+        ___qtablewidgetitem5.setToolTip(QCoreApplication.translate("MainWindow", u"The position the filter lies in the filter wheel", None));
 #endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem8 = self.filter_table.horizontalHeaderItem(3)
-        ___qtablewidgetitem8.setText(QCoreApplication.translate("MainWindow", u"Lower Cutoff", None));
-        ___qtablewidgetitem9 = self.filter_table.horizontalHeaderItem(4)
-        ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Upper Cutoff", None));
+        ___qtablewidgetitem6 = self.filter_table.horizontalHeaderItem(3)
+        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Lower Cutoff", None));
+        ___qtablewidgetitem7 = self.filter_table.horizontalHeaderItem(4)
+        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Upper Cutoff", None));
 #if QT_CONFIG(tooltip)
         self.addrow_button_2.setToolTip(QCoreApplication.translate("MainWindow", u"Add row", None))
 #endif // QT_CONFIG(tooltip)

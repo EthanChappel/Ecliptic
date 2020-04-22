@@ -1,48 +1,25 @@
 from PySide2 import QtCore
 from PySide2.QtCore import Qt, QStringListModel
-from PySide2.QtWidgets import QStyledItemDelegate, QDateEdit, QTimeEdit, QSpinBox, QComboBox
+from PySide2.QtWidgets import QStyledItemDelegate, QDateTimeEdit, QSpinBox, QComboBox
 
 
-class QDateEditItemDelegate(QStyledItemDelegate):
+class QDateTimeEditItemDelegate(QStyledItemDelegate):
     def __init__(self, parent=None, time_spec=Qt.UTC):
         super().__init__(parent=parent)
         self.time_spec = time_spec
-        self.format = "yyyy-MM-dd"
+        self.format = "yyyy-MM-dd hh:mm"
 
     def createEditor(self, parent, option, index):
-        editor = QDateEdit(parent)
-        editor.setDisplayFormat(self.format)
-        editor.setTimeSpec(self.time_spec)
-        editor.setCalendarPopup(True)
-        return editor
-
-    def setEditorData(self, editor, index):
-        editor.setDate(QtCore.QDate.fromString(index.model().data(index, Qt.EditRole), self.format))
-
-    def setModelData(self, editor, model, index):
-        model.setData(index, editor.date().toString(self.format), Qt.EditRole)
-
-    def updateEditorGeometry(self, editor, option, index):
-        editor.setGeometry(option.rect)
-
-
-class QTimeEditItemDelegate(QStyledItemDelegate):
-    def __init__(self, parent=None, time_spec=Qt.UTC):
-        super().__init__(parent=parent)
-        self.time_spec = time_spec
-        self.format = "HH:mm"
-
-    def createEditor(self, parent, option, index):
-        editor = QTimeEdit(parent)
+        editor = QDateTimeEdit(parent)
         editor.setDisplayFormat(self.format)
         editor.setTimeSpec(self.time_spec)
         return editor
 
     def setEditorData(self, editor, index):
-        editor.setTime(QtCore.QTime.fromString(index.model().data(index, Qt.EditRole)))
+        editor.setDateTime(QtCore.QDateTime.fromString(index.model().data(index, Qt.EditRole), self.format))
 
     def setModelData(self, editor, model, index):
-        model.setData(index, editor.time().toString(self.format), Qt.EditRole)
+        model.setData(index, editor.dateTime().toString(self.format), Qt.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)

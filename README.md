@@ -1,14 +1,14 @@
-# Solar System Sequencer
+# Ecliptic
 A work-in-progress project for automating the acquisition of planetary images.
 
 
 ## Goal
-The goal of Solar System Sequencer is to allow someone to be absent from their equipment when imaging Solar System objects, once the setup and alignment procedures of the telescope are completed.
+The goal of Ecliptic is to allow someone to be absent from their equipment when imaging Solar System objects, once the setup and alignment procedures of the telescope are completed.
 
 ## Installing
 Retrieve the source code with:
 ```
-git clone https://github.com/EthanChappel/Solar-System-Sequencer.git
+git clone https://github.com/EthanChappel/Ecliptic.git
 ```
 
 once the repository has been cloned, install the prerequisites with either

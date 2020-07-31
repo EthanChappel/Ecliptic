@@ -19,7 +19,7 @@ from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
 from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
-from thread import CameraThread
+from thread import TelescopeThread, CameraThread
 from equipment import zwo
 
 if sys.platform.startswith("win"):
@@ -444,22 +444,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Notify users if connection to equipment fails."""
         messagebox = QtWidgets.QMessageBox()
         messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-        messagebox.setWindowTitle("Solar System Sequencer - Connection Failed")
+        messagebox.setWindowTitle("Ecliptic - Connection Failed")
         messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
 
     def connect_telescope(self):
         if self.mount_group.isChecked():
             name = "The telescope"
-            try:
-                self.telescope = ascom.AscomTelescope()
-                self.telescope_settings()
-                name = self.telescope.name
-                self.telescope_name_label.setText(name)
-            except Exception as e:
-                print(e)
-                self.mount_group.setChecked(False)
-                self.connect_fail_dialog(name)
+            self.setup_thread = TelescopeThread(self.telescope, self)
+            self.setup_thread.setup_complete.connect(self.telescope_settings)
+            self.setup_thread.setup_failed.connect(self.telescope_connect_failed)
+            self.setup_thread.daemon = True
+            self.setup_thread.start()
         elif not self.mount_group.isChecked():
             try:
                 self.telescope.connected = False
@@ -475,13 +471,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope.connected = True
         self.telescope_settings()
 
-    def telescope_settings(self):
+    def telescope_settings(self, telescope):
+        self.telescope = telescope
+        name = self.telescope.name
+        self.telescope_name_label.setText(name)
         if not self.telescope.can_slew_eq:
             messagebox = QtWidgets.QMessageBox()
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
             messagebox.exec_()
             self.telescope_action.setChecked(False)
+    
+    def telescope_connect_failed(self, e: Exception):
+        print(e)
+        self.mount_group.setChecked(False)
+        self.connect_fail_dialog("Telescope")
 
     def goto_target(self):
         goto_thread = threading.Thread(target=self.goto_target_thread)

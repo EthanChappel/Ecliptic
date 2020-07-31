@@ -1312,7 +1312,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.camera_scrollarea, self.guider_scrollarea)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Solar System Sequencer", None, -1))
+        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Ecliptic", None, -1))
         self.mount_group.setTitle(QtWidgets.QApplication.translate("MainWindow", "Telescope", None, -1))
         self.telescope_name_label.setText(QtWidgets.QApplication.translate("MainWindow", "Not Connected", None, -1))
         self.slewnorth_button.setToolTip(QtWidgets.QApplication.translate("MainWindow", "Slew the mount north", None, -1))

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "SolarSystemSequencer"
+name = "Ecliptic"
 version = "0.1.0"
 description = "Work-in-progress project for automating the acquisition of planetary images."
 authors = ["EthanChappel <EthanChappel@users.noreply.github.com>"]

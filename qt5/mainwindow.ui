@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Solar System Sequencer</string>
+   <string>Ecliptic</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources/res.qrc">

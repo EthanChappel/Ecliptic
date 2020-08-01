@@ -10,7 +10,7 @@ class QDateTimeEditItemDelegate(QStyledItemDelegate):
         self.format = "yyyy-MM-dd hh:mm"
 
     def createEditor(self, parent, option, index):
-        editor = QDateTimeEdit(parent)
+        editor = QDateTimeEdit(QtCore.QDate.currentDate().addDays(1), parent)
         editor.setDisplayFormat(self.format)
         editor.setTimeSpec(self.time_spec)
         return editor

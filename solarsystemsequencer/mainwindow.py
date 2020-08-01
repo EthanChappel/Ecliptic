@@ -317,8 +317,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.schedule_table.blockSignals(True)
             b = QtGui.QBrush(QtCore.Qt.SolidPattern)
-            c = QtGui.QColor(255, 0, 0)
-            b.setColor(c)
+            b.setColor(QtGui.QColor(150, 60, 60))
             for i in range(self.schedule_table.columnCount()):
                 if self.schedule_table.item(row, i) is None:
                     self.schedule_table.setItem(row, i, QtWidgets.QTableWidgetItem())

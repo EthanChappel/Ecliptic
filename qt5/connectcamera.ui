@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Solar System Sequencer - Connect Camera</string>
+   <string>Ecliptic - Connect Camera</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QRadioButton{font: bold;}</string>

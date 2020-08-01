@@ -99,7 +99,7 @@ class Ui_ConnectCamera(object):
         QtCore.QMetaObject.connectSlotsByName(ConnectCamera)
 
     def retranslateUi(self, ConnectCamera):
-        ConnectCamera.setWindowTitle(QtWidgets.QApplication.translate("ConnectCamera", "Solar System Sequencer - Connect Camera", None, -1))
+        ConnectCamera.setWindowTitle(QtWidgets.QApplication.translate("ConnectCamera", "Ecliptic - Connect Camera", None, -1))
         self.instruct_label.setText(QtWidgets.QApplication.translate("ConnectCamera", "Select the camera you would like to connect.", None, -1))
         self.ascom_commandlink.setText(QtWidgets.QApplication.translate("ConnectCamera", "ASCOM Camera", None, -1))
         self.ascom_commandlink.setDescription(QtWidgets.QApplication.translate("ConnectCamera", "Connect an ASCOM camera. Data acquisition is currently slow compared to ZWO ASI Cameras", None, -1))

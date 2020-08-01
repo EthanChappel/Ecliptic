@@ -1,6 +1,23 @@
 from PySide2 import QtCore, QtGui
 from PIL import Image, ImageQt
+from equipment.ascom import AscomTelescope
 
+
+class TelescopeThread(QtCore.QThread):
+    setup_complete = QtCore.Signal(AscomTelescope)
+    setup_failed = QtCore.Signal(Exception)
+
+    def __init__(self, telescope, parent=None):
+        super().__init__(parent)
+        self.telescope = telescope
+        self.parent = parent
+    
+    def run(self):
+        try:
+            telescope = AscomTelescope()
+            self.setup_complete.emit(telescope)
+        except Exception as e:
+            self.setup_failed.emit(e)
 
 class CameraThread(QtCore.QThread):
     exposure_done = QtCore.Signal(QtGui.QPixmap)

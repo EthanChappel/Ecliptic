@@ -3,6 +3,7 @@ import os
 import sys
 import threading
 from datetime import datetime
+import sqlite3
 from typing import List, Dict
 import cv2
 import zwoasi as asi
@@ -304,7 +305,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Save contents of schedule_table into schedule.json."""
         row = item.row()
         item = self.schedule_table.item
-        if item(row, 1).text() and item(row, 2).text():
+        self.schedule_table.blockSignals(True)
+        try:
             b = QtGui.QBrush(QtCore.Qt.NoBrush)
             self.database.insert_or_update_schedule(
                 int(self.schedule_table.item(row, 0).text()),
@@ -314,14 +316,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             for i in range(self.schedule_table.columnCount()):
                 self.schedule_table.item(row, i).setBackground(b)
-        else:
-            self.schedule_table.blockSignals(True)
+        except sqlite3.IntegrityError:
             b = QtGui.QBrush(QtCore.Qt.SolidPattern)
             b.setColor(QtGui.QColor(150, 60, 60))
             for i in range(self.schedule_table.columnCount()):
                 if self.schedule_table.item(row, i) is None:
                     self.schedule_table.setItem(row, i, QtWidgets.QTableWidgetItem())
                 self.schedule_table.item(row, i).setBackground(b)
+        finally:
             self.schedule_table.blockSignals(False)
 
     def load_schedule(self):

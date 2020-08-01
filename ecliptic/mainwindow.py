@@ -18,7 +18,7 @@ from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
-from ui.delegates import QTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
+from ui.delegates import QDateTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
 from thread import TelescopeThread, CameraThread
 from equipment import zwo
 from database import Database

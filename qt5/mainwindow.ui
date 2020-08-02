@@ -1946,6 +1946,18 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_8">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QScrollArea" name="scrollArea">
        <property name="frameShape">
@@ -1962,7 +1974,7 @@
          <rect>
           <x>0</x>
           <y>-67</y>
-          <width>471</width>
+          <width>489</width>
           <height>382</height>
          </rect>
         </property>

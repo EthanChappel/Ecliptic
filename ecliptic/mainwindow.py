@@ -93,11 +93,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setup_gui(self):
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
+        self.tabifyDockWidget(self.settings_dockwidget, self.schedule_dockwidget)
         self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
         self.tabifyDockWidget(self.guider_dockwidget, self.camera_dockwidget)
         self.tabifyDockWidget(self.camera_dockwidget, self.filters_dockwidget)
-        self.tabifyDockWidget(self.filters_dockwidget, self.settings_dockwidget)
-        self.schedule_dockwidget.raise_()
+
+        self.settings_dockwidget.raise_()
         self.camera_dockwidget.setVisible(False)
         self.guider_dockwidget.setVisible(False)
 
@@ -449,14 +450,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.exec_()
 
     def connect_telescope(self):
-        if self.mount_group.isChecked():
+        if self.telescope_action.isChecked():
             name = "The telescope"
             self.setup_thread = TelescopeThread(self.telescope, self)
             self.setup_thread.setup_complete.connect(self.telescope_settings)
             self.setup_thread.setup_failed.connect(self.telescope_connect_failed)
             self.setup_thread.daemon = True
             self.setup_thread.start()
-        elif not self.mount_group.isChecked():
+        elif not self.telescope_action.isChecked():
             try:
                 self.telescope.connected = False
                 self.telescope.dispose()
@@ -484,7 +485,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def telescope_connect_failed(self, e: Exception):
         print(e)
-        self.mount_group.setChecked(False)
+        self.telescope_action.setChecked(False)
         self.connect_fail_dialog("Telescope")
 
     def goto_target(self):
@@ -505,7 +506,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope.move_axis(1, rate2)
 
     def connect_guider(self):
-        if self.guider_group.isChecked():
+        if self.guider_action.isChecked():
             guider_dialog = connectcamera.ConnectCamera()
             guider_dialog.exec_()
             name = "The guider"
@@ -525,9 +526,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.setup_guider_controls()
             except Exception as e:
                 print(e)
-                self.guider_group.setChecked(False)
+                self.guider_action.setChecked(False)
                 self.connect_fail_dialog(name)
-        elif not self.guider_group.isChecked():
+        elif not self.guider_action.isChecked():
             try:
                 if type(self.guider) is ascom.AscomCamera:
                     self.guider_menu.removeAction(self.ascomguidersettings_action)
@@ -597,7 +598,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_preview_label.setPixmap(pix)
 
     def connect_camera(self):
-        if self.camera_group.isChecked():
+        if self.camera_action.isChecked():
             name = "The camera"
             camera_dialog = connectcamera.ConnectCamera()
             camera_dialog.exec_()
@@ -618,10 +619,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.setup_camera_controls()
             except Exception as e:
                 print(e)
-                self.camera_group.setChecked(False)
+                self.camera_action.setChecked(False)
                 self.connect_fail_dialog(name)
 
-        elif not self.camera_group.isChecked():
+        elif not self.camera_action.isChecked():
             try:
                 if type(self.camera) is ascom.AscomCamera:
                     self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
@@ -726,7 +727,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.save_settings()
 
     def connect_focuser(self):
-        if self.focuser_group.isChecked():
+        if self.focuser_action.isChecked():
             name = "The focuser"
             try:
                 self.focuser = ascom.AscomFocuser()
@@ -735,9 +736,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.focuser_name_label.setText(name)
             except Exception as e:
                 print(e)
-                self.focuser_group.setChecked(False)
+                self.focuser_action.setChecked(False)
                 self.connect_fail_dialog(name)
-        elif not self.focuser_group.isChecked():
+        elif not self.focuser_action.isChecked():
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)
@@ -799,7 +800,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.focuser.temp_comp = state
 
     def connect_filters(self):
-        if self.wheel_group.isChecked():
+        if self.wheel_action.isChecked():
             name = "The filter wheel"
             try:
                 self.wheel = ascom.AscomFilterWheel()
@@ -807,9 +808,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.wheel_name_label.setText(name)
             except Exception as e:
                 print(e)
-                self.wheel_group.setChecked(False)
+                self.wheel_action.setChecked(False)
                 self.connect_fail_dialog(name)
-        elif not self.wheel_group.isChecked():
+        elif not self.wheel_action.isChecked():
             try:
                 self.temp_checkbox.setVisible(False)
                 self.temp_checkbox.setChecked(False)

@@ -19,7 +19,7 @@ from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
-from ui.delegates import QDateTimeEditItemDelegate, QComboBoxItemDelegate, QSpinBoxItemDelegate
+from ui.delegates import *
 from thread import TelescopeThread, CameraThread
 from equipment import zwo
 from database import Database
@@ -83,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Create Delegates for columns in schedule table.
         self.date_delegate = QDateTimeEditItemDelegate(self)
         self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
-        # TODO: Create delegate for parameters column.
+        self.parameters_delegate = QScheduleParameterEditorDelegate(self)
 
         self.schedule_table.hideColumn(0)
 
@@ -266,7 +266,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Set item delegates for columns in schedule table.
         self.schedule_table.setItemDelegateForColumn(1, self.date_delegate)
         self.schedule_table.setItemDelegateForColumn(2, self.target_delegate)
-        # TODO: Set delegate for parameters column.
+        self.schedule_table.setItemDelegateForColumn(3, self.parameters_delegate)
 
         self.filter_table.setItemDelegateForColumn(2, self.position_delegate)
         self.filter_table.setItemDelegateForColumn(3, self.lower_cutoff_delegate)

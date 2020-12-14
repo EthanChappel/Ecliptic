@@ -1,7 +1,9 @@
 from PySide2 import QtCore
 from PySide2.QtCore import Qt, QStringListModel
-from PySide2.QtWidgets import QStyledItemDelegate, QSizePolicy, QFrame, QPushButton, \
-    QDateTimeEdit, QLineEdit, QSpinBox, QComboBox, QHBoxLayout
+from PySide2.QtGui import QIcon
+from PySide2.QtWidgets import QStyledItemDelegate, QSizePolicy, QFrame, \
+    QPushButton, QDateTimeEdit, QLineEdit, QSpinBox, QComboBox, QHBoxLayout
+import res_rc
 
 
 class QDateTimeEditItemDelegate(QStyledItemDelegate):
@@ -88,7 +90,7 @@ class QScheduleParameterEditorDelegate(QStyledItemDelegate):
         editor = QFrame(parent)
         layout = QHBoxLayout(editor)
         text = QLineEdit(parent=editor)
-        button = QPushButton("Edit", editor)
+        button = QPushButton(QIcon(":/icons/edit-white-48dp.svg"), "", parent=editor)
 
         layout.setMargin(0)
         layout.setSpacing(0)

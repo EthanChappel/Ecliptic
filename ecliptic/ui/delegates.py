@@ -4,6 +4,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QStyledItemDelegate, QSizePolicy, QFrame, \
     QPushButton, QDateTimeEdit, QLineEdit, QSpinBox, QComboBox, QHBoxLayout
 import res_rc
+from scheduleentrydialog import ScheduleEntryDialog
 
 
 class QDateTimeEditItemDelegate(QStyledItemDelegate):
@@ -102,6 +103,8 @@ class QScheduleParameterEditorDelegate(QStyledItemDelegate):
         
         layout.addWidget(text)
         layout.addWidget(button)
+
+        button.clicked.connect(self.edit_dialog)
         
         return editor
 
@@ -122,3 +125,7 @@ class QScheduleParameterEditorDelegate(QStyledItemDelegate):
         if value == "None":
             return ""
         return value
+    
+    def edit_dialog(self):
+        dialog = ScheduleEntryDialog()
+        dialog.exec_()

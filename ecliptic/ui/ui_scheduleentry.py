@@ -18,16 +18,19 @@ class Ui_ScheduleEntryDialog(object):
     def setupUi(self, ScheduleEntryDialog):
         if not ScheduleEntryDialog.objectName():
             ScheduleEntryDialog.setObjectName(u"ScheduleEntryDialog")
-        ScheduleEntryDialog.resize(802, 562)
+        ScheduleEntryDialog.resize(751, 562)
         self.verticalLayout = QVBoxLayout(ScheduleEntryDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.tab_widget = QTabWidget(ScheduleEntryDialog)
         self.tab_widget.setObjectName(u"tab_widget")
         self.tab_widget.setTabShape(QTabWidget.Rounded)
+        self.tab_widget.setDocumentMode(True)
         self.capture_tab = QWidget()
         self.capture_tab.setObjectName(u"capture_tab")
         self.verticalLayout_2 = QVBoxLayout(self.capture_tab)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.filter_table = QTableWidget(self.capture_tab)
         if (self.filter_table.columnCount() < 6):
             self.filter_table.setColumnCount(6)
@@ -44,9 +47,14 @@ class Ui_ScheduleEntryDialog(object):
         __qtablewidgetitem5 = QTableWidgetItem()
         self.filter_table.setHorizontalHeaderItem(5, __qtablewidgetitem5)
         self.filter_table.setObjectName(u"filter_table")
+        self.filter_table.setFrameShape(QFrame.NoFrame)
+        self.filter_table.setFrameShadow(QFrame.Plain)
 
         self.verticalLayout_2.addWidget(self.filter_table)
 
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(11, -1, 11, -1)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.add_filter_button = QPushButton(self.capture_tab)
@@ -70,7 +78,10 @@ class Ui_ScheduleEntryDialog(object):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+
+
+        self.verticalLayout_2.addLayout(self.gridLayout)
 
         self.tab_widget.addTab(self.capture_tab, "")
         self.astrometry_tab = QWidget()
@@ -79,12 +90,25 @@ class Ui_ScheduleEntryDialog(object):
 
         self.verticalLayout.addWidget(self.tab_widget)
 
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(11, -1, 11, 11)
+        self.line = QFrame(ScheduleEntryDialog)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_3.addWidget(self.line)
+
         self.button_box = QDialogButtonBox(ScheduleEntryDialog)
         self.button_box.setObjectName(u"button_box")
         self.button_box.setOrientation(Qt.Horizontal)
         self.button_box.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok|QDialogButtonBox.RestoreDefaults)
 
-        self.verticalLayout.addWidget(self.button_box)
+        self.verticalLayout_3.addWidget(self.button_box)
+
+
+        self.verticalLayout.addLayout(self.verticalLayout_3)
 
 
         self.retranslateUi(ScheduleEntryDialog)

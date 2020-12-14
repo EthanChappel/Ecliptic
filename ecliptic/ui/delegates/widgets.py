@@ -78,3 +78,34 @@ class QSpinBoxItemDelegate(QStyledItemDelegate):
         if value != "None":
             return str(value) + self.suffix
         return ""
+
+
+class QDoubleSpinBoxItemDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None, minimum=0, maximum=99, suffix=""):
+        super().__init__(parent=parent)
+        self.min = minimum
+        self.max = maximum
+        self.suffix = suffix
+
+    def createEditor(self, parent, option, index):
+        editor = QDoubleSpinBox(parent)
+        editor.setMinimum(self.min)
+        editor.setMaximum(self.max)
+        editor.setSuffix(self.suffix)
+        return editor
+
+    def setEditorData(self, editor, index):
+        data = index.model().data(index, Qt.EditRole)
+        if data not in (None, "None"):
+            editor.setValue(int(data))
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.value(), Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        editor.setGeometry(option.rect)
+
+    def displayText(self, value, locale):
+        if value != "None":
+            return str(value) + self.suffix
+        return ""

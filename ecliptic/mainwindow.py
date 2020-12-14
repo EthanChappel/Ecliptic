@@ -14,12 +14,14 @@ import appglobals
 import connectcamera
 import zwosettings
 import guiderparameters
+from scheduleentrydialog import ScheduleEntryDialog
 from PySide6.QtCore import QStringListModel
 from PySide6.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow
-from ui.delegates import *
+from ui.delegates.widgets import *
+from ui.delegates.custom import *
 from thread import TelescopeThread, CameraThread
 from equipment import zwo
 from database import Database
@@ -83,7 +85,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Create Delegates for columns in schedule table.
         self.date_delegate = QDateTimeEditItemDelegate(self)
         self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
-        self.parameters_delegate = QScheduleParameterEditorDelegate(self)
+        self.parameters_delegate = QWindowEditorDelegate(ScheduleEntryDialog, self)
 
         self.schedule_table.hideColumn(0)
 

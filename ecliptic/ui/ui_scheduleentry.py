@@ -18,7 +18,7 @@ class Ui_ScheduleEntryDialog(object):
     def setupUi(self, ScheduleEntryDialog):
         if not ScheduleEntryDialog.objectName():
             ScheduleEntryDialog.setObjectName(u"ScheduleEntryDialog")
-        ScheduleEntryDialog.resize(751, 562)
+        ScheduleEntryDialog.resize(650, 550)
         self.verticalLayout = QVBoxLayout(ScheduleEntryDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)

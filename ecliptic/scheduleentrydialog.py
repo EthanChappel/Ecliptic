@@ -5,7 +5,9 @@ class ScheduleEntryDialog(QtWidgets.QDialog, Ui_ScheduleEntryDialog):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        
+
+        self.filter_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+
         self.add_filter_button.clicked.connect(self.add_filter_row)
         self.remove_filter_button.clicked.connect(self.remove_filter_row)
 

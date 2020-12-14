@@ -6,7 +6,7 @@ authors = ["EthanChappel <EthanChappel@users.noreply.github.com>"]
 license = "GPL-3.0"
 
 [tool.poetry.dependencies]
-python = "~3.7"
+python = "^3.7"
 pyside2 = "^5.14.1"
 numpy = "^1.18.1"
 astropy = "^4.0"

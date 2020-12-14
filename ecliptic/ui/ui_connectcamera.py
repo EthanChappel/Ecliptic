@@ -1,112 +1,145 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'connectcamera.ui',
-# licensing of 'connectcamera.ui' applies.
-#
-# Created: Tue Jan 15 03:04:56 2019
-#      by: pyside2-uic  running on PySide2 5.12.0
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'connectcamera.ui'
+##
+## Created by: Qt User Interface Compiler version 6.0.0
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+
+import res_rc
 
 class Ui_ConnectCamera(object):
     def setupUi(self, ConnectCamera):
-        ConnectCamera.setObjectName("ConnectCamera")
+        if not ConnectCamera.objectName():
+            ConnectCamera.setObjectName(u"ConnectCamera")
         ConnectCamera.resize(287, 259)
-        ConnectCamera.setStyleSheet("QRadioButton{font: bold;}")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(ConnectCamera)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.stackedWidget = QtWidgets.QStackedWidget(ConnectCamera)
-        self.stackedWidget.setObjectName("stackedWidget")
-        self.camera_page = QtWidgets.QWidget()
-        self.camera_page.setObjectName("camera_page")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.camera_page)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.instruct_label = QtWidgets.QLabel(self.camera_page)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        ConnectCamera.setStyleSheet(u"QRadioButton{font: bold;}")
+        self.verticalLayout_2 = QVBoxLayout(ConnectCamera)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.stackedWidget = QStackedWidget(ConnectCamera)
+        self.stackedWidget.setObjectName(u"stackedWidget")
+        self.camera_page = QWidget()
+        self.camera_page.setObjectName(u"camera_page")
+        self.verticalLayout = QVBoxLayout(self.camera_page)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.instruct_label = QLabel(self.camera_page)
+        self.instruct_label.setObjectName(u"instruct_label")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.instruct_label.sizePolicy().hasHeightForWidth())
         self.instruct_label.setSizePolicy(sizePolicy)
         self.instruct_label.setWordWrap(True)
-        self.instruct_label.setObjectName("instruct_label")
-        self.verticalLayout.addWidget(self.instruct_label)
-        self.ascom_commandlink = QtWidgets.QCommandLinkButton(self.camera_page)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/thirdparty/ascom_logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.verticalLayout.addWidget(self.instruct_label, 0, Qt.AlignTop)
+
+        self.ascom_commandlink = QCommandLinkButton(self.camera_page)
+        self.ascom_commandlink.setObjectName(u"ascom_commandlink")
+        icon = QIcon()
+        icon.addFile(u":/thirdparty/ascom_logo.png", QSize(), QIcon.Normal, QIcon.Off)
         self.ascom_commandlink.setIcon(icon)
-        self.ascom_commandlink.setObjectName("ascom_commandlink")
+
         self.verticalLayout.addWidget(self.ascom_commandlink)
-        self.asi_commandlink = QtWidgets.QCommandLinkButton(self.camera_page)
+
+        self.asi_commandlink = QCommandLinkButton(self.camera_page)
+        self.asi_commandlink.setObjectName(u"asi_commandlink")
         self.asi_commandlink.setEnabled(False)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/thirdparty/asi_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = QIcon()
+        icon1.addFile(u":/thirdparty/asi_icon.png", QSize(), QIcon.Normal, QIcon.Off)
         self.asi_commandlink.setIcon(icon1)
-        self.asi_commandlink.setObjectName("asi_commandlink")
+
         self.verticalLayout.addWidget(self.asi_commandlink)
+
         self.stackedWidget.addWidget(self.camera_page)
-        self.asi_page = QtWidgets.QWidget()
-        self.asi_page.setObjectName("asi_page")
-        self.gridLayout = QtWidgets.QGridLayout(self.asi_page)
-        self.gridLayout.setObjectName("gridLayout")
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 1, 0, 1, 2)
-        self.label = QtWidgets.QLabel(self.asi_page)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-        self.label.setObjectName("label")
+        self.ascom_commandlink.raise_()
+        self.asi_commandlink.raise_()
+        self.instruct_label.raise_()
+        self.asi_page = QWidget()
+        self.asi_page.setObjectName(u"asi_page")
+        self.gridLayout = QGridLayout(self.asi_page)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer_2, 1, 0, 1, 2)
+
+        self.label = QLabel(self.asi_page)
+        self.label.setObjectName(u"label")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy1)
+
         self.gridLayout.addWidget(self.label, 2, 0, 1, 1)
-        self.asi_combobox = QtWidgets.QComboBox(self.asi_page)
-        self.asi_combobox.setObjectName("asi_combobox")
+
+        self.asi_combobox = QComboBox(self.asi_page)
+        self.asi_combobox.setObjectName(u"asi_combobox")
+
         self.gridLayout.addWidget(self.asi_combobox, 2, 1, 1, 1)
-        self.asi_label = QtWidgets.QLabel(self.asi_page)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
+
+        self.asi_label = QLabel(self.asi_page)
+        self.asi_label.setObjectName(u"asi_label")
         sizePolicy.setHeightForWidth(self.asi_label.sizePolicy().hasHeightForWidth())
         self.asi_label.setSizePolicy(sizePolicy)
         self.asi_label.setWordWrap(True)
-        self.asi_label.setObjectName("asi_label")
-        self.gridLayout.addWidget(self.asi_label, 0, 0, 1, 2)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem1, 3, 1, 1, 1)
-        self.asi_connect_button = QtWidgets.QPushButton(self.asi_page)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.asi_connect_button.sizePolicy().hasHeightForWidth())
-        self.asi_connect_button.setSizePolicy(sizePolicy)
-        self.asi_connect_button.setObjectName("asi_connect_button")
+
+        self.gridLayout.addWidget(self.asi_label, 0, 0, 1, 2, Qt.AlignTop)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer, 3, 1, 1, 1)
+
+        self.asi_connect_button = QPushButton(self.asi_page)
+        self.asi_connect_button.setObjectName(u"asi_connect_button")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.asi_connect_button.sizePolicy().hasHeightForWidth())
+        self.asi_connect_button.setSizePolicy(sizePolicy2)
+
         self.gridLayout.addWidget(self.asi_connect_button, 2, 2, 1, 1)
+
         self.stackedWidget.addWidget(self.asi_page)
+
         self.verticalLayout_2.addWidget(self.stackedWidget)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem2)
-        self.buttonbox = QtWidgets.QDialogButtonBox(ConnectCamera)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel)
-        self.buttonbox.setObjectName("buttonbox")
+
+        self.vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_2.addItem(self.vertical_spacer)
+
+        self.buttonbox = QDialogButtonBox(ConnectCamera)
+        self.buttonbox.setObjectName(u"buttonbox")
+        self.buttonbox.setOrientation(Qt.Horizontal)
+        self.buttonbox.setStandardButtons(QDialogButtonBox.Cancel)
+
         self.verticalLayout_2.addWidget(self.buttonbox)
 
+
         self.retranslateUi(ConnectCamera)
+        self.buttonbox.accepted.connect(ConnectCamera.accept)
+        self.buttonbox.rejected.connect(ConnectCamera.reject)
+
         self.stackedWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"), ConnectCamera.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"), ConnectCamera.reject)
-        QtCore.QMetaObject.connectSlotsByName(ConnectCamera)
+
+
+        QMetaObject.connectSlotsByName(ConnectCamera)
+    # setupUi
 
     def retranslateUi(self, ConnectCamera):
-        ConnectCamera.setWindowTitle(QtWidgets.QApplication.translate("ConnectCamera", "Ecliptic - Connect Camera", None, -1))
-        self.instruct_label.setText(QtWidgets.QApplication.translate("ConnectCamera", "Select the camera you would like to connect.", None, -1))
-        self.ascom_commandlink.setText(QtWidgets.QApplication.translate("ConnectCamera", "ASCOM Camera", None, -1))
-        self.ascom_commandlink.setDescription(QtWidgets.QApplication.translate("ConnectCamera", "Connect an ASCOM camera. Data acquisition is currently slow compared to ZWO ASI Cameras", None, -1))
-        self.asi_commandlink.setText(QtWidgets.QApplication.translate("ConnectCamera", "ZWO ASI Camera", None, -1))
-        self.asi_commandlink.setDescription(QtWidgets.QApplication.translate("ConnectCamera", "Connect a ZWO ASI camera.", None, -1))
-        self.label.setText(QtWidgets.QApplication.translate("ConnectCamera", "ZWO ASI Camera", None, -1))
-        self.asi_label.setText(QtWidgets.QApplication.translate("ConnectCamera", "Connect a ZWO ASI camera.", None, -1))
-        self.asi_connect_button.setText(QtWidgets.QApplication.translate("ConnectCamera", "Connect", None, -1))
+        ConnectCamera.setWindowTitle(QCoreApplication.translate("ConnectCamera", u"Ecliptic - Connect Camera", None))
+        self.instruct_label.setText(QCoreApplication.translate("ConnectCamera", u"Select the camera you would like to connect.", None))
+        self.ascom_commandlink.setText(QCoreApplication.translate("ConnectCamera", u"ASCOM Camera", None))
+        self.ascom_commandlink.setDescription(QCoreApplication.translate("ConnectCamera", u"Connect an ASCOM camera. Data acquisition is currently slow compared to ZWO ASI Cameras", None))
+        self.asi_commandlink.setText(QCoreApplication.translate("ConnectCamera", u"ZWO ASI Camera", None))
+        self.asi_commandlink.setDescription(QCoreApplication.translate("ConnectCamera", u"Connect a ZWO ASI camera.", None))
+        self.label.setText(QCoreApplication.translate("ConnectCamera", u"ZWO ASI Camera", None))
+        self.asi_label.setText(QCoreApplication.translate("ConnectCamera", u"Connect a ZWO ASI camera.", None))
+        self.asi_connect_button.setText(QCoreApplication.translate("ConnectCamera", u"Connect", None))
+    # retranslateUi
 
-import res_rc

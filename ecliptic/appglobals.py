@@ -1,5 +1,5 @@
 import json
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 targets_tuple = ("Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
 

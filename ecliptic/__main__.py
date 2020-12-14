@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 import sys
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 import mainwindow
 
 sys.dont_write_bytecode = True
 
-QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
-QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
 app = QtWidgets.QApplication(sys.argv)
 
 palette = QtGui.QPalette()
 palette.setColor(QtGui.QPalette.Window, QtGui.QColor(50, 50, 50))
 palette.setColor(QtGui.QPalette.Button, QtGui.QColor(60, 60, 60))
-palette.setColor(QtGui.QPalette.Foreground, QtGui.QColor(255, 255, 255))
+palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor(255, 255, 255))
 palette.setColor(QtGui.QPalette.ButtonText, QtGui.QColor(255, 255, 255))
 palette.setColor(QtGui.QPalette.Light, QtGui.QColor(80, 80, 80))
 palette.setColor(QtGui.QPalette.Dark, QtGui.QColor(50, 50, 50))
@@ -26,7 +24,7 @@ palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Button, QtGui.QColor(40
 palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Text, QtGui.QColor(200, 200, 200))
 palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.ButtonText, QtGui.QColor(200, 200, 200))
 palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Highlight, QtGui.QColor(80, 80, 80))
-palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Foreground, QtGui.QColor(200, 200, 200))
+palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, QtGui.QColor(200, 200, 200))
 
 app.setStyleSheet("""
     QDockWidget {

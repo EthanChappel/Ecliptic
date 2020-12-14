@@ -1,25 +1,30 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'guiderparameters.ui',
-# licensing of 'guiderparameters.ui' applies.
-#
-# Created: Tue Jan 15 03:06:16 2019
-#      by: pyside2-uic  running on PySide2 5.12.0
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'guiderparameters.ui'
+##
+## Created by: Qt User Interface Compiler version 6.0.0
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+
 
 class Ui_GuiderParameters(object):
     def setupUi(self, GuiderParameters):
-        GuiderParameters.setObjectName("GuiderParameters")
+        if not GuiderParameters.objectName():
+            GuiderParameters.setObjectName(u"GuiderParameters")
         GuiderParameters.resize(198, 171)
-        GuiderParameters.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        GuiderParameters.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.gridLayout = QtWidgets.QGridLayout(GuiderParameters)
-        self.gridLayout.setObjectName("gridLayout")
-        self.northoffset_dial = QtWidgets.QDial(GuiderParameters)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        GuiderParameters.setFrameShape(QFrame.StyledPanel)
+        GuiderParameters.setFrameShadow(QFrame.Raised)
+        self.gridLayout = QGridLayout(GuiderParameters)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.northoffset_dial = QDial(GuiderParameters)
+        self.northoffset_dial.setObjectName(u"northoffset_dial")
+        sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.northoffset_dial.sizePolicy().hasHeightForWidth())
@@ -28,79 +33,105 @@ class Ui_GuiderParameters(object):
         self.northoffset_dial.setMaximum(180)
         self.northoffset_dial.setWrapping(True)
         self.northoffset_dial.setNotchesVisible(True)
-        self.northoffset_dial.setObjectName("northoffset_dial")
+
         self.gridLayout.addWidget(self.northoffset_dial, 2, 1, 2, 1)
-        self.parameters_layout = QtWidgets.QHBoxLayout()
-        self.parameters_layout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
-        self.parameters_layout.setObjectName("parameters_layout")
-        self.formlayout = QtWidgets.QFormLayout()
-        self.formlayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
-        self.formlayout.setObjectName("formlayout")
-        self.ra_label = QtWidgets.QLabel(GuiderParameters)
-        self.ra_label.setObjectName("ra_label")
-        self.formlayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.ra_label)
-        self.ra_spinbox = QtWidgets.QSpinBox(GuiderParameters)
+
+        self.parameters_layout = QHBoxLayout()
+        self.parameters_layout.setObjectName(u"parameters_layout")
+        self.parameters_layout.setSizeConstraint(QLayout.SetFixedSize)
+        self.formlayout = QFormLayout()
+        self.formlayout.setObjectName(u"formlayout")
+        self.formlayout.setSizeConstraint(QLayout.SetFixedSize)
+        self.ra_label = QLabel(GuiderParameters)
+        self.ra_label.setObjectName(u"ra_label")
+
+        self.formlayout.setWidget(0, QFormLayout.LabelRole, self.ra_label)
+
+        self.ra_spinbox = QSpinBox(GuiderParameters)
+        self.ra_spinbox.setObjectName(u"ra_spinbox")
         self.ra_spinbox.setMinimum(-100)
         self.ra_spinbox.setMaximum(100)
-        self.ra_spinbox.setProperty("value", 10)
-        self.ra_spinbox.setObjectName("ra_spinbox")
-        self.formlayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.ra_spinbox)
-        self.dec_label = QtWidgets.QLabel(GuiderParameters)
-        self.dec_label.setObjectName("dec_label")
-        self.formlayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.dec_label)
-        self.dec_spinBox = QtWidgets.QSpinBox(GuiderParameters)
+        self.ra_spinbox.setValue(10)
+
+        self.formlayout.setWidget(0, QFormLayout.FieldRole, self.ra_spinbox)
+
+        self.dec_label = QLabel(GuiderParameters)
+        self.dec_label.setObjectName(u"dec_label")
+
+        self.formlayout.setWidget(1, QFormLayout.LabelRole, self.dec_label)
+
+        self.dec_spinBox = QSpinBox(GuiderParameters)
+        self.dec_spinBox.setObjectName(u"dec_spinBox")
         self.dec_spinBox.setMinimum(-100)
         self.dec_spinBox.setMaximum(100)
-        self.dec_spinBox.setProperty("value", 10)
-        self.dec_spinBox.setObjectName("dec_spinBox")
-        self.formlayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.dec_spinBox)
+        self.dec_spinBox.setValue(10)
+
+        self.formlayout.setWidget(1, QFormLayout.FieldRole, self.dec_spinBox)
+
+
         self.parameters_layout.addLayout(self.formlayout)
-        self.every_label = QtWidgets.QLabel(GuiderParameters)
-        self.every_label.setObjectName("every_label")
+
+        self.every_label = QLabel(GuiderParameters)
+        self.every_label.setObjectName(u"every_label")
+
         self.parameters_layout.addWidget(self.every_label)
-        self.seconds_spinbox = QtWidgets.QDoubleSpinBox(GuiderParameters)
+
+        self.seconds_spinbox = QDoubleSpinBox(GuiderParameters)
+        self.seconds_spinbox.setObjectName(u"seconds_spinbox")
         self.seconds_spinbox.setDecimals(1)
-        self.seconds_spinbox.setMinimum(0.1)
-        self.seconds_spinbox.setProperty("value", 2.0)
-        self.seconds_spinbox.setObjectName("seconds_spinbox")
+        self.seconds_spinbox.setMinimum(0.100000000000000)
+        self.seconds_spinbox.setValue(2.000000000000000)
+
         self.parameters_layout.addWidget(self.seconds_spinbox)
+
+
         self.gridLayout.addLayout(self.parameters_layout, 0, 0, 1, 2)
-        self.northoffset_spinbox = QtWidgets.QSpinBox(GuiderParameters)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.northoffset_spinbox.sizePolicy().hasHeightForWidth())
-        self.northoffset_spinbox.setSizePolicy(sizePolicy)
+
+        self.northoffset_spinbox = QSpinBox(GuiderParameters)
+        self.northoffset_spinbox.setObjectName(u"northoffset_spinbox")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.northoffset_spinbox.sizePolicy().hasHeightForWidth())
+        self.northoffset_spinbox.setSizePolicy(sizePolicy1)
         self.northoffset_spinbox.setMinimum(-180)
         self.northoffset_spinbox.setMaximum(180)
-        self.northoffset_spinbox.setObjectName("northoffset_spinbox")
-        self.gridLayout.addWidget(self.northoffset_spinbox, 3, 0, 1, 1)
-        self.northoffset_label = QtWidgets.QLabel(GuiderParameters)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.northoffset_label.sizePolicy().hasHeightForWidth())
-        self.northoffset_label.setSizePolicy(sizePolicy)
-        self.northoffset_label.setObjectName("northoffset_label")
-        self.gridLayout.addWidget(self.northoffset_label, 2, 0, 1, 1)
-        self.line = QtWidgets.QFrame(GuiderParameters)
-        self.line.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line.setObjectName("line")
+
+        self.gridLayout.addWidget(self.northoffset_spinbox, 3, 0, 1, 1, Qt.AlignTop)
+
+        self.northoffset_label = QLabel(GuiderParameters)
+        self.northoffset_label.setObjectName(u"northoffset_label")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.northoffset_label.sizePolicy().hasHeightForWidth())
+        self.northoffset_label.setSizePolicy(sizePolicy2)
+
+        self.gridLayout.addWidget(self.northoffset_label, 2, 0, 1, 1, Qt.AlignBottom)
+
+        self.line = QFrame(GuiderParameters)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
+
         self.gridLayout.addWidget(self.line, 1, 0, 1, 2)
 
+
         self.retranslateUi(GuiderParameters)
-        QtCore.QObject.connect(self.northoffset_spinbox, QtCore.SIGNAL("valueChanged(int)"), self.northoffset_dial.setValue)
-        QtCore.QObject.connect(self.northoffset_dial, QtCore.SIGNAL("valueChanged(int)"), self.northoffset_spinbox.setValue)
-        QtCore.QMetaObject.connectSlotsByName(GuiderParameters)
+        self.northoffset_spinbox.valueChanged.connect(self.northoffset_dial.setValue)
+        self.northoffset_dial.valueChanged.connect(self.northoffset_spinbox.setValue)
+
+        QMetaObject.connectSlotsByName(GuiderParameters)
+    # setupUi
 
     def retranslateUi(self, GuiderParameters):
-        GuiderParameters.setWindowTitle(QtWidgets.QApplication.translate("GuiderParameters", "Frame", None, -1))
-        self.ra_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "Right Ascension", None, -1))
-        self.ra_spinbox.setSuffix(QtWidgets.QApplication.translate("GuiderParameters", "\"", None, -1))
-        self.dec_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "Declination", None, -1))
-        self.dec_spinBox.setSuffix(QtWidgets.QApplication.translate("GuiderParameters", "\"", None, -1))
-        self.every_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "every", None, -1))
-        self.seconds_spinbox.setSuffix(QtWidgets.QApplication.translate("GuiderParameters", "s", None, -1))
-        self.northoffset_label.setText(QtWidgets.QApplication.translate("GuiderParameters", "North Offset", None, -1))
+        GuiderParameters.setWindowTitle(QCoreApplication.translate("GuiderParameters", u"Frame", None))
+        self.ra_label.setText(QCoreApplication.translate("GuiderParameters", u"Right Ascension", None))
+        self.ra_spinbox.setSuffix(QCoreApplication.translate("GuiderParameters", u"\"", None))
+        self.dec_label.setText(QCoreApplication.translate("GuiderParameters", u"Declination", None))
+        self.dec_spinBox.setSuffix(QCoreApplication.translate("GuiderParameters", u"\"", None))
+        self.every_label.setText(QCoreApplication.translate("GuiderParameters", u"every", None))
+        self.seconds_spinbox.setSuffix(QCoreApplication.translate("GuiderParameters", u"s", None))
+        self.northoffset_label.setText(QCoreApplication.translate("GuiderParameters", u"North Offset", None))
+    # retranslateUi
 

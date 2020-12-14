@@ -1,7 +1,7 @@
-from PySide2 import QtCore
-from PySide2.QtCore import Qt, QStringListModel
-from PySide2.QtGui import QIcon
-from PySide2.QtWidgets import QStyledItemDelegate, QSizePolicy, QFrame, \
+from PySide6 import QtCore
+from PySide6.QtCore import Qt, QStringListModel
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QStyledItemDelegate, QSizePolicy, QFrame, \
     QPushButton, QDateTimeEdit, QLineEdit, QSpinBox, QComboBox, QHBoxLayout
 import res_rc
 
@@ -92,7 +92,7 @@ class QScheduleParameterEditorDelegate(QStyledItemDelegate):
         text = QLineEdit(parent=editor)
         button = QPushButton(QIcon(":/icons/edit-white-48dp.svg"), "", parent=editor)
 
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         editor.setLayout(layout)
 

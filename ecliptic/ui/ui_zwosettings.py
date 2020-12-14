@@ -3,22 +3,19 @@
 ################################################################################
 ## Form generated from reading UI file 'zwosettings.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.14.1
+## Created by: Qt User Interface Compiler version 6.0.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
-    QRect, QSize, QUrl, Qt)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
-    QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
-    QRadialGradient)
-from PySide2.QtWidgets import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
 class Ui_ZWOSettings(object):
     def setupUi(self, ZWOSettings):
-        if ZWOSettings.objectName():
+        if not ZWOSettings.objectName():
             ZWOSettings.setObjectName(u"ZWOSettings")
         ZWOSettings.resize(429, 196)
         ZWOSettings.setFrameShape(QFrame.StyledPanel)

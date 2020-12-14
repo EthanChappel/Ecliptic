@@ -1,5 +1,5 @@
 from typing import Union
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 from equipment import zwo
 from ui import ui_zwosettings
 

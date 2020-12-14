@@ -8,14 +8,14 @@ from typing import List, Dict
 import cv2
 import zwoasi as asi
 from PIL import Image, ImageQt
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 import numpy
 import appglobals
 import connectcamera
 import zwosettings
 import guiderparameters
-from PySide2.QtCore import QStringListModel
-from PySide2.QtWidgets import QTableWidgetItem
+from PySide6.QtCore import QStringListModel
+from PySide6.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.ui_mainwindow import Ui_MainWindow

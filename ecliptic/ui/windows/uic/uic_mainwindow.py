@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(938, 956)
+        MainWindow.resize(937, 866)
         icon = QIcon()
         icon.addFile(u":/icons/logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scroll_area_widget_contents = QWidget()
         self.scroll_area_widget_contents.setObjectName(u"scroll_area_widget_contents")
-        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 256, 1276))
+        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 215, 1202))
         self.formLayout_4 = QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName(u"formLayout_4")
         self.mount_group = QGroupBox(self.scroll_area_widget_contents)
@@ -824,7 +824,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 938, 29))
+        self.menubar.setGeometry(QRect(0, 0, 937, 26))
         self.file_menu = QMenu(self.menubar)
         self.file_menu.setObjectName(u"file_menu")
         self.import_menu = QMenu(self.file_menu)
@@ -929,7 +929,7 @@ class Ui_MainWindow(object):
         self.camera_scrollarea.setAlignment(Qt.AlignCenter)
         self.camera_scrollarea_contents = QWidget()
         self.camera_scrollarea_contents.setObjectName(u"camera_scrollarea_contents")
-        self.camera_scrollarea_contents.setGeometry(QRect(0, 0, 660, 102))
+        self.camera_scrollarea_contents.setGeometry(QRect(0, 0, 696, 85))
         self.verticalLayout_4 = QVBoxLayout(self.camera_scrollarea_contents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -1001,7 +1001,7 @@ class Ui_MainWindow(object):
         self.guider_scrollarea.setAlignment(Qt.AlignCenter)
         self.guiderscrollareawidgetcontents = QWidget()
         self.guiderscrollareawidgetcontents.setObjectName(u"guiderscrollareawidgetcontents")
-        self.guiderscrollareawidgetcontents.setGeometry(QRect(0, 0, 660, 102))
+        self.guiderscrollareawidgetcontents.setGeometry(QRect(0, 0, 696, 85))
         self.verticalLayout_6 = QVBoxLayout(self.guiderscrollareawidgetcontents)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -1144,98 +1144,19 @@ class Ui_MainWindow(object):
         self.dockWidgetContents.setObjectName(u"dockWidgetContents")
         self.verticalLayout_8 = QVBoxLayout(self.dockWidgetContents)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.groupBox = QGroupBox(self.dockWidgetContents)
-        self.groupBox.setObjectName(u"groupBox")
-        self.formLayout_2 = QFormLayout(self.groupBox)
-        self.formLayout_2.setObjectName(u"formLayout_2")
-        self.lat_label = QLabel(self.groupBox)
-        self.lat_label.setObjectName(u"lat_label")
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.settings_scroll_area = QScrollArea(self.dockWidgetContents)
+        self.settings_scroll_area.setObjectName(u"settings_scroll_area")
+        self.settings_scroll_area.setFrameShape(QFrame.NoFrame)
+        self.settings_scroll_area.setFrameShadow(QFrame.Plain)
+        self.settings_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.settings_scroll_area.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 696, 85))
+        self.settings_scroll_area.setWidget(self.scrollAreaWidgetContents)
 
-        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.lat_label)
-
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.lat_d_spin = QSpinBox(self.groupBox)
-        self.lat_d_spin.setObjectName(u"lat_d_spin")
-        self.lat_d_spin.setFrame(True)
-        self.lat_d_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.lat_d_spin.setKeyboardTracking(False)
-        self.lat_d_spin.setProperty("showGroupSeparator", False)
-        self.lat_d_spin.setMinimum(-89)
-        self.lat_d_spin.setMaximum(89)
-
-        self.horizontalLayout.addWidget(self.lat_d_spin)
-
-        self.lat_m_spin = QSpinBox(self.groupBox)
-        self.lat_m_spin.setObjectName(u"lat_m_spin")
-        self.lat_m_spin.setFrame(True)
-        self.lat_m_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.lat_m_spin.setKeyboardTracking(False)
-        self.lat_m_spin.setProperty("showGroupSeparator", False)
-        self.lat_m_spin.setMaximum(59)
-
-        self.horizontalLayout.addWidget(self.lat_m_spin)
-
-        self.lat_s_spin = QSpinBox(self.groupBox)
-        self.lat_s_spin.setObjectName(u"lat_s_spin")
-        self.lat_s_spin.setFrame(True)
-        self.lat_s_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.lat_s_spin.setKeyboardTracking(False)
-        self.lat_s_spin.setProperty("showGroupSeparator", False)
-        self.lat_s_spin.setMaximum(59)
-
-        self.horizontalLayout.addWidget(self.lat_s_spin)
-
-
-        self.formLayout_2.setLayout(0, QFormLayout.FieldRole, self.horizontalLayout)
-
-        self.long_label = QLabel(self.groupBox)
-        self.long_label.setObjectName(u"long_label")
-
-        self.formLayout_2.setWidget(1, QFormLayout.LabelRole, self.long_label)
-
-        self.horizontalLayout_3 = QHBoxLayout()
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.long_d_spin = QSpinBox(self.groupBox)
-        self.long_d_spin.setObjectName(u"long_d_spin")
-        self.long_d_spin.setFrame(True)
-        self.long_d_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.long_d_spin.setKeyboardTracking(False)
-        self.long_d_spin.setProperty("showGroupSeparator", False)
-        self.long_d_spin.setMinimum(-179)
-        self.long_d_spin.setMaximum(179)
-
-        self.horizontalLayout_3.addWidget(self.long_d_spin)
-
-        self.long_m_spin = QSpinBox(self.groupBox)
-        self.long_m_spin.setObjectName(u"long_m_spin")
-        self.long_m_spin.setFrame(True)
-        self.long_m_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.long_m_spin.setKeyboardTracking(False)
-        self.long_m_spin.setProperty("showGroupSeparator", False)
-        self.long_m_spin.setMaximum(59)
-
-        self.horizontalLayout_3.addWidget(self.long_m_spin)
-
-        self.long_s_spin = QSpinBox(self.groupBox)
-        self.long_s_spin.setObjectName(u"long_s_spin")
-        self.long_s_spin.setFrame(True)
-        self.long_s_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.long_s_spin.setKeyboardTracking(False)
-        self.long_s_spin.setProperty("showGroupSeparator", False)
-        self.long_s_spin.setMaximum(59)
-
-        self.horizontalLayout_3.addWidget(self.long_s_spin)
-
-
-        self.formLayout_2.setLayout(1, QFormLayout.FieldRole, self.horizontalLayout_3)
-
-
-        self.verticalLayout_8.addWidget(self.groupBox)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_8.addItem(self.verticalSpacer)
+        self.verticalLayout_8.addWidget(self.settings_scroll_area)
 
         self.settings_dockwidget.setWidget(self.dockWidgetContents)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.settings_dockwidget)
@@ -1520,14 +1441,5 @@ class Ui_MainWindow(object):
         self.removerow_button_2.setToolTip(QCoreApplication.translate("MainWindow", u"Remove row", None))
 #endif // QT_CONFIG(tooltip)
         self.settings_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Location", None))
-        self.lat_label.setText(QCoreApplication.translate("MainWindow", u"Latitude", None))
-        self.lat_d_spin.setSuffix(QCoreApplication.translate("MainWindow", u"\u00b0", None))
-        self.lat_m_spin.setSuffix(QCoreApplication.translate("MainWindow", u"'", None))
-        self.lat_s_spin.setSuffix(QCoreApplication.translate("MainWindow", u"\"", None))
-        self.long_label.setText(QCoreApplication.translate("MainWindow", u"Longitude", None))
-        self.long_d_spin.setSuffix(QCoreApplication.translate("MainWindow", u"\u00b0", None))
-        self.long_m_spin.setSuffix(QCoreApplication.translate("MainWindow", u"'", None))
-        self.long_s_spin.setSuffix(QCoreApplication.translate("MainWindow", u"\"", None))
     # retranslateUi
 

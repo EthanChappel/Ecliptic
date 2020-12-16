@@ -19,7 +19,8 @@ from PySide6.QtCore import QStringListModel
 from PySide6.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
-from ui.ui_mainwindow import Ui_MainWindow
+from ui.windows.uic.uic_mainwindow import Ui_MainWindow
+from ui.frames.settings import SettingsFrame
 from ui.delegates.widgets import *
 from ui.delegates.custom import *
 from thread import TelescopeThread, CameraThread
@@ -93,6 +94,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.position_delegate = QSpinBoxItemDelegate(self)
         self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
         self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
+
+        # Settings frame
+        self.settings_frame = SettingsFrame(self)
+        self.settings_scroll_area.setWidget(self.settings_frame)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -201,22 +206,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
         )
         self.statusbar.addWidget(self.status_coords_label)
-
-        # Fill location widgets with saved values.
-        self.lat_d_spin.setValue(appglobals.location["Latitude"][0])
-        self.long_d_spin.setValue(appglobals.location["Longitude"][0])
-        self.lat_m_spin.setValue(appglobals.location["Latitude"][1])
-        self.long_m_spin.setValue(appglobals.location["Longitude"][1])
-        self.lat_s_spin.setValue(appglobals.location["Latitude"][2])
-        self.long_s_spin.setValue(appglobals.location["Longitude"][2])
-
-        # Save location when changed.
-        self.lat_d_spin.valueChanged.connect(self.location_set)
-        self.lat_m_spin.valueChanged.connect(self.location_set)
-        self.lat_s_spin.valueChanged.connect(self.location_set)
-        self.long_d_spin.valueChanged.connect(self.location_set)
-        self.long_m_spin.valueChanged.connect(self.location_set)
-        self.long_s_spin.valueChanged.connect(self.location_set)
 
         self.filter_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
@@ -426,30 +415,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.filter_table.setItem(count, 4, QTableWidgetItem(str(f["Upper Cutoff"])))
 
             count += 1
-
-    def location_set(self):
-        """Set observing location."""
-        appglobals.location["Latitude"] = [
-            self.lat_d_spin.value(), self.lat_m_spin.value(), self.lat_s_spin.value()
-        ]
-        appglobals.location["Longitude"] = [
-            self.long_d_spin.value(), self.long_m_spin.value(), self.long_s_spin.value()
-        ]
-
-        if os.path.exists("location.json"):
-            os.remove("location.json")
-        with open("location.json", "a") as f:
-            json.dump(appglobals.location, f, indent=0)
-        self.status_coords_label.setText(
-            "Latitude: %d°%d\'%d\", Longitude: %d°%d\'%d\"" % (
-                appglobals.location["Latitude"][0],
-                appglobals.location["Latitude"][1],
-                appglobals.location["Latitude"][2],
-                appglobals.location["Longitude"][0],
-                appglobals.location["Longitude"][1],
-                appglobals.location["Longitude"][2]
-            )
-        )
 
     @staticmethod
     def connect_fail_dialog(name: str):

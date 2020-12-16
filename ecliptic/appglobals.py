@@ -1,6 +1,12 @@
 import json
 from PySide6 import QtWidgets
 
+EXPOSURE_UNIT = "ms"
+DURATION_UNIT = "min"
+GAIN_UNIT = "e/adu"
+INTEGRATION_UNIT = "s"
+CUTOFF_UNIT = "nm"
+
 targets_tuple = ("Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
 
 try:

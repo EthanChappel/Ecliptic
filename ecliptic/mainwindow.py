@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -29,13 +29,6 @@ from database import Database
 
 if sys.platform.startswith("win"):
     from equipment import ascom
-
-
-EXPOSURE_UNIT = "ms"
-DURATION_UNIT = "min"
-GAIN_UNIT = "e/adu"
-INTEGRATION_UNIT = "s"
-CUTOFF_UNIT = "nm"
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):

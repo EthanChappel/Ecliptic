@@ -1,15 +1,17 @@
 import subprocess
+from pathlib import Path
 from solver import Solver
 
 
 class AstapSolver(Solver):
     def __init__(self, path: str):
-        self.path = path
+        self.program = Path(path)
     
     def solve(self, image, ra_h=None, dec_d=None, radius_d=None):
+        path = Path(image)
         command = [
-            self.path, '-wcs', '-annotate',
-            '-f', image.filename,
+            str(self.program), '-wcs', '-annotate',
+            '-f', str(path),
         ]
 
         if ra_h:
@@ -19,4 +21,4 @@ class AstapSolver(Solver):
         if radius_d:
             command.extend(['-r', str(radius_d)])
         
-        subprocess.Popen(command)
+        subprocess.run(command)

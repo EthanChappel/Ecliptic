@@ -18,20 +18,16 @@ class Ui_ScheduleEntryDialog(object):
     def setupUi(self, ScheduleEntryDialog):
         if not ScheduleEntryDialog.objectName():
             ScheduleEntryDialog.setObjectName(u"ScheduleEntryDialog")
-        ScheduleEntryDialog.resize(650, 550)
+        ScheduleEntryDialog.resize(650, 450)
+        ScheduleEntryDialog.setModal(True)
         self.verticalLayout = QVBoxLayout(ScheduleEntryDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.tab_widget = QTabWidget(ScheduleEntryDialog)
-        self.tab_widget.setObjectName(u"tab_widget")
-        self.tab_widget.setTabShape(QTabWidget.Rounded)
-        self.tab_widget.setDocumentMode(True)
-        self.capture_tab = QWidget()
-        self.capture_tab.setObjectName(u"capture_tab")
-        self.verticalLayout_2 = QVBoxLayout(self.capture_tab)
+        self.filters_group_box = QGroupBox(ScheduleEntryDialog)
+        self.filters_group_box.setObjectName(u"filters_group_box")
+        self.verticalLayout_2 = QVBoxLayout(self.filters_group_box)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.filter_table = QTableWidget(self.capture_tab)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, -1)
+        self.filter_table = QTableWidget(self.filters_group_box)
         if (self.filter_table.columnCount() < 6):
             self.filter_table.setColumnCount(6)
         __qtablewidgetitem = QTableWidgetItem()
@@ -52,12 +48,10 @@ class Ui_ScheduleEntryDialog(object):
 
         self.verticalLayout_2.addWidget(self.filter_table)
 
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(11, -1, 11, -1)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.add_filter_button = QPushButton(self.capture_tab)
+        self.horizontalLayout.setContentsMargins(11, -1, 11, -1)
+        self.add_filter_button = QPushButton(self.filters_group_box)
         self.add_filter_button.setObjectName(u"add_filter_button")
         icon = QIcon()
         icon.addFile(u":/icons/ic_add_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
@@ -65,7 +59,7 @@ class Ui_ScheduleEntryDialog(object):
 
         self.horizontalLayout.addWidget(self.add_filter_button)
 
-        self.remove_filter_button = QPushButton(self.capture_tab)
+        self.remove_filter_button = QPushButton(self.filters_group_box)
         self.remove_filter_button.setObjectName(u"remove_filter_button")
         icon1 = QIcon()
         icon1.addFile(u":/icons/ic_remove_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
@@ -78,51 +72,98 @@ class Ui_ScheduleEntryDialog(object):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
 
-        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
 
 
-        self.verticalLayout_2.addLayout(self.gridLayout)
+        self.verticalLayout.addWidget(self.filters_group_box)
 
-        self.tab_widget.addTab(self.capture_tab, "")
-        self.astrometry_tab = QWidget()
-        self.astrometry_tab.setObjectName(u"astrometry_tab")
-        self.tab_widget.addTab(self.astrometry_tab, "")
+        self.solve_group_box = QGroupBox(ScheduleEntryDialog)
+        self.solve_group_box.setObjectName(u"solve_group_box")
+        self.horizontalLayout_2 = QHBoxLayout(self.solve_group_box)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.formLayout = QFormLayout()
+        self.formLayout.setObjectName(u"formLayout")
+        self.label = QLabel(self.solve_group_box)
+        self.label.setObjectName(u"label")
 
-        self.verticalLayout.addWidget(self.tab_widget)
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label)
 
-        self.verticalLayout_3 = QVBoxLayout()
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(11, -1, 11, 11)
-        self.line = QFrame(ScheduleEntryDialog)
+        self.down_sample_combo_box = QComboBox(self.solve_group_box)
+        self.down_sample_combo_box.addItem("")
+        self.down_sample_combo_box.addItem("")
+        self.down_sample_combo_box.addItem("")
+        self.down_sample_combo_box.addItem("")
+        self.down_sample_combo_box.addItem("")
+        self.down_sample_combo_box.addItem("")
+        self.down_sample_combo_box.setObjectName(u"down_sample_combo_box")
+
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.down_sample_combo_box)
+
+
+        self.horizontalLayout_2.addLayout(self.formLayout)
+
+        self.line = QFrame(self.solve_group_box)
         self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShape(QFrame.VLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
-        self.verticalLayout_3.addWidget(self.line)
+        self.horizontalLayout_2.addWidget(self.line)
+
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.label_2 = QLabel(self.solve_group_box)
+        self.label_2.setObjectName(u"label_2")
+
+        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label_2)
+
+        self.search_radius_spin_box = QSpinBox(self.solve_group_box)
+        self.search_radius_spin_box.setObjectName(u"search_radius_spin_box")
+        self.search_radius_spin_box.setMinimum(1)
+        self.search_radius_spin_box.setMaximum(180)
+        self.search_radius_spin_box.setValue(20)
+
+        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.search_radius_spin_box)
+
+
+        self.horizontalLayout_2.addLayout(self.formLayout_2)
+
+        self.line_2 = QFrame(self.solve_group_box)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.VLine)
+        self.line_2.setFrameShadow(QFrame.Sunken)
+
+        self.horizontalLayout_2.addWidget(self.line_2)
+
+        self.debug_check_box = QCheckBox(self.solve_group_box)
+        self.debug_check_box.setObjectName(u"debug_check_box")
+
+        self.horizontalLayout_2.addWidget(self.debug_check_box)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
+
+
+        self.verticalLayout.addWidget(self.solve_group_box)
 
         self.button_box = QDialogButtonBox(ScheduleEntryDialog)
         self.button_box.setObjectName(u"button_box")
         self.button_box.setOrientation(Qt.Horizontal)
         self.button_box.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok|QDialogButtonBox.RestoreDefaults)
 
-        self.verticalLayout_3.addWidget(self.button_box)
-
-
-        self.verticalLayout.addLayout(self.verticalLayout_3)
+        self.verticalLayout.addWidget(self.button_box)
 
 
         self.retranslateUi(ScheduleEntryDialog)
         self.button_box.accepted.connect(ScheduleEntryDialog.accept)
         self.button_box.rejected.connect(ScheduleEntryDialog.reject)
 
-        self.tab_widget.setCurrentIndex(0)
-
-
         QMetaObject.connectSlotsByName(ScheduleEntryDialog)
     # setupUi
 
     def retranslateUi(self, ScheduleEntryDialog):
         ScheduleEntryDialog.setWindowTitle("")
+        self.filters_group_box.setTitle(QCoreApplication.translate("ScheduleEntryDialog", u"Filters", None))
         ___qtablewidgetitem = self.filter_table.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Filter", None));
         ___qtablewidgetitem1 = self.filter_table.horizontalHeaderItem(1)
@@ -137,7 +178,17 @@ class Ui_ScheduleEntryDialog(object):
         ___qtablewidgetitem5.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Format", None));
         self.add_filter_button.setText("")
         self.remove_filter_button.setText("")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.capture_tab), QCoreApplication.translate("ScheduleEntryDialog", u"Capture", None))
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.astrometry_tab), QCoreApplication.translate("ScheduleEntryDialog", u"Astrometry", None))
+        self.solve_group_box.setTitle(QCoreApplication.translate("ScheduleEntryDialog", u"Plate Solving", None))
+        self.label.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Down sample", None))
+        self.down_sample_combo_box.setItemText(0, QCoreApplication.translate("ScheduleEntryDialog", u"Default", None))
+        self.down_sample_combo_box.setItemText(1, QCoreApplication.translate("ScheduleEntryDialog", u"Auto", None))
+        self.down_sample_combo_box.setItemText(2, QCoreApplication.translate("ScheduleEntryDialog", u"1", None))
+        self.down_sample_combo_box.setItemText(3, QCoreApplication.translate("ScheduleEntryDialog", u"2", None))
+        self.down_sample_combo_box.setItemText(4, QCoreApplication.translate("ScheduleEntryDialog", u"3", None))
+        self.down_sample_combo_box.setItemText(5, QCoreApplication.translate("ScheduleEntryDialog", u"4", None))
+
+        self.label_2.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Search radius", None))
+        self.search_radius_spin_box.setSuffix(QCoreApplication.translate("ScheduleEntryDialog", u"\u00b0", None))
+        self.debug_check_box.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Open ASTAP window before solve", None))
     # retranslateUi
 

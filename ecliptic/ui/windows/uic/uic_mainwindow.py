@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(937, 866)
+        MainWindow.resize(937, 748)
         icon = QIcon()
         icon.addFile(u":/icons/logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scroll_area_widget_contents = QWidget()
         self.scroll_area_widget_contents.setObjectName(u"scroll_area_widget_contents")
-        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 215, 1202))
+        self.scroll_area_widget_contents.setGeometry(QRect(0, -168, 215, 1202))
         self.formLayout_4 = QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName(u"formLayout_4")
         self.mount_group = QGroupBox(self.scroll_area_widget_contents)
@@ -1086,54 +1086,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QVBoxLayout(self.filters_dockwidgetcontents)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, -1)
-        self.filter_table = QTableWidget(self.filters_dockwidgetcontents)
-        if (self.filter_table.columnCount() < 5):
-            self.filter_table.setColumnCount(5)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(0, __qtablewidgetitem4)
-        __qtablewidgetitem5 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(1, __qtablewidgetitem5)
-        __qtablewidgetitem6 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(2, __qtablewidgetitem6)
-        __qtablewidgetitem7 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(3, __qtablewidgetitem7)
-        __qtablewidgetitem8 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(4, __qtablewidgetitem8)
-        self.filter_table.setObjectName(u"filter_table")
-        self.filter_table.setFrameShape(QFrame.NoFrame)
-        self.filter_table.setLineWidth(0)
-        self.filter_table.setSortingEnabled(False)
-
-        self.verticalLayout_5.addWidget(self.filter_table)
-
-        self.horizontallayout_14 = QHBoxLayout()
-        self.horizontallayout_14.setObjectName(u"horizontallayout_14")
-        self.horizontallayout_14.setContentsMargins(9, -1, 9, -1)
-        self.addrow_button_2 = QPushButton(self.filters_dockwidgetcontents)
-        self.addrow_button_2.setObjectName(u"addrow_button_2")
-        sizePolicy.setHeightForWidth(self.addrow_button_2.sizePolicy().hasHeightForWidth())
-        self.addrow_button_2.setSizePolicy(sizePolicy)
-        self.addrow_button_2.setIcon(icon22)
-        self.addrow_button_2.setAutoDefault(True)
-
-        self.horizontallayout_14.addWidget(self.addrow_button_2)
-
-        self.removerow_button_2 = QPushButton(self.filters_dockwidgetcontents)
-        self.removerow_button_2.setObjectName(u"removerow_button_2")
-        sizePolicy.setHeightForWidth(self.removerow_button_2.sizePolicy().hasHeightForWidth())
-        self.removerow_button_2.setSizePolicy(sizePolicy)
-        self.removerow_button_2.setIcon(icon23)
-        self.removerow_button_2.setAutoDefault(True)
-
-        self.horizontallayout_14.addWidget(self.removerow_button_2)
-
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontallayout_14.addItem(self.horizontalSpacer_4)
-
-
-        self.verticalLayout_5.addLayout(self.horizontallayout_14)
-
         self.filters_dockwidget.setWidget(self.filters_dockwidgetcontents)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.filters_dockwidget)
         self.settings_dockwidget = QDockWidget(MainWindow)
@@ -1418,28 +1370,6 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.guidersetref_button.setText("")
         self.filters_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Filters", None))
-        ___qtablewidgetitem3 = self.filter_table.horizontalHeaderItem(0)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Name", None));
-#if QT_CONFIG(tooltip)
-        ___qtablewidgetitem3.setToolTip(QCoreApplication.translate("MainWindow", u"The name of the filter", None));
-#endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem4 = self.filter_table.horizontalHeaderItem(1)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Brand", None));
-        ___qtablewidgetitem5 = self.filter_table.horizontalHeaderItem(2)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"Wheel Position", None));
-#if QT_CONFIG(tooltip)
-        ___qtablewidgetitem5.setToolTip(QCoreApplication.translate("MainWindow", u"The position the filter lies in the filter wheel", None));
-#endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem6 = self.filter_table.horizontalHeaderItem(3)
-        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Lower Cutoff", None));
-        ___qtablewidgetitem7 = self.filter_table.horizontalHeaderItem(4)
-        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Upper Cutoff", None));
-#if QT_CONFIG(tooltip)
-        self.addrow_button_2.setToolTip(QCoreApplication.translate("MainWindow", u"Add row", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.removerow_button_2.setToolTip(QCoreApplication.translate("MainWindow", u"Remove row", None))
-#endif // QT_CONFIG(tooltip)
         self.settings_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
     # retranslateUi
 

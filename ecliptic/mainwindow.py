@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -20,6 +20,7 @@ from PySide6.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow
+from ui.frames.filters import FiltersFrame
 from ui.frames.settings import SettingsFrame
 from ui.delegates.widgets import *
 from ui.delegates.custom import *
@@ -74,7 +75,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Models for schedule table columns.
         self.target_list_model = QStringListModel()
-        self.filter_list_model = QStringListModel()
 
         # Create Delegates for columns in schedule table.
         self.date_delegate = QDateTimeEditItemDelegate(self)
@@ -83,10 +83,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.schedule_table.hideColumn(0)
 
-        # Create Delegates for columns in filters table.
-        self.position_delegate = QSpinBoxItemDelegate(self)
-        self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
-        self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, CUTOFF_UNIT)
+        # Filters frame
+        self.filters_frame = FiltersFrame(self)
+        self.filters_dockwidget.setWidget(self.filters_frame)
 
         # Settings frame
         self.settings_frame = SettingsFrame(self)
@@ -200,8 +199,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.statusbar.addWidget(self.status_coords_label)
 
-        self.filter_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-
         self.focuser_position_spinbox.setKeyboardTracking(False)
         self.focuser_position_spinbox.lineEdit().returnPressed.connect(self.move_focuser)
         self.focuser_position_spinbox.valueChanged.connect(self.move_focuser)
@@ -218,13 +215,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.temp_checkbox.setVisible(False)
 
-        self.addrow_button_2.clicked.connect(self.add_filter_row)
-        self.removerow_button_2.clicked.connect(self.remove_filter_row)
-
-        self.load_filters(appglobals.filters)
-
         self.schedule_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-        self.filter_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
 
         self.camera_exposure_spinbox.valueChanged.connect(self.set_camera_exposure)
         self.camera_exposure_slider.valueChanged.connect(self.set_camera_exposure)
@@ -241,24 +232,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Set the choices for the targets column.
         self.target_list_model.setStringList(self.mountmodes_tuple + appglobals.targets_tuple)
 
-        # Set the choices for the filters column.
-        filter_names = []
-        for f in appglobals.filters:
-            filter_names.append(f["Name"])
-        self.filter_list_model.setStringList(filter_names)
-
         # Set item delegates for columns in schedule table.
         self.schedule_table.setItemDelegateForColumn(1, self.date_delegate)
         self.schedule_table.setItemDelegateForColumn(2, self.target_delegate)
         self.schedule_table.setItemDelegateForColumn(3, self.parameters_delegate)
 
-        self.filter_table.setItemDelegateForColumn(2, self.position_delegate)
-        self.filter_table.setItemDelegateForColumn(3, self.lower_cutoff_delegate)
-        self.filter_table.setItemDelegateForColumn(4, self.upper_cutoff_delegate)
-
         # Save whenever cell is changed.
         self.schedule_table.itemChanged.connect(self.save_schedule)
-        self.filter_table.itemChanged.connect(self.save_filters)
 
         self.load_schedule()
 
@@ -335,79 +315,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.schedule_table.blockSignals(False)
             self.max_schedule_id += 1
             i += 1
-
-    def add_filter_row(self):
-        """Add row in filter_table."""
-        self.row_count = self.filter_table.rowCount()
-        self.filter_table.insertRow(self.row_count)
-
-    def remove_filter_row(self):
-        """Remove selected rows from filter_table."""
-        for model_index in self.filter_table.selectionModel().selection().indexes():
-            index = QtCore.QPersistentModelIndex(model_index)
-            self.filter_table.removeRow(index.row())
-        self.save_filters()
-
-    def save_filters(self):
-        """Save contents of filter_table into filters.json."""
-        if os.path.exists("filters.json"):
-            os.remove("filters.json")
-        filter_list = []
-        for row in range(self.filter_table.rowCount()):
-            filter_dict = {}
-            for col in range(self.filter_table.columnCount()):
-                header = str(self.filter_table.horizontalHeaderItem(col).text())
-                item = self.filter_table.item(row, col)
-                value = None
-
-                # Save existing items with numeric strings as integers.
-                if item is None:
-                    pass
-                elif col > 1 and item.text() not in ("", "None"):
-                    value = int(item.text())
-                elif isinstance(item.text(), str) and item.text() not in ("", "None"):
-                    value = item.text()
-                filter_dict.update({header: value})
-            filter_list.append(filter_dict)
-        with open("filters.json", "a") as f:
-            json.dump(filter_list, f, indent=0)
-        with open("filters.json", "r") as f:
-            appglobals.filters = json.load(f)
-
-        # Update filter model
-        filter_names = []
-        for f in appglobals.filters:
-            filter_names.append(f["Name"])
-        self.filter_list_model.setStringList(filter_names)
-
-        self.position_combobox.blockSignals(True)
-        text = self.position_combobox.currentText()
-        text2 = self.camera_filter_combobox.currentText()
-        self.position_combobox.clear()
-        self.camera_filter_combobox.clear()
-        self.camera_filter_combobox.addItem("None")
-        for f in appglobals.filters:
-            self.camera_filter_combobox.addItem(f["Name"])
-            self.position_combobox.addItem(f["Name"])
-        index = self.position_combobox.findText(text)
-        self.position_combobox.setCurrentIndex(index)
-        self.position_combobox.blockSignals(False)
-        index = self.position_combobox.findText(text2)
-        self.position_combobox.setCurrentIndex(index)
-
-    def load_filters(self, filters: List[Dict[str, str]]):
-        """Load contents of filters.json into filter_table."""
-        count = 0
-        for f in filters:
-            self.add_filter_row()
-
-            self.filter_table.setItem(count, 0, QTableWidgetItem(f["Name"]))
-            self.filter_table.setItem(count, 1, QTableWidgetItem(f["Brand"]))
-            self.filter_table.setItem(count, 2, QTableWidgetItem(str(f["Wheel Position"])))
-            self.filter_table.setItem(count, 3, QTableWidgetItem(str(f["Lower Cutoff"])))
-            self.filter_table.setItem(count, 4, QTableWidgetItem(str(f["Upper Cutoff"])))
-
-            count += 1
 
     @staticmethod
     def connect_fail_dialog(name: str):
@@ -803,6 +710,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.wheel.rotate_wheel(text)
         except AttributeError as e:
             print(e)
+    
+    @QtCore.Slot()
+    def update_filters(self):
+        self.position_combobox.blockSignals(True)
+        text = self.position_combobox.currentText()
+        text2 = self.camera_filter_combobox.currentText()
+        self.position_combobox.clear()
+        self.camera_filter_combobox.clear()
+        self.camera_filter_combobox.addItem("None")
+        for f in appglobals.filters:
+            self.camera_filter_combobox.addItem(f["Name"])
+            self.position_combobox.addItem(f["Name"])
+        index = self.position_combobox.findText(text)
+        self.position_combobox.setCurrentIndex(index)
+        self.position_combobox.blockSignals(False)
+        index = self.position_combobox.findText(text2)
+        self.position_combobox.setCurrentIndex(index)
 
     def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""

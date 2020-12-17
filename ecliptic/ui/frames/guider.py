@@ -1,8 +1,5 @@
-import os
-import json
-from PySide2 import QtWidgets
+from PySide2 import QtGui, QtWidgets
 from .uic.uic_guider import Ui_GuiderFrame
-import appglobals
 
 
 class GuiderFrame(QtWidgets.QFrame, Ui_GuiderFrame):
@@ -12,4 +9,5 @@ class GuiderFrame(QtWidgets.QFrame, Ui_GuiderFrame):
         super().__init__(self.parent)
         self.setupUi(self)
 
-
+    def preview(self, frame: QtGui.QPixmap):
+        self.guider_preview_label.setPixmap(frame)

@@ -471,15 +471,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def guider_loop(self):
         if self.guider_loop_button.isChecked():
             if self.guider_start_button.isChecked():
-                self.guider_thread = threading.Thread(target=self.guider_preview)  # To be implemented
+                self.guider_thread = threading.Thread(target=self.guider_frame.preview)  # To be implemented
             else:
                 self.guider_thread = CameraThread(self.guider, self.guider_loop_button)
-                self.guider_thread.exposure_done.connect(self.guider_preview)
+                self.guider_thread.exposure_done.connect(self.guider_frame.preview)
             self.guider_thread.daemon = True
             self.guider_thread.start()
-
-    def guider_preview(self, frame: numpy.ndarray):
-        self.guider_frame.guider_preview_label.setPixmap(frame)
 
     def connect_camera(self):
         if self.camera_group.isChecked():

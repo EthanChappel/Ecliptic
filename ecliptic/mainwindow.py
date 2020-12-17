@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -8,15 +8,15 @@ from typing import List, Dict
 import cv2
 import zwoasi as asi
 from PIL import Image, ImageQt
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 import numpy
 import appglobals
 import connectcamera
 import zwosettings
 import guiderparameters
 from scheduleentrydialog import ScheduleEntryDialog
-from PySide6.QtCore import QStringListModel
-from PySide6.QtWidgets import QTableWidgetItem
+from PySide2.QtCore import QStringListModel
+from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow

@@ -1,4 +1,4 @@
-from PySide6 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 import zwoasi as asi
 from ui import ui_connectcamera
 

@@ -1,5 +1,5 @@
 import json
-from PySide6 import QtWidgets
+from PySide2 import QtWidgets
 
 EXPOSURE_UNIT = "ms"
 DURATION_UNIT = "min"

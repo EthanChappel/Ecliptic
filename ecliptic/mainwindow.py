@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -20,6 +20,7 @@ from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow
+from ui.frames.guider import GuiderFrame
 from ui.frames.filters import FiltersFrame
 from ui.frames.settings import SettingsFrame
 from ui.delegates.widgets import *
@@ -82,6 +83,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.parameters_delegate = QWindowEditorDelegate(ScheduleEntryDialog, self)
 
         self.schedule_table.hideColumn(0)
+
+        # Filters frame
+        self.guider_frame = GuiderFrame(self)
+        self.guider_dockwidget.setWidget(self.guider_frame)
 
         # Filters frame
         self.filters_frame = FiltersFrame(self)
@@ -469,9 +474,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_thread.start()
 
     def guider_preview(self, frame: numpy.ndarray):
-        image = Image.fromarray(frame)
-        pix = ImageQt.toqpixmap(image)
-        self.guider_preview_label.setPixmap(pix)
+        self.guider_frame.guider_preview_label.setPixmap(frame)
 
     def connect_camera(self):
         if self.camera_group.isChecked():

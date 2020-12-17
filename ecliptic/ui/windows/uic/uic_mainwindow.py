@@ -8,9 +8,9 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
 import res_rc
 
@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scroll_area_widget_contents = QWidget()
         self.scroll_area_widget_contents.setObjectName(u"scroll_area_widget_contents")
-        self.scroll_area_widget_contents.setGeometry(QRect(0, -168, 215, 1202))
+        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 215, 1202))
         self.formLayout_4 = QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName(u"formLayout_4")
         self.mount_group = QGroupBox(self.scroll_area_widget_contents)
@@ -991,88 +991,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_10 = QVBoxLayout(self.dockwidgetcontents_3)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.verticalLayout_10.setContentsMargins(0, 0, 0, -1)
-        self.guider_scrollarea = QScrollArea(self.dockwidgetcontents_3)
-        self.guider_scrollarea.setObjectName(u"guider_scrollarea")
-        self.guider_scrollarea.setLayoutDirection(Qt.LeftToRight)
-        self.guider_scrollarea.setFrameShape(QFrame.NoFrame)
-        self.guider_scrollarea.setFrameShadow(QFrame.Plain)
-        self.guider_scrollarea.setLineWidth(0)
-        self.guider_scrollarea.setWidgetResizable(True)
-        self.guider_scrollarea.setAlignment(Qt.AlignCenter)
-        self.guiderscrollareawidgetcontents = QWidget()
-        self.guiderscrollareawidgetcontents.setObjectName(u"guiderscrollareawidgetcontents")
-        self.guiderscrollareawidgetcontents.setGeometry(QRect(0, 0, 696, 85))
-        self.verticalLayout_6 = QVBoxLayout(self.guiderscrollareawidgetcontents)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.guider_preview_label = QLabel(self.guiderscrollareawidgetcontents)
-        self.guider_preview_label.setObjectName(u"guider_preview_label")
-        self.guider_preview_label.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_6.addWidget(self.guider_preview_label, 0, Qt.AlignHCenter|Qt.AlignVCenter)
-
-        self.guider_scrollarea.setWidget(self.guiderscrollareawidgetcontents)
-
-        self.verticalLayout_10.addWidget(self.guider_scrollarea)
-
-        self.guider_gridlayout = QGridLayout()
-        self.guider_gridlayout.setObjectName(u"guider_gridlayout")
-        self.guiderzoom_label = QLabel(self.dockwidgetcontents_3)
-        self.guiderzoom_label.setObjectName(u"guiderzoom_label")
-        sizePolicy.setHeightForWidth(self.guiderzoom_label.sizePolicy().hasHeightForWidth())
-        self.guiderzoom_label.setSizePolicy(sizePolicy)
-
-        self.guider_gridlayout.addWidget(self.guiderzoom_label, 0, 0, 1, 1)
-
-        self.guiderzoom_spinbox = QSpinBox(self.dockwidgetcontents_3)
-        self.guiderzoom_spinbox.setObjectName(u"guiderzoom_spinbox")
-        self.guiderzoom_spinbox.setMinimum(20)
-        self.guiderzoom_spinbox.setMaximum(300)
-        self.guiderzoom_spinbox.setValue(100)
-
-        self.guider_gridlayout.addWidget(self.guiderzoom_spinbox, 0, 1, 1, 1)
-
-        self.guiderzoom_slider = QSlider(self.dockwidgetcontents_3)
-        self.guiderzoom_slider.setObjectName(u"guiderzoom_slider")
-        sizePolicy2.setHeightForWidth(self.guiderzoom_slider.sizePolicy().hasHeightForWidth())
-        self.guiderzoom_slider.setSizePolicy(sizePolicy2)
-        self.guiderzoom_slider.setMinimum(20)
-        self.guiderzoom_slider.setMaximum(300)
-        self.guiderzoom_slider.setValue(100)
-        self.guiderzoom_slider.setOrientation(Qt.Horizontal)
-
-        self.guider_gridlayout.addWidget(self.guiderzoom_slider, 1, 0, 1, 2)
-
-        self.guiderzoom_line = QFrame(self.dockwidgetcontents_3)
-        self.guiderzoom_line.setObjectName(u"guiderzoom_line")
-        self.guiderzoom_line.setFrameShape(QFrame.VLine)
-        self.guiderzoom_line.setFrameShadow(QFrame.Sunken)
-
-        self.guider_gridlayout.addWidget(self.guiderzoom_line, 0, 2, 2, 1)
-
-        self.guidersetref_button = QPushButton(self.dockwidgetcontents_3)
-        self.guidersetref_button.setObjectName(u"guidersetref_button")
-        self.guidersetref_button.setEnabled(False)
-        sizePolicy9 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy9.setHorizontalStretch(0)
-        sizePolicy9.setVerticalStretch(0)
-        sizePolicy9.setHeightForWidth(self.guidersetref_button.sizePolicy().hasHeightForWidth())
-        self.guidersetref_button.setSizePolicy(sizePolicy9)
-        icon24 = QIcon()
-        icon24.addFile(u":/icons/target.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.guidersetref_button.setIcon(icon24)
-        self.guidersetref_button.setIconSize(QSize(24, 24))
-        self.guidersetref_button.setAutoDefault(True)
-
-        self.guider_gridlayout.addWidget(self.guidersetref_button, 0, 3, 2, 1)
-
-        self.guiderzoom_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.guider_gridlayout.addItem(self.guiderzoom_spacer, 0, 4, 2, 1)
-
-
-        self.verticalLayout_10.addLayout(self.guider_gridlayout)
-
         self.guider_dockwidget.setWidget(self.dockwidgetcontents_3)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.guider_dockwidget)
         self.filters_dockwidget = QDockWidget(MainWindow)
@@ -1154,7 +1072,6 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.schedule_table, self.addrow_button)
         QWidget.setTabOrder(self.addrow_button, self.removerow_button)
         QWidget.setTabOrder(self.removerow_button, self.camera_scrollarea)
-        QWidget.setTabOrder(self.camera_scrollarea, self.guider_scrollarea)
 
         self.menubar.addAction(self.file_menu.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
@@ -1222,11 +1139,6 @@ class Ui_MainWindow(object):
         self.camera_integration_checkbox.toggled.connect(self.camera_integration_spinbox.setEnabled)
         self.camera_zoom_slider.valueChanged.connect(self.camera_zoom_spinbox.setValue)
         self.camera_zoom_spinbox.valueChanged.connect(self.camera_zoom_slider.setValue)
-        self.guiderzoom_slider.valueChanged.connect(self.guiderzoom_spinbox.setValue)
-        self.guiderzoom_spinbox.valueChanged.connect(self.guiderzoom_slider.setValue)
-
-        self.guidersetref_button.setDefault(False)
-
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -1362,13 +1274,6 @@ class Ui_MainWindow(object):
         self.camera_zoom_label.setText(QCoreApplication.translate("MainWindow", u"Zoom", None))
         self.camera_zoom_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"%", None))
         self.guider_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Guider", None))
-        self.guider_preview_label.setText("")
-        self.guiderzoom_label.setText(QCoreApplication.translate("MainWindow", u"Zoom", None))
-        self.guiderzoom_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"%", None))
-#if QT_CONFIG(tooltip)
-        self.guidersetref_button.setToolTip(QCoreApplication.translate("MainWindow", u"Replace guide reference", None))
-#endif // QT_CONFIG(tooltip)
-        self.guidersetref_button.setText("")
         self.filters_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Filters", None))
         self.settings_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
     # retranslateUi

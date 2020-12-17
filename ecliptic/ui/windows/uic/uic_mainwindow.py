@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.0.0
+## Created by: Qt User Interface Compiler version 5.15.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -919,65 +919,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_9 = QVBoxLayout(self.dockwidgetcontents_2)
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
         self.verticalLayout_9.setContentsMargins(0, 0, 0, -1)
-        self.camera_scrollarea = QScrollArea(self.dockwidgetcontents_2)
-        self.camera_scrollarea.setObjectName(u"camera_scrollarea")
-        self.camera_scrollarea.setLayoutDirection(Qt.LeftToRight)
-        self.camera_scrollarea.setFrameShape(QFrame.NoFrame)
-        self.camera_scrollarea.setFrameShadow(QFrame.Plain)
-        self.camera_scrollarea.setLineWidth(0)
-        self.camera_scrollarea.setWidgetResizable(True)
-        self.camera_scrollarea.setAlignment(Qt.AlignCenter)
-        self.camera_scrollarea_contents = QWidget()
-        self.camera_scrollarea_contents.setObjectName(u"camera_scrollarea_contents")
-        self.camera_scrollarea_contents.setGeometry(QRect(0, 0, 696, 85))
-        self.verticalLayout_4 = QVBoxLayout(self.camera_scrollarea_contents)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.camera_preview_label = QLabel(self.camera_scrollarea_contents)
-        self.camera_preview_label.setObjectName(u"camera_preview_label")
-        self.camera_preview_label.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_4.addWidget(self.camera_preview_label, 0, Qt.AlignHCenter|Qt.AlignVCenter)
-
-        self.camera_scrollarea.setWidget(self.camera_scrollarea_contents)
-
-        self.verticalLayout_9.addWidget(self.camera_scrollarea)
-
-        self.gridLayout_6 = QGridLayout()
-        self.gridLayout_6.setObjectName(u"gridLayout_6")
-        self.camera_zoom_label = QLabel(self.dockwidgetcontents_2)
-        self.camera_zoom_label.setObjectName(u"camera_zoom_label")
-        sizePolicy.setHeightForWidth(self.camera_zoom_label.sizePolicy().hasHeightForWidth())
-        self.camera_zoom_label.setSizePolicy(sizePolicy)
-
-        self.gridLayout_6.addWidget(self.camera_zoom_label, 0, 0, 1, 1)
-
-        self.camera_zoom_spinbox = QSpinBox(self.dockwidgetcontents_2)
-        self.camera_zoom_spinbox.setObjectName(u"camera_zoom_spinbox")
-        self.camera_zoom_spinbox.setMinimum(20)
-        self.camera_zoom_spinbox.setMaximum(300)
-        self.camera_zoom_spinbox.setValue(100)
-
-        self.gridLayout_6.addWidget(self.camera_zoom_spinbox, 0, 1, 1, 1)
-
-        self.camera_zoom_slider = QSlider(self.dockwidgetcontents_2)
-        self.camera_zoom_slider.setObjectName(u"camera_zoom_slider")
-        sizePolicy2.setHeightForWidth(self.camera_zoom_slider.sizePolicy().hasHeightForWidth())
-        self.camera_zoom_slider.setSizePolicy(sizePolicy2)
-        self.camera_zoom_slider.setMinimum(20)
-        self.camera_zoom_slider.setMaximum(300)
-        self.camera_zoom_slider.setValue(100)
-        self.camera_zoom_slider.setOrientation(Qt.Horizontal)
-
-        self.gridLayout_6.addWidget(self.camera_zoom_slider, 1, 0, 1, 2)
-
-        self.camera_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_6.addItem(self.camera_spacer, 0, 2, 2, 1)
-
-
-        self.verticalLayout_9.addLayout(self.gridLayout_6)
-
         self.camera_dockwidget.setWidget(self.dockwidgetcontents_2)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.camera_dockwidget)
         self.guider_dockwidget = QDockWidget(MainWindow)
@@ -1023,7 +964,7 @@ class Ui_MainWindow(object):
         self.settings_scroll_area.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 696, 85))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 696, 91))
         self.settings_scroll_area.setWidget(self.scrollAreaWidgetContents)
 
         self.verticalLayout_8.addWidget(self.settings_scroll_area)
@@ -1071,7 +1012,6 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.position_combobox, self.schedule_table)
         QWidget.setTabOrder(self.schedule_table, self.addrow_button)
         QWidget.setTabOrder(self.addrow_button, self.removerow_button)
-        QWidget.setTabOrder(self.removerow_button, self.camera_scrollarea)
 
         self.menubar.addAction(self.file_menu.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
@@ -1137,8 +1077,6 @@ class Ui_MainWindow(object):
         self.wheel_group.toggled.connect(self.camera_filter_label.setHidden)
         self.wheel_group.toggled.connect(self.camera_filter_combobox.setHidden)
         self.camera_integration_checkbox.toggled.connect(self.camera_integration_spinbox.setEnabled)
-        self.camera_zoom_slider.valueChanged.connect(self.camera_zoom_spinbox.setValue)
-        self.camera_zoom_spinbox.valueChanged.connect(self.camera_zoom_slider.setValue)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -1270,9 +1208,6 @@ class Ui_MainWindow(object):
         self.removerow_button.setToolTip(QCoreApplication.translate("MainWindow", u"Remove row", None))
 #endif // QT_CONFIG(tooltip)
         self.camera_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Camera", None))
-        self.camera_preview_label.setText("")
-        self.camera_zoom_label.setText(QCoreApplication.translate("MainWindow", u"Zoom", None))
-        self.camera_zoom_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"%", None))
         self.guider_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Guider", None))
         self.filters_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Filters", None))
         self.settings_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Settings", None))

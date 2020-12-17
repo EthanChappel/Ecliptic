@@ -21,6 +21,7 @@ from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow
 from ui.frames.guider import GuiderFrame
+from ui.frames.camera import CameraFrame
 from ui.frames.filters import FiltersFrame
 from ui.frames.settings import SettingsFrame
 from ui.delegates.widgets import *
@@ -84,9 +85,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.schedule_table.hideColumn(0)
 
-        # Filters frame
+        # Guider frame
         self.guider_frame = GuiderFrame(self)
         self.guider_dockwidget.setWidget(self.guider_frame)
+
+        # Camera frame
+        self.camera_frame = CameraFrame(self)
+        self.camera_dockwidget.setWidget(self.camera_frame)
 
         # Filters frame
         self.filters_frame = FiltersFrame(self)
@@ -562,12 +567,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.camera_thread = threading.Thread(target=self.camera_record)
             else:
                 self.camera_thread = CameraThread(self.camera, self.camera_loop_button)
-                self.camera_thread.exposure_done.connect(self.camera_preview)
+                self.camera_thread.exposure_done.connect(self.camera_frame.preview)
             self.camera_thread.daemon = True
             self.camera_thread.start()
-
-    def camera_preview(self, pixmap: QtGui.QPixmap):
-        self.camera_preview_label.setPixmap(pixmap)
 
     def camera_record(self):
         name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")

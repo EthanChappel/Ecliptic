@@ -7,6 +7,9 @@ sys.dont_write_bytecode = True
 
 app = QtWidgets.QApplication(sys.argv)
 
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
+
 palette = QtGui.QPalette()
 palette.setColor(QtGui.QPalette.Window, QtGui.QColor(50, 50, 50))
 palette.setColor(QtGui.QPalette.Button, QtGui.QColor(60, 60, 60))

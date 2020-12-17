@@ -3,32 +3,24 @@ import os
 import sys
 import threading
 from datetime import datetime
-import sqlite3
-from typing import List, Dict
 import cv2
 import zwoasi as asi
 from PIL import Image, ImageQt
 from PySide2 import QtCore, QtGui, QtWidgets
-import numpy
 import appglobals
 import connectcamera
 import zwosettings
 import guiderparameters
-from scheduleentrydialog import ScheduleEntryDialog
-from PySide2.QtCore import QStringListModel
-from PySide2.QtWidgets import QTableWidgetItem
 from astropy.time import Time
 from astropy.coordinates import get_body
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow
+from ui.frames.schedule import ScheduleFrame
 from ui.frames.guider import GuiderFrame
 from ui.frames.camera import CameraFrame
 from ui.frames.filters import FiltersFrame
 from ui.frames.settings import SettingsFrame
-from ui.delegates.widgets import *
-from ui.delegates.custom import *
 from thread import TelescopeThread, CameraThread
 from equipment import zwo
-from database import Database
 
 if sys.platform.startswith("win"):
     from equipment import ascom
@@ -46,10 +38,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.camera_thread = None
         self.guider_thread = None
-
-        self.database = Database('database.sqlite3')
-
-        self.max_schedule_id = self.database.schedule_max_id()
 
         self.menu = QtWidgets.QMenu()
         self.status_coords_label = QtWidgets.QLabel()
@@ -71,20 +59,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_menu.addAction(self.guider_parameters_action)
         self.guider_settings_btn.setMenu(self.guider_menu)
 
-        self.row_count = self.schedule_table.rowCount()
-
         self.mountmodes_tuple = ("Stop", "Home")
 
         # Models for schedule table columns.
-        self.target_list_model = QStringListModel()
+        self.target_list_model = QtCore.QStringListModel()
+        self.target_list_model.setStringList(self.mountmodes_tuple + appglobals.targets_tuple)
 
-        # Create Delegates for columns in schedule table.
-        self.date_delegate = QDateTimeEditItemDelegate(self)
-        self.target_delegate = QComboBoxItemDelegate(self, self.target_list_model)
-        self.parameters_delegate = QWindowEditorDelegate(ScheduleEntryDialog, self)
-
-        self.schedule_table.hideColumn(0)
-
+        # Schedule frame
+        self.schedule_frame = ScheduleFrame(self)
+        self.schedule_dockwidget.setWidget(self.schedule_frame)
+        
         # Guider frame
         self.guider_frame = GuiderFrame(self)
         self.guider_dockwidget.setWidget(self.guider_frame)
@@ -185,10 +169,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_start_button.clicked.connect(self.guider_loop)
         self.camera_capture_button.clicked.connect(self.camera_loop)
 
-        # Connect functions to addrow_button and removerow_button
-        self.addrow_button.clicked.connect(self.add_schedule_row)
-        self.removerow_button.clicked.connect(self.remove_schedule_row)
-
         # Connect functions to actions
         self.location_action.triggered.connect(lambda: self.settings_dockwidget.raise_())
 
@@ -225,8 +205,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.temp_checkbox.setVisible(False)
 
-        self.schedule_table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-
         self.camera_exposure_spinbox.valueChanged.connect(self.set_camera_exposure)
         self.camera_exposure_slider.valueChanged.connect(self.set_camera_exposure)
         self.camera_gain_spinbox.valueChanged.connect(self.set_camera_gain)
@@ -238,93 +216,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_gain_slider.valueChanged.connect(self.set_guider_gain)
 
         self.savelocation_action.triggered.connect(self.change_camera_save_dir)
-
-        # Set the choices for the targets column.
-        self.target_list_model.setStringList(self.mountmodes_tuple + appglobals.targets_tuple)
-
-        # Set item delegates for columns in schedule table.
-        self.schedule_table.setItemDelegateForColumn(1, self.date_delegate)
-        self.schedule_table.setItemDelegateForColumn(2, self.target_delegate)
-        self.schedule_table.setItemDelegateForColumn(3, self.parameters_delegate)
-
-        # Save whenever cell is changed.
-        self.schedule_table.itemChanged.connect(self.save_schedule)
-
-        self.load_schedule()
-
-    def add_schedule_row(self):
-        """Add row in schedule_table."""
-        self.row_count = self.schedule_table.rowCount()
-        self.schedule_table.insertRow(self.row_count)
-        self.schedule_table.blockSignals(True)
-        self.schedule_table.setItem(
-            self.schedule_table.rowCount() - 1, 0, QTableWidgetItem(str(self.max_schedule_id), QtCore.Qt.DisplayRole)
-        )
-        for i in range(1, self.schedule_table.columnCount()):
-            if self.schedule_table.item(self.row_count, i) is None:
-                self.schedule_table.setItem(self.row_count, i, QtWidgets.QTableWidgetItem())
-        self.schedule_table.blockSignals(False)
-        self.max_schedule_id += 1
-
-    def remove_schedule_row(self):
-        """Remove selected rows from schedule_table."""
-        selected = self.schedule_table.selectedItems()
-        rows = sorted({i.row() for i in selected}, reverse=True)
-        for r in rows:
-            row_id = int(self.schedule_table.item(r, 0).text())
-            self.database.remove_schedule(row_id)
-            self.schedule_table.removeRow(r)
-
-    def save_schedule(self, item):
-        """Save contents of schedule_table into schedule.json."""
-        row = item.row()
-        item = self.schedule_table.item
-        self.schedule_table.blockSignals(True)
-        try:
-            b = QtGui.QBrush(QtCore.Qt.NoBrush)
-            self.database.insert_or_update_schedule(
-                int(self.schedule_table.item(row, 0).text()),
-                self.schedule_table.item(row, 1).text(),
-                self.schedule_table.item(row, 2).text(),
-                self.schedule_table.item(row, 3).text(),
-            )
-            for i in range(self.schedule_table.columnCount()):
-                self.schedule_table.item(row, i).setBackground(b)
-        except sqlite3.IntegrityError:
-            b = QtGui.QBrush(QtCore.Qt.SolidPattern)
-            b.setColor(QtGui.QColor(150, 60, 60))
-            for i in range(self.schedule_table.columnCount()):
-                if self.schedule_table.item(row, i) is None:
-                    self.schedule_table.setItem(row, i, QtWidgets.QTableWidgetItem())
-                self.schedule_table.item(row, i).setBackground(b)
-        finally:
-            self.schedule_table.blockSignals(False)
-
-    def load_schedule(self):
-        """Load contents of schedule.json into schedule_table."""
-        i = 0
-        for r in self.database.cursor.execute('SELECT * FROM schedule ORDER BY start'):
-            self.schedule_table.insertRow(i)
-            self.schedule_table.blockSignals(True)
-            self.schedule_table.setItem(
-                i, 0,
-                QTableWidgetItem(str(r[0]), QtCore.Qt.DisplayRole)
-            )
-            self.schedule_table.setItem(
-                i, 1,
-                QTableWidgetItem(r[1], QtCore.Qt.DisplayRole)
-            )
-            self.schedule_table.setItem(
-                i, 2,
-                QTableWidgetItem(r[2], QtCore.Qt.DisplayRole)
-            )
-            self.schedule_table.setItem(
-                i, 3,
-                QTableWidgetItem(r[3], QtCore.Qt.DisplayRole)
-            )
-            self.schedule_table.blockSignals(False)
-            self.max_schedule_id += 1
-            i += 1
 
     @staticmethod
     def connect_fail_dialog(name: str):

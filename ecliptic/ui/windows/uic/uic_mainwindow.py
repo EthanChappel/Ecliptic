@@ -852,60 +852,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_7 = QVBoxLayout(self.dockwidget_contents)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(0, 0, 0, -1)
-        self.schedule_table = QTableWidget(self.dockwidget_contents)
-        if (self.schedule_table.columnCount() < 4):
-            self.schedule_table.setColumnCount(4)
-        __qtablewidgetitem = QTableWidgetItem()
-        __qtablewidgetitem.setText(u"ID");
-        self.schedule_table.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.schedule_table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.schedule_table.setHorizontalHeaderItem(2, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.schedule_table.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        self.schedule_table.setObjectName(u"schedule_table")
-        self.schedule_table.setFrameShape(QFrame.NoFrame)
-        self.schedule_table.setSortingEnabled(True)
-        self.schedule_table.horizontalHeader().setCascadingSectionResizes(True)
-        self.schedule_table.horizontalHeader().setDefaultSectionSize(150)
-        self.schedule_table.horizontalHeader().setStretchLastSection(True)
-        self.schedule_table.verticalHeader().setCascadingSectionResizes(True)
-
-        self.verticalLayout_7.addWidget(self.schedule_table)
-
-        self.horizontallayout = QHBoxLayout()
-        self.horizontallayout.setObjectName(u"horizontallayout")
-        self.horizontallayout.setContentsMargins(9, -1, 9, -1)
-        self.addrow_button = QPushButton(self.dockwidget_contents)
-        self.addrow_button.setObjectName(u"addrow_button")
-        sizePolicy.setHeightForWidth(self.addrow_button.sizePolicy().hasHeightForWidth())
-        self.addrow_button.setSizePolicy(sizePolicy)
-        icon22 = QIcon()
-        icon22.addFile(u":/icons/ic_add_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.addrow_button.setIcon(icon22)
-        self.addrow_button.setAutoDefault(True)
-
-        self.horizontallayout.addWidget(self.addrow_button)
-
-        self.removerow_button = QPushButton(self.dockwidget_contents)
-        self.removerow_button.setObjectName(u"removerow_button")
-        sizePolicy.setHeightForWidth(self.removerow_button.sizePolicy().hasHeightForWidth())
-        self.removerow_button.setSizePolicy(sizePolicy)
-        icon23 = QIcon()
-        icon23.addFile(u":/icons/ic_remove_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.removerow_button.setIcon(icon23)
-        self.removerow_button.setAutoDefault(True)
-
-        self.horizontallayout.addWidget(self.removerow_button)
-
-        self.horizontalspacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontallayout.addItem(self.horizontalspacer_3)
-
-
-        self.verticalLayout_7.addLayout(self.horizontallayout)
-
         self.schedule_dockwidget.setWidget(self.dockwidget_contents)
         MainWindow.addDockWidget(Qt.RightDockWidgetArea, self.schedule_dockwidget)
         self.camera_dockwidget = QDockWidget(MainWindow)
@@ -964,7 +910,7 @@ class Ui_MainWindow(object):
         self.settings_scroll_area.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 696, 91))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 696, 483))
         self.settings_scroll_area.setWidget(self.scrollAreaWidgetContents)
 
         self.verticalLayout_8.addWidget(self.settings_scroll_area)
@@ -1009,9 +955,6 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.focuser_position_spinbox, self.temp_checkbox)
         QWidget.setTabOrder(self.temp_checkbox, self.wheel_settings_btn)
         QWidget.setTabOrder(self.wheel_settings_btn, self.position_combobox)
-        QWidget.setTabOrder(self.position_combobox, self.schedule_table)
-        QWidget.setTabOrder(self.schedule_table, self.addrow_button)
-        QWidget.setTabOrder(self.addrow_button, self.removerow_button)
 
         self.menubar.addAction(self.file_menu.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
@@ -1192,21 +1135,6 @@ class Ui_MainWindow(object):
         self.menu_equipment.setTitle(QCoreApplication.translate("MainWindow", u"Equipment", None))
         self.help_menu.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
         self.schedule_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Schedule", None))
-        ___qtablewidgetitem = self.schedule_table.horizontalHeaderItem(1)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Date & Time", None));
-        ___qtablewidgetitem1 = self.schedule_table.horizontalHeaderItem(2)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Target", None));
-#if QT_CONFIG(tooltip)
-        ___qtablewidgetitem1.setToolTip(QCoreApplication.translate("MainWindow", u"The target to aim at.", None));
-#endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem2 = self.schedule_table.horizontalHeaderItem(3)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Parameters", None));
-#if QT_CONFIG(tooltip)
-        self.addrow_button.setToolTip(QCoreApplication.translate("MainWindow", u"Add row", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.removerow_button.setToolTip(QCoreApplication.translate("MainWindow", u"Remove row", None))
-#endif // QT_CONFIG(tooltip)
         self.camera_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Camera", None))
         self.guider_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Guider", None))
         self.filters_dockwidget.setWindowTitle(QCoreApplication.translate("MainWindow", u"Filters", None))

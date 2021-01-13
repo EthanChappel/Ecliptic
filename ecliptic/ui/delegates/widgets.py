@@ -1,7 +1,7 @@
-from PySide2 import QtCore
-from PySide2.QtCore import Qt, QStringListModel
-from PySide2.QtGui import QIcon
-from PySide2.QtWidgets import QStyledItemDelegate, QDateTimeEdit, QSpinBox, QDoubleSpinBox, QComboBox
+from PySide6 import QtCore
+from PySide6.QtCore import Qt, QStringListModel
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QStyledItemDelegate, QDateTimeEdit, QSpinBox, QDoubleSpinBox, QComboBox
 
 
 class QDateTimeEditItemDelegate(QStyledItemDelegate):

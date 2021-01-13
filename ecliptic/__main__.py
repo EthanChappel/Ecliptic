@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 import mainwindow
 
 sys.dont_write_bytecode = True

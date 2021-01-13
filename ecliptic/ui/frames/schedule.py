@@ -1,5 +1,5 @@
 import sqlite3
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 from .uic.uic_schedule import Ui_ScheduleFrame
 from ..delegates.widgets import *
 from ..delegates.custom import *

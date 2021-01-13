@@ -19,6 +19,7 @@ from ui.frames.guider import GuiderFrame
 from ui.frames.camera import CameraFrame
 from ui.frames.filters import FiltersFrame
 from ui.frames.settings import SettingsFrame
+from ui.widgets.dockwindow import DockWindow
 from thread import TelescopeThread, CameraThread
 from equipment import zwo
 
@@ -66,24 +67,39 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.target_list_model.setStringList(self.mountmodes_tuple + appglobals.targets_tuple)
 
         # Schedule frame
+        self.schedule_dockwindow = DockWindow(self, windowTitle='Schedule')
+        self.schedule_dockwindow.setFeatures(self.schedule_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
         self.schedule_frame = ScheduleFrame(self)
-        self.schedule_dockwidget.setWidget(self.schedule_frame)
+        self.schedule_dockwindow.setWidget(self.schedule_frame)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.schedule_dockwindow)
         
         # Guider frame
+        self.guider_dockwindow = DockWindow(self, windowTitle='Guider')
+        self.guider_dockwindow.setFeatures(self.guider_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
         self.guider_frame = GuiderFrame(self)
-        self.guider_dockwidget.setWidget(self.guider_frame)
+        self.guider_dockwindow.setWidget(self.guider_frame)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.guider_dockwindow)
 
         # Camera frame
+        self.camera_dockwindow = DockWindow(self, windowTitle='Camera')
+        self.camera_dockwindow.setFeatures(self.camera_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
         self.camera_frame = CameraFrame(self)
-        self.camera_dockwidget.setWidget(self.camera_frame)
+        self.camera_dockwindow.setWidget(self.camera_frame)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.camera_dockwindow)
 
         # Filters frame
+        self.filters_dockwindow = DockWindow(self, windowTitle='Filters')
+        self.filters_dockwindow.setFeatures(self.filters_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
         self.filters_frame = FiltersFrame(self)
-        self.filters_dockwidget.setWidget(self.filters_frame)
+        self.filters_dockwindow.setWidget(self.filters_frame)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.filters_dockwindow)
 
         # Settings frame
+        self.settings_dockwindow = DockWindow(self, windowTitle='Settings')
+        self.settings_dockwindow.setFeatures(self.settings_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
         self.settings_frame = SettingsFrame(self)
-        self.settings_scroll_area.setWidget(self.settings_frame)
+        self.settings_dockwindow.setWidget(self.settings_frame)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.settings_dockwindow)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -92,13 +108,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setup_gui(self):
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
-        self.tabifyDockWidget(self.schedule_dockwidget, self.guider_dockwidget)
-        self.tabifyDockWidget(self.guider_dockwidget, self.camera_dockwidget)
-        self.tabifyDockWidget(self.camera_dockwidget, self.filters_dockwidget)
-        self.tabifyDockWidget(self.filters_dockwidget, self.settings_dockwidget)
-        self.schedule_dockwidget.raise_()
-        self.camera_dockwidget.setVisible(False)
-        self.guider_dockwidget.setVisible(False)
+        self.tabifyDockWidget(self.schedule_dockwindow, self.guider_dockwindow)
+        self.tabifyDockWidget(self.guider_dockwindow, self.camera_dockwindow)
+        self.tabifyDockWidget(self.camera_dockwindow, self.filters_dockwindow)
+        self.tabifyDockWidget(self.filters_dockwindow, self.settings_dockwindow)
+        self.schedule_dockwindow.raise_()
+        self.camera_dockwindow.setVisible(False)
+        self.guider_dockwindow.setVisible(False)
 
         self.slewstop_button.clicked.connect(self.goto_target)
         self.telescope_action.toggled.connect(self.connect_telescope)
@@ -170,7 +186,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_capture_button.clicked.connect(self.camera_loop)
 
         # Connect functions to actions
-        self.location_action.triggered.connect(lambda: self.settings_dockwidget.raise_())
+        self.location_action.triggered.connect(lambda: self.settings_dockwindow.raise_())
 
         # Add targets to object_combobox
         self.object_combobox.addItems(self.mountmodes_tuple)

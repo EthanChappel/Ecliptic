@@ -19,9 +19,21 @@ class Ui_SettingsFrame(object):
         if not SettingsFrame.objectName():
             SettingsFrame.setObjectName(u"SettingsFrame")
         SettingsFrame.resize(619, 486)
-        self.gridLayout_3 = QGridLayout(SettingsFrame)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.equipment_group_box = QGroupBox(SettingsFrame)
+        self.verticalLayout_2 = QVBoxLayout(SettingsFrame)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea = QScrollArea(SettingsFrame)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setFrameShape(QFrame.NoFrame)
+        self.scrollArea.setFrameShadow(QFrame.Plain)
+        self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 619, 486))
+        self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.equipment_group_box = QGroupBox(self.scrollAreaWidgetContents)
         self.equipment_group_box.setObjectName(u"equipment_group_box")
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -98,13 +110,9 @@ class Ui_SettingsFrame(object):
         self.gridLayout.addWidget(self.camera_settings_button, 2, 1, 1, 1)
 
 
-        self.gridLayout_3.addWidget(self.equipment_group_box, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.equipment_group_box)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_3.addItem(self.verticalSpacer_3, 2, 0, 1, 1)
-
-        self.location_group_box = QGroupBox(SettingsFrame)
+        self.location_group_box = QGroupBox(self.scrollAreaWidgetContents)
         self.location_group_box.setObjectName(u"location_group_box")
         sizePolicy.setHeightForWidth(self.location_group_box.sizePolicy().hasHeightForWidth())
         self.location_group_box.setSizePolicy(sizePolicy)
@@ -190,7 +198,15 @@ class Ui_SettingsFrame(object):
         self.gridLayout_2.addWidget(self.long_s_spin, 1, 3, 1, 1)
 
 
-        self.gridLayout_3.addWidget(self.location_group_box, 1, 0, 1, 1)
+        self.verticalLayout.addWidget(self.location_group_box)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout.addItem(self.verticalSpacer_3)
+
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.verticalLayout_2.addWidget(self.scrollArea)
 
 
         self.retranslateUi(SettingsFrame)

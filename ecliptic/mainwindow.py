@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -496,10 +496,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             json.dump(appglobals.settings, f, indent=4)
 
     def change_camera_save_dir(self):
+        if "Save Directory" in appglobals.settings.keys():
+            default_dir = appglobals.settings["Save Directory"]
+        else:
+            default_dir = None
+        
         camera_dir_dialog = QtWidgets.QFileDialog.getExistingDirectory(
             self,
             "Select Directory",
-            appglobals.settings["Save Directory"],
+            default_dir,
             QtWidgets.QFileDialog.DontUseNativeDialog
         )
 

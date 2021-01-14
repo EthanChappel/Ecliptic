@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -28,6 +28,9 @@ if sys.platform.startswith("win"):
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+    start_recording = QtCore.Signal(cv2.VideoWriter)
+    stop_recording = QtCore.Signal()
+
     def __init__(self):
         super().__init__()
 
@@ -183,7 +186,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_loop_button.clicked.connect(self.camera_loop)
 
         self.guider_start_button.clicked.connect(self.guider_loop)
-        self.camera_capture_button.clicked.connect(self.camera_loop)
+        self.camera_capture_button.toggled.connect(self.camera_record)
 
         # Connect functions to actions
         self.location_action.triggered.connect(lambda: self.settings_dockwindow.raise_())
@@ -465,27 +468,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_loop(self):
         if self.camera_loop_button.isChecked():
-            if self.camera_capture_button.isChecked():
-                self.camera_thread = threading.Thread(target=self.camera_record)
-            else:
-                self.camera_thread = CameraThread(self.camera, self.camera_loop_button)
-                self.camera_thread.exposure_done.connect(self.camera_frame.preview)
+            self.camera_thread = CameraThread(self.camera, self.camera_loop_button, self)
+            self.camera_thread.exposure_done.connect(self.camera_frame.preview)
             self.camera_thread.daemon = True
             self.camera_thread.start()
 
     def camera_record(self):
-        name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-        avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
-        out = cv2.VideoWriter(avi_name, 0, 0, tuple(self.camera.roi_resolution), False)
-        while self.camera_capture_button.isChecked():
-            image = self.camera.get_frame()
-            out.write(image)
-            image = Image.fromarray(image)
-            pix = ImageQt.toqpixmap(image)
-            self.camera_preview_label.setPixmap(pix)
-        out.release()
-        if os.path.getsize(avi_name) == 0:
-            os.remove(avi_name)
+        if self.camera_capture_button.isChecked():
+            name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+            avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
+            writer = cv2.VideoWriter(avi_name, 0, 60, tuple(self.camera.roi_resolution), False)
+            self.start_recording.emit(writer)
+        else:
+            self.stop_recording.emit()
 
     def save_settings(self):
         """Save application settings into settings.json."""

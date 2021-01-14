@@ -1,4 +1,5 @@
 from PySide6 import QtCore, QtGui
+import cv2
 from PIL import Image, ImageQt
 from equipment.ascom import AscomTelescope
 
@@ -27,14 +28,27 @@ class CameraThread(QtCore.QThread):
         self.camera = camera
         self.parent = parent
         self.widget = widget
+        self.writer = None
+
+        self.parent.start_recording.connect(self.set_writer)
+        self.parent.stop_recording.connect(self.set_writer)
 
     def run(self):
         self.camera.video_mode = True
 
         while self.widget.isChecked():
             frame = self.camera.get_frame()
+            if self.writer:
+                self.writer.write(frame)
             image = Image.fromarray(frame)
             pix = ImageQt.toqpixmap(image)
             self.exposure_done.emit(pix)
 
         self.camera.video_mode = False
+    
+    @QtCore.Slot()
+    def set_writer(self, writer=None):
+        if type(self.writer) is cv2.VideoWriter:
+            self.writer.release()
+
+        self.writer = writer

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>287</width>
+    <width>314</width>
     <height>259</height>
    </rect>
   </property>
@@ -57,7 +57,7 @@
        <item>
         <widget class="QCommandLinkButton" name="asi_commandlink">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>ZWO ASI Camera</string>

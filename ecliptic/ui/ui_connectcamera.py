@@ -18,7 +18,7 @@ class Ui_ConnectCamera(object):
     def setupUi(self, ConnectCamera):
         if not ConnectCamera.objectName():
             ConnectCamera.setObjectName(u"ConnectCamera")
-        ConnectCamera.resize(287, 259)
+        ConnectCamera.resize(314, 259)
         ConnectCamera.setStyleSheet(u"QRadioButton{font: bold;}")
         self.verticalLayout_2 = QVBoxLayout(ConnectCamera)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -49,7 +49,7 @@ class Ui_ConnectCamera(object):
 
         self.asi_commandlink = QCommandLinkButton(self.camera_page)
         self.asi_commandlink.setObjectName(u"asi_commandlink")
-        self.asi_commandlink.setEnabled(False)
+        self.asi_commandlink.setEnabled(True)
         icon1 = QIcon()
         icon1.addFile(u":/thirdparty/asi_icon.png", QSize(), QIcon.Normal, QIcon.Off)
         self.asi_commandlink.setIcon(icon1)

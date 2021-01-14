@@ -26,10 +26,11 @@ class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
         list_cam = asi.list_cameras()
         self.asi_combobox.addItems(list_cam)
         if len(list_cam) == 0:
-            self.asi_commandlink.setDisabled(True)
-            self.stackedWidget.setCurrentIndex(0)
+            self.asi_connect_button.setDisabled(True)
+            self.asi_combobox.setDisabled(True)
         else:
-            self.asi_commandlink.setEnabled(True)
+            self.asi_connect_button.setEnabled(True)
+            self.asi_combobox.setEnabled(True)
 
     def select_asi(self):
         self.stackedWidget.setCurrentIndex(1)

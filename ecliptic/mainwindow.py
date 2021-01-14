@@ -300,17 +300,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def connect_guider(self):
         if self.guider_group.isChecked():
+            name = "The guider"
             guider_dialog = connectcamera.ConnectCamera()
             guider_dialog.exec_()
-            name = "The guider"
             try:
-                if not guider_dialog.asi_selected and guider_dialog.accepted:
-                    self.guider = ascom.AscomCamera()
+                self.guider = guider_dialog.result
+                if type(self.guider) is ascom.AscomCamera:
                     name = self.guider.name
                     self.guider_name_label.setText(name)
                     self.guider_menu.addAction(self.ascomguidersettings_action)
-                elif guider_dialog.asi_selected and guider_dialog.accepted:
-                    self.guider = zwo.ZwoCamera(asi.list_cameras().index(guider_dialog.asi_camera))
+                elif type(self.guider) is zwo.ZwoCamera:
                     self.guider_settings_frame.set_camera(self.guider)
                     self.guider_name_label.setText(guider_dialog.asi_camera)
                     self.guider_menu.addAction(self.guider_settings_action)
@@ -372,7 +371,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_exposure_spinbox.setEnabled(False)
             self.guider_exposure_slider.setEnabled(False)
 
-        if self.guider is zwo.ZwoCamera:
+        if type(self.guider) is zwo.ZwoCamera:
             self.guider_settings_frame.setup_controls(self.guider)
 
     def guider_loop(self):
@@ -391,13 +390,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             camera_dialog = connectcamera.ConnectCamera()
             camera_dialog.exec_()
             try:
-                if not camera_dialog.asi_selected and camera_dialog.accepted:
-                    self.camera = ascom.AscomCamera()
+                self.camera = camera_dialog.result
+                if type(self.camera) is ascom.AscomCamera:
                     name = self.camera.name
                     self.camera_name_label.setText(name)
                     self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
-                elif camera_dialog.asi_selected and camera_dialog.accepted:
-                    self.camera = zwo.ZwoCamera(asi.list_cameras().index(camera_dialog.asi_camera))
+                elif type(self.camera) is zwo.ZwoCamera:
                     self.camera_settings_frame.set_camera(self.camera)
                     self.camera_name_label.setText(camera_dialog.asi_camera)
                     self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
@@ -450,7 +448,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_exposure_spinbox.setEnabled(False)
             self.camera_exposure_slider.setEnabled(False)
 
-        if self.camera is zwo.ZwoCamera:
+        if type(self.camera) is zwo.ZwoCamera:
             self.camera_settings_frame.setup_controls(self.camera)
 
     def setup_camera(self):

@@ -1,17 +1,21 @@
+import sys
 from PySide6 import QtCore, QtWidgets
 import zwoasi as asi
+from equipment import zwo
 from ui import ui_connectcamera
+
+if sys.platform.startswith("win"):
+    from equipment import ascom
 
 
 class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
     def __init__(self):
         super().__init__()
-        self.asi_selected = False
         self.setupUi(self)
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
         self.setFixedSize(self.size())
-        self.accepted = False
-        self.asi_camera = None
+
+        self.result = None
         self.back_button = self.buttonbox.addButton("Back", QtWidgets.QDialogButtonBox.ResetRole)
         self.back_button.clicked.connect(self.back)
         self.back_button.setVisible(False)
@@ -38,14 +42,15 @@ class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
         self.back_button.setEnabled(True)
 
     def connect_asi(self):
-        self.accepted = True
-        self.asi_camera = self.asi_combobox.currentText()
-        self.asi_selected = True
         self.accept()
 
+        asi_camera = self.asi_combobox.currentText()
+        self.result = zwo.ZwoCamera(asi.list_cameras().index(asi_camera))
+
     def connect_ascom(self):
-        self.accepted = True
         self.accept()
+
+        self.result = ascom.AscomCamera()
 
     def cancel(self):
         self.close()

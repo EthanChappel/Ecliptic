@@ -1,5 +1,5 @@
 from PySide6 import QtCore, QtGui
-import cv2
+from formats.ser3 import Ser3Writer
 from PIL import Image, ImageQt
 from equipment.ascom import AscomTelescope
 
@@ -39,7 +39,7 @@ class CameraThread(QtCore.QThread):
         while self.widget.isChecked():
             frame = self.camera.get_frame()
             if self.writer:
-                self.writer.write(frame)
+                self.writer.add_frame(frame.tobytes())
             image = Image.fromarray(frame)
             pix = ImageQt.toqpixmap(image)
             self.exposure_done.emit(pix)
@@ -48,7 +48,7 @@ class CameraThread(QtCore.QThread):
     
     @QtCore.Slot()
     def set_writer(self, writer=None):
-        if type(self.writer) is cv2.VideoWriter:
-            self.writer.release()
+        if type(writer) is None:
+            self.writer.close()
 
         self.writer = writer

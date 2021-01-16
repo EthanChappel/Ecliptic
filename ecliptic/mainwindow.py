@@ -3,7 +3,7 @@ import os
 import sys
 import threading
 from datetime import datetime
-import cv2
+from formats.ser3 import Ser3Writer
 import zwoasi as asi
 from PIL import Image, ImageQt
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -28,7 +28,7 @@ if sys.platform.startswith("win"):
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    start_recording = QtCore.Signal(cv2.VideoWriter)
+    start_recording = QtCore.Signal(Ser3Writer)
     stop_recording = QtCore.Signal()
 
     def __init__(self):
@@ -475,9 +475,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def camera_record(self):
         if self.camera_capture_button.isChecked():
-            name_format = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-            avi_name = "{}/{}.avi".format(appglobals.settings["Save Directory"], name_format)
-            writer = cv2.VideoWriter(avi_name, 0, 60, tuple(self.camera.roi_resolution), False)
+            name_format = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            avi_name = "{}/{}.ser".format(appglobals.settings["Save Directory"], name_format)
+            roi = self.camera.roi_resolution
+            camera_name = self.settings_frame.observer_camera_combo_box.currentText()
+            observer_name = self.settings_frame.observer_name_combo_box.currentText()
+            telescope_name = self.settings_frame.observer_telescope_combo_box.currentText()
+            writer = Ser3Writer(avi_name, 0, True, roi[0], roi[1], 8, observer_name, camera_name, telescope_name)
             self.start_recording.emit(writer)
         else:
             self.stop_recording.emit()

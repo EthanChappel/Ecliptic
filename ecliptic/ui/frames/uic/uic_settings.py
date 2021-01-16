@@ -30,7 +30,7 @@ class Ui_SettingsFrame(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 619, 486))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 602, 490))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.equipment_group_box = QGroupBox(self.scrollAreaWidgetContents)
@@ -200,6 +200,46 @@ class Ui_SettingsFrame(object):
 
         self.verticalLayout.addWidget(self.location_group_box)
 
+        self.observer_group_box = QGroupBox(self.scrollAreaWidgetContents)
+        self.observer_group_box.setObjectName(u"observer_group_box")
+        self.formLayout = QFormLayout(self.observer_group_box)
+        self.formLayout.setObjectName(u"formLayout")
+        self.observer_name_label = QLabel(self.observer_group_box)
+        self.observer_name_label.setObjectName(u"observer_name_label")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.observer_name_label)
+
+        self.observer_telescope_label = QLabel(self.observer_group_box)
+        self.observer_telescope_label.setObjectName(u"observer_telescope_label")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.observer_telescope_label)
+
+        self.observer_camera_label = QLabel(self.observer_group_box)
+        self.observer_camera_label.setObjectName(u"observer_camera_label")
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.observer_camera_label)
+
+        self.observer_name_combo_box = QComboBox(self.observer_group_box)
+        self.observer_name_combo_box.setObjectName(u"observer_name_combo_box")
+        self.observer_name_combo_box.setEditable(True)
+
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.observer_name_combo_box)
+
+        self.observer_telescope_combo_box = QComboBox(self.observer_group_box)
+        self.observer_telescope_combo_box.setObjectName(u"observer_telescope_combo_box")
+        self.observer_telescope_combo_box.setEditable(True)
+
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.observer_telescope_combo_box)
+
+        self.observer_camera_combo_box = QComboBox(self.observer_group_box)
+        self.observer_camera_combo_box.setObjectName(u"observer_camera_combo_box")
+        self.observer_camera_combo_box.setEditable(True)
+
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.observer_camera_combo_box)
+
+
+        self.verticalLayout.addWidget(self.observer_group_box)
+
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer_3)
@@ -241,5 +281,9 @@ class Ui_SettingsFrame(object):
         self.long_label.setText(QCoreApplication.translate("SettingsFrame", u"Longitude", None))
         self.long_d_spin.setSuffix(QCoreApplication.translate("SettingsFrame", u"\u00b0", None))
         self.long_s_spin.setSuffix(QCoreApplication.translate("SettingsFrame", u"\"", None))
+        self.observer_group_box.setTitle(QCoreApplication.translate("SettingsFrame", u"Observer", None))
+        self.observer_name_label.setText(QCoreApplication.translate("SettingsFrame", u"Name", None))
+        self.observer_telescope_label.setText(QCoreApplication.translate("SettingsFrame", u"Telescope", None))
+        self.observer_camera_label.setText(QCoreApplication.translate("SettingsFrame", u"Camera", None))
     # retranslateUi
 

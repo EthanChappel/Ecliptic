@@ -45,8 +45,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>619</width>
-        <height>486</height>
+        <width>602</width>
+        <height>490</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -358,6 +358,57 @@
             </property>
             <property name="maximum">
              <number>59</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="observer_group_box">
+         <property name="title">
+          <string>Observer</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="observer_name_label">
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="observer_telescope_label">
+            <property name="text">
+             <string>Telescope</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="observer_camera_label">
+            <property name="text">
+             <string>Camera</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="observer_name_combo_box">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="observer_telescope_combo_box">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="observer_camera_combo_box">
+            <property name="editable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

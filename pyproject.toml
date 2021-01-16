@@ -13,7 +13,6 @@ astropy = "^4.0"
 pillow = "^8.1.0"
 pythonnet = {version = "^2.4.0", platform = "win32"}
 zwoasi = "^0.0.22"
-opencv-python = "^4.2.0"
 
 [tool.poetry.dev-dependencies]
 

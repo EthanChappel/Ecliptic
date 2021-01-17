@@ -80,9 +80,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-518</y>
          <width>920</width>
-         <height>1247</height>
+         <height>1216</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -873,6 +873,13 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
+              <item row="0" column="0" colspan="2">
+               <widget class="Line" name="line_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
                <widget class="QSpinBox" name="camera_exposure_spinbox">
                 <property name="sizePolicy">
@@ -889,25 +896,8 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="camera_filter_label">
-                <property name="text">
-                 <string>Filter</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="camera_gain_spinbox">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="suffix">
-                 <string>e/adu</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="QComboBox" name="camera_format_combobox">
+              <item row="4" column="0" colspan="2">
+               <widget class="QSlider" name="camera_gain_slider">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -917,23 +907,6 @@
                 <property name="focusPolicy">
                  <enum>Qt::StrongFocus</enum>
                 </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="camera_gain_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Gain</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="Line" name="line_4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -955,7 +928,7 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="0" colspan="2">
+              <item row="7" column="0" colspan="2">
                <layout class="QHBoxLayout" name="horizontallayout_8">
                 <item>
                  <spacer name="horizontalSpacer_2">
@@ -1027,6 +1000,26 @@
                 </item>
                </layout>
               </item>
+              <item row="5" column="0">
+               <widget class="QCheckBox" name="camera_integration_checkbox">
+                <property name="text">
+                 <string>Integration</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="camera_gain_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Gain</string>
+                </property>
+               </widget>
+              </item>
               <item row="6" column="1">
                <widget class="QComboBox" name="camera_filter_combobox">
                 <property name="sizePolicy">
@@ -1053,26 +1046,20 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
-               <widget class="QSlider" name="camera_gain_slider">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+              <item row="6" column="0">
+               <widget class="QLabel" name="camera_filter_label">
+                <property name="text">
+                 <string>Filter</string>
                 </property>
                </widget>
               </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="camera_format_label">
-                <property name="text">
-                 <string>Format</string>
+              <item row="3" column="1">
+               <widget class="QSpinBox" name="camera_gain_spinbox">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+                <property name="suffix">
+                 <string>e/adu</string>
                 </property>
                </widget>
               </item>
@@ -1086,13 +1073,6 @@
                 </property>
                 <property name="suffix">
                  <string>s</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QCheckBox" name="camera_integration_checkbox">
-                <property name="text">
-                 <string>Integration</string>
                 </property>
                </widget>
               </item>
@@ -1618,7 +1598,6 @@
   <tabstop>camera_gain_spinbox</tabstop>
   <tabstop>camera_gain_slider</tabstop>
   <tabstop>camera_integration_spinbox</tabstop>
-  <tabstop>camera_format_combobox</tabstop>
   <tabstop>camera_loop_button</tabstop>
   <tabstop>camera_capture_button</tabstop>
   <tabstop>focuser_group</tabstop>
@@ -2061,38 +2040,6 @@
     <hint type="destinationlabel">
      <x>77</x>
      <y>696</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>camera_capture_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_format_label</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>190</x>
-     <y>774</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>71</x>
-     <y>725</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>camera_capture_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_format_combobox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>190</x>
-     <y>774</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>191</x>
-     <y>725</y>
     </hint>
    </hints>
   </connection>

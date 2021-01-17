@@ -94,7 +94,6 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.parent.connect_fail_dialog("Telescope")
     
     def connect_guider(self):
-        print('hello')
         if self.guider_check_box.isChecked():
             name = "The guider"
             guider_dialog = ConnectCamera()

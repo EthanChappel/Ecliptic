@@ -98,6 +98,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope_action.toggled.connect(self.settings_frame.telescope_check_box.setChecked)
         self.guider_action.toggled.connect(self.settings_frame.guider_check_box.setChecked)
         self.camera_action.toggled.connect(self.settings_frame.camera_check_box.setChecked)
+        self.wheel_action.toggled.connect(self.settings_frame.filter_wheel_check_box.setChecked)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -115,12 +116,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.slewstop_button.clicked.connect(self.goto_target)
         self.focuser_action.toggled.connect(self.connect_focuser)
-        self.wheel_action.toggled.connect(self.connect_filters)
 
         self.ascomcamerasettings_action.triggered.connect(self.settings_frame.setup_camera)
         self.ascomguidersettings_action.triggered.connect(self.settings_frame.setup_guider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
-        self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
 
         # Connects pressed event that moves mount to the directional buttons
         self.slewnorth_button.pressed.connect(
@@ -202,10 +201,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.temp_checkbox.stateChanged.connect(self.temp_comp)
 
         # Add targets to position_combobox
-        self.camera_filter_combobox.addItem("None")
+        self.position_combobox.addItem("None")
         for f in appglobals.filters:
             self.position_combobox.addItem(f.get("Name"))
-            self.camera_filter_combobox.addItem(f["Name"])
 
         self.position_combobox.lineEdit().returnPressed.connect(self.change_filter)
         self.position_combobox.currentIndexChanged.connect(self.change_filter)
@@ -441,35 +439,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.focuser_position_spinbox.setEnabled(True)
         self.focuser.temp_comp = state
 
-    def connect_filters(self):
-        if self.wheel_group.isChecked():
-            name = "The filter wheel"
-            try:
-                self.wheel = ascom.AscomFilterWheel()
-                name = self.wheel.name
-                self.wheel_name_label.setText(name)
-            except Exception as e:
-                print(e)
-                self.wheel_group.setChecked(False)
-                self.connect_fail_dialog(name)
-        elif not self.wheel_group.isChecked():
-            try:
-                self.temp_checkbox.setVisible(False)
-                self.temp_checkbox.setChecked(False)
-                self.wheel.connected = False
-                self.wheel.dispose()
-            except AttributeError as e:
-                print(e)
-            finally:
-                self.wheel = None
-                self.wheel_name_label.setText("Not Connected")
-
-    def setup_filterwheel(self):
-        self.wheel.connected = False
-        self.wheel.setup_dialog()
-        self.wheel.connected = True
-        # self.filterwheel_settings()
-
     def change_filter(self):
         try:
             text = self.position_combobox.currentText()
@@ -481,12 +450,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def update_filters(self):
         self.position_combobox.blockSignals(True)
         text = self.position_combobox.currentText()
-        text2 = self.camera_filter_combobox.currentText()
         self.position_combobox.clear()
-        self.camera_filter_combobox.clear()
-        self.camera_filter_combobox.addItem("None")
+        self.position_combobox.addItem("None")
         for f in appglobals.filters:
-            self.camera_filter_combobox.addItem(f["Name"])
             self.position_combobox.addItem(f["Name"])
         index = self.position_combobox.findText(text)
         self.position_combobox.setCurrentIndex(index)

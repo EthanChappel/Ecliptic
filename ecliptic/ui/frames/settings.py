@@ -24,14 +24,17 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.telescope_check_box.toggled.connect(self.parent.telescope_action.setChecked)
         self.guider_check_box.toggled.connect(self.parent.guider_action.setChecked)
         self.camera_check_box.toggled.connect(self.parent.camera_action.setChecked)
+        self.filter_wheel_check_box.toggled.connect(self.parent.wheel_action.setChecked)
 
         self.telescope_check_box.toggled.connect(self.connect_telescope)
         self.guider_check_box.toggled.connect(self.connect_guider)
         self.camera_check_box.toggled.connect(self.connect_camera)
+        self.filter_wheel_check_box.toggled.connect(self.connect_filters)
 
         self.telescope_settings_button.clicked.connect(self.setup_telescope)
         self.guider_settings_button.clicked.connect(self.setup_guider)
         self.camera_settings_button.clicked.connect(self.setup_camera)
+        self.filter_wheel_settings_button.clicked.connect(self.setup_filterwheel)
 
         # Insert filter settings.
         self.filters_layout = QtWidgets.QVBoxLayout(self.filters_group_box)
@@ -191,7 +194,39 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.parent.camera.setup_dialog()
         self.parent.camera.connected = True
         self.parent.setup_camera_controls()
-
+    
+    def connect_filters(self):
+        if self.filter_wheel_check_box.isChecked():
+            name = "The filter wheel"
+            try:
+                self.parent.wheel = ascom.AscomFilterWheel()
+                name = self.parent.wheel.name
+                self.filter_wheel_check_box.setText(f'Filter Wheel ({name})')
+                self.parent.wheel_group.setEnabled(True)
+            except Exception as e:
+                print(e)
+                self.filter_wheel_check_box.setChecked(False)
+                self.parent.wheel_group.setDisabled(True)
+                self.connect_fail_dialog(name)
+        elif not self.filter_wheel_check_box.isChecked():
+            try:
+                self.parent.temp_checkbox.setVisible(False)
+                self.parent.temp_checkbox.setChecked(False)
+                self.parent.wheel.connected = False
+                self.parent.wheel.dispose()
+            except AttributeError as e:
+                print(e)
+            finally:
+                self.parent.wheel = None
+                self.filter_wheel_check_box.setText("Filter wheel")
+                self.parent.wheel_group.setDisabled(True)
+    
+    def setup_filterwheel(self):
+        self.parent.wheel.connected = False
+        self.parent.wheel.setup_dialog()
+        self.parent.wheel.connected = True
+        # self.parent.filterwheel_settings()
+    
     def location_set(self):
         """Set observing location."""
         appglobals.location["Latitude"] = [

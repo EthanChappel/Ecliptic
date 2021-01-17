@@ -65,13 +65,13 @@
        <number>0</number>
       </property>
       <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOn</enum>
+       <enum>Qt::ScrollBarAsNeeded</enum>
       </property>
       <property name="horizontalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
       <property name="sizeAdjustPolicy">
-       <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -82,7 +82,7 @@
          <x>0</x>
          <y>0</y>
          <width>920</width>
-         <height>931</height>
+         <height>866</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -727,22 +727,6 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="0" column="1">
-               <widget class="QSpinBox" name="camera_exposure_spinbox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="suffix">
-                 <string>ms</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0" colspan="2">
                <widget class="QSlider" name="camera_exposure_slider">
                 <property name="sizePolicy">
@@ -775,16 +759,19 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="camera_exposure_label">
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="camera_exposure_spinbox">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="text">
-                 <string>Exposure</string>
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+                <property name="suffix">
+                 <string>ms</string>
                 </property>
                </widget>
               </item>
@@ -801,6 +788,19 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="camera_exposure_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Exposure</string>
+                </property>
+               </widget>
+              </item>
               <item row="4" column="0">
                <widget class="QCheckBox" name="camera_integration_checkbox">
                 <property name="text">
@@ -808,7 +808,30 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="0" colspan="2">
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="camera_gain_spinbox">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+                <property name="suffix">
+                 <string>e/adu</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="camera_integration_spinbox">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+                <property name="suffix">
+                 <string>s</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0" colspan="2">
                <layout class="QHBoxLayout" name="horizontallayout_8">
                 <item>
                  <spacer name="horizontalSpacer_2">
@@ -906,49 +929,6 @@
                 </item>
                </layout>
               </item>
-              <item row="5" column="1">
-               <widget class="QComboBox" name="camera_filter_combobox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QSpinBox" name="camera_integration_spinbox">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="suffix">
-                 <string>s</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QSpinBox" name="camera_gain_spinbox">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="suffix">
-                 <string>e/adu</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="camera_filter_label">
-                <property name="text">
-                 <string>Filter</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -957,6 +937,9 @@
         </item>
         <item row="3" column="0" colspan="2">
          <widget class="QGroupBox" name="wheel_group">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -964,56 +947,10 @@
            </sizepolicy>
           </property>
           <property name="title">
-           <string>Filter Wheel</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
+           <string>Filter wheel</string>
           </property>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0" colspan="2">
-            <layout class="QHBoxLayout" name="horizontallayout_13">
-             <item>
-              <widget class="QLabel" name="wheel_name_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Not Connected</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="wheel_settings_btn">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resources/res.qrc">
-                 <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="1" column="0" colspan="2">
             <widget class="QFrame" name="wheel_frame">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1037,7 +974,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="1" column="0">
+              <item row="0" column="0">
                <widget class="QLabel" name="position_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -1050,7 +987,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="0" column="1">
                <widget class="QComboBox" name="position_combobox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1066,13 +1003,6 @@
                 </property>
                 <property name="insertPolicy">
                  <enum>QComboBox::NoInsert</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="Line" name="line_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
                 </property>
                </widget>
               </item>
@@ -1473,7 +1403,6 @@
   <tabstop>focuser_settings_btn</tabstop>
   <tabstop>focuser_position_spinbox</tabstop>
   <tabstop>temp_checkbox</tabstop>
-  <tabstop>wheel_settings_btn</tabstop>
   <tabstop>position_combobox</tabstop>
  </tabstops>
  <resources>
@@ -1641,38 +1570,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>wheel_group</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>wheel_action</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>78</x>
-     <y>822</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>wheel_action</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>wheel_group</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>78</x>
-     <y>822</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>focuser_action</sender>
    <signal>toggled(bool)</signal>
    <receiver>focuser_group</receiver>
@@ -1733,70 +1630,6 @@
     <hint type="destinationlabel">
      <x>138</x>
      <y>774</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>camera_capture_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_filter_combobox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>190</x>
-     <y>774</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>191</x>
-     <y>696</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>camera_capture_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_filter_label</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>190</x>
-     <y>774</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>77</x>
-     <y>696</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>wheel_group</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_filter_label</receiver>
-   <slot>setHidden(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>36</x>
-     <y>822</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>65</x>
-     <y>696</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>wheel_group</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>camera_filter_combobox</receiver>
-   <slot>setHidden(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>71</x>
-     <y>822</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>191</x>
-     <y>696</y>
     </hint>
    </hints>
   </connection>

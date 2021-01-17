@@ -25,16 +25,19 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.guider_check_box.toggled.connect(self.parent.guider_action.setChecked)
         self.camera_check_box.toggled.connect(self.parent.camera_action.setChecked)
         self.filter_wheel_check_box.toggled.connect(self.parent.wheel_action.setChecked)
+        self.focuser_check_box.toggled.connect(self.parent.focuser_action.setChecked)
 
         self.telescope_check_box.toggled.connect(self.connect_telescope)
         self.guider_check_box.toggled.connect(self.connect_guider)
         self.camera_check_box.toggled.connect(self.connect_camera)
         self.filter_wheel_check_box.toggled.connect(self.connect_filters)
+        self.focuser_check_box.toggled.connect(self.connect_focuser)
 
         self.telescope_settings_button.clicked.connect(self.setup_telescope)
         self.guider_settings_button.clicked.connect(self.setup_guider)
         self.camera_settings_button.clicked.connect(self.setup_camera)
         self.filter_wheel_settings_button.clicked.connect(self.setup_filterwheel)
+        self.focuser_settings_button.clicked.connect(self.setup_focuser)
 
         # Insert filter settings.
         self.filters_layout = QtWidgets.QVBoxLayout(self.filters_group_box)
@@ -92,7 +95,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.parent.telescope.connected = False
         self.parent.telescope.setup_dialog()
         self.parent.telescope.connected = True
-        self.telescope_settings()
+        self.telescope_settings(self.parent.telescope)
     
     def telescope_connect_failed(self, e: Exception):
         print(e)
@@ -207,7 +210,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                 print(e)
                 self.filter_wheel_check_box.setChecked(False)
                 self.parent.wheel_group.setDisabled(True)
-                self.connect_fail_dialog(name)
+                self.parent.connect_fail_dialog(name)
         elif not self.filter_wheel_check_box.isChecked():
             try:
                 self.parent.temp_checkbox.setVisible(False)
@@ -226,6 +229,53 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.parent.wheel.setup_dialog()
         self.parent.wheel.connected = True
         # self.parent.filterwheel_settings()
+    
+    def connect_focuser(self):
+        if self.focuser_check_box.isChecked():
+            name = "The focuser"
+            try:
+                self.parent.focuser = ascom.AscomFocuser()
+                self.parent.focuser_settings()
+                name = self.parent.focuser.name
+                self.focuser_check_box.setText(f'Focuser ({name})')
+                self.parent.focuser_group.setEnabled(True)
+            except Exception as e:
+                print(e)
+                self.parent.focuser_group.setDisabled(True)
+                self.parent.connect_fail_dialog(name)
+        elif not self.focuser_check_box.isChecked():
+            try:
+                self.parent.temp_checkbox.setVisible(False)
+                self.parent.temp_checkbox.setChecked(False)
+                self.parent.focuser.connected = False
+                self.parent.focuser.dispose()
+            except AttributeError as e:
+                print(e)
+            finally:
+                self.parent.focuser = None
+                self.focuser_check_box.setText('Focuser')
+                self.parent.focuser_group.setDisabled(True)
+
+    def setup_focuser(self):
+        self.parent.focuser.connected = False
+        self.parent.focuser.setup_dialog()
+        self.parent.focuser.connected = True
+        self.parent.focuser_settings()
+
+        if self.parent.focuser.has_temp_comp():
+            if self.parent.focuser.temp_comp:
+                self.parent.temp_checkbox.setChecked(True)
+            else:
+                self.parent.temp_checkbox.setChecked(False)
+            self.parent.temp_checkbox.setVisible(True)
+        else:
+            self.parent.temp_checkbox.setVisible(False)
+        if not self.parent.focuser.is_abs_position():
+            messagebox = QtWidgets.QMessageBox()
+            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
+            messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
+            messagebox.exec_()
+            self.focuser_action.setChecked(False)
     
     def location_set(self):
         """Set observing location."""

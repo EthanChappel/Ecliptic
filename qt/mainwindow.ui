@@ -80,9 +80,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-116</y>
          <width>920</width>
-         <height>866</height>
+         <height>823</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -1014,6 +1014,9 @@
         </item>
         <item row="4" column="0" colspan="2">
          <widget class="QGroupBox" name="focuser_group">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -1023,54 +1026,8 @@
           <property name="title">
            <string>Focuser</string>
           </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
           <layout class="QFormLayout" name="formLayout_9">
            <item row="0" column="0" colspan="2">
-            <layout class="QHBoxLayout" name="horizontallayout_12">
-             <item>
-              <widget class="QLabel" name="focuser_name_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Not Connected</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="focuser_settings_btn">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resources/res.qrc">
-                 <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="1" column="0" colspan="2">
             <widget class="QFrame" name="focuser_frame">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1094,14 +1051,14 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="focuser_position_spinbox">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
+              <item row="1" column="0" colspan="2">
+               <widget class="QCheckBox" name="temp_checkbox">
+                <property name="text">
+                 <string>Temp Comp</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="0" column="0">
                <widget class="QLabel" name="focuser_position_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -1114,17 +1071,10 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="Line" name="line_5">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QCheckBox" name="temp_checkbox">
-                <property name="text">
-                 <string>Temp Comp</string>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="focuser_position_spinbox">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
                 </property>
                </widget>
               </item>
@@ -1400,7 +1350,6 @@
   <tabstop>camera_loop_button</tabstop>
   <tabstop>camera_capture_button</tabstop>
   <tabstop>focuser_group</tabstop>
-  <tabstop>focuser_settings_btn</tabstop>
   <tabstop>focuser_position_spinbox</tabstop>
   <tabstop>temp_checkbox</tabstop>
   <tabstop>position_combobox</tabstop>

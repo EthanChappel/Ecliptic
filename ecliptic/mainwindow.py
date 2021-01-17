@@ -99,6 +99,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_action.toggled.connect(self.settings_frame.guider_check_box.setChecked)
         self.camera_action.toggled.connect(self.settings_frame.camera_check_box.setChecked)
         self.wheel_action.toggled.connect(self.settings_frame.filter_wheel_check_box.setChecked)
+        self.focuser_action.toggled.connect(self.settings_frame.focuser_check_box.setChecked)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -115,11 +116,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_dockwindow.setVisible(False)
 
         self.slewstop_button.clicked.connect(self.goto_target)
-        self.focuser_action.toggled.connect(self.connect_focuser)
 
         self.ascomcamerasettings_action.triggered.connect(self.settings_frame.setup_camera)
         self.ascomguidersettings_action.triggered.connect(self.settings_frame.setup_guider)
-        self.focuser_settings_btn.clicked.connect(self.setup_focuser)
 
         # Connects pressed event that moves mount to the directional buttons
         self.slewnorth_button.pressed.connect(
@@ -366,55 +365,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             appglobals.settings["Save Directory"] = str(camera_dir_dialog)
             self.save_settings()
 
-    def connect_focuser(self):
-        if self.focuser_group.isChecked():
-            name = "The focuser"
-            try:
-                self.focuser = ascom.AscomFocuser()
-                self.focuser_settings()
-                name = self.focuser.name
-                self.focuser_name_label.setText(name)
-            except Exception as e:
-                print(e)
-                self.focuser_group.setChecked(False)
-                self.connect_fail_dialog(name)
-        elif not self.focuser_group.isChecked():
-            try:
-                self.temp_checkbox.setVisible(False)
-                self.temp_checkbox.setChecked(False)
-                self.focuser.connected = False
-                self.focuser.dispose()
-            except AttributeError as e:
-                print(e)
-            finally:
-                self.focuser = None
-                self.focuser_name_label.setText("Not Connected")
-
-    def setup_focuser(self):
-        self.focuser.connected = False
-        self.focuser.setup_dialog()
-        self.focuser.connected = True
-        self.focuser_settings()
-
     def focuser_settings(self):
         self.focuser_position_spinbox.setMaximum(self.focuser.max_step)
         self.focuser_position_spinbox.blockSignals(True)
         self.focuser_position_spinbox.setValue(self.focuser.position)
         self.focuser_position_spinbox.blockSignals(False)
-        if self.focuser.has_temp_comp():
-            if self.focuser.temp_comp:
-                self.temp_checkbox.setChecked(True)
-            else:
-                self.temp_checkbox.setChecked(False)
-            self.temp_checkbox.setVisible(True)
-        else:
-            self.temp_checkbox.setVisible(False)
-        if not self.focuser.is_abs_position():
-            messagebox = QtWidgets.QMessageBox()
-            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-            messagebox.setText("ASCOM Focusers without Absolute Focusing are not supported!")
-            messagebox.exec_()
-            self.focuser_action.setChecked(False)
 
     def move_focuser(self):
         if self.focuser.is_abs_position():

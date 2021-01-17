@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scroll_area_widget_contents = QWidget()
         self.scroll_area_widget_contents.setObjectName(u"scroll_area_widget_contents")
-        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 920, 866))
+        self.scroll_area_widget_contents.setGeometry(QRect(0, -116, 920, 823))
         self.formLayout_4 = QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName(u"formLayout_4")
         self.mount_group = QGroupBox(self.scroll_area_widget_contents)
@@ -606,37 +606,11 @@ class Ui_MainWindow(object):
 
         self.focuser_group = QGroupBox(self.scroll_area_widget_contents)
         self.focuser_group.setObjectName(u"focuser_group")
+        self.focuser_group.setEnabled(False)
         sizePolicy2.setHeightForWidth(self.focuser_group.sizePolicy().hasHeightForWidth())
         self.focuser_group.setSizePolicy(sizePolicy2)
-        self.focuser_group.setCheckable(True)
-        self.focuser_group.setChecked(False)
         self.formLayout_9 = QFormLayout(self.focuser_group)
         self.formLayout_9.setObjectName(u"formLayout_9")
-        self.horizontallayout_12 = QHBoxLayout()
-        self.horizontallayout_12.setObjectName(u"horizontallayout_12")
-        self.focuser_name_label = QLabel(self.focuser_group)
-        self.focuser_name_label.setObjectName(u"focuser_name_label")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.focuser_name_label.sizePolicy().hasHeightForWidth())
-        self.focuser_name_label.setSizePolicy(sizePolicy7)
-        self.focuser_name_label.setWordWrap(True)
-
-        self.horizontallayout_12.addWidget(self.focuser_name_label)
-
-        self.focuser_settings_btn = QToolButton(self.focuser_group)
-        self.focuser_settings_btn.setObjectName(u"focuser_settings_btn")
-        sizePolicy.setHeightForWidth(self.focuser_settings_btn.sizePolicy().hasHeightForWidth())
-        self.focuser_settings_btn.setSizePolicy(sizePolicy)
-        self.focuser_settings_btn.setIcon(icon9)
-        self.focuser_settings_btn.setPopupMode(QToolButton.InstantPopup)
-
-        self.horizontallayout_12.addWidget(self.focuser_settings_btn)
-
-
-        self.formLayout_9.setLayout(0, QFormLayout.SpanningRole, self.horizontallayout_12)
-
         self.focuser_frame = QFrame(self.focuser_group)
         self.focuser_frame.setObjectName(u"focuser_frame")
         self.focuser_frame.setFrameShape(QFrame.NoFrame)
@@ -645,33 +619,26 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QGridLayout(self.focuser_frame)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.focuser_position_spinbox = QSpinBox(self.focuser_frame)
-        self.focuser_position_spinbox.setObjectName(u"focuser_position_spinbox")
-        self.focuser_position_spinbox.setFocusPolicy(Qt.StrongFocus)
+        self.temp_checkbox = QCheckBox(self.focuser_frame)
+        self.temp_checkbox.setObjectName(u"temp_checkbox")
 
-        self.gridLayout_2.addWidget(self.focuser_position_spinbox, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.temp_checkbox, 1, 0, 1, 2)
 
         self.focuser_position_label = QLabel(self.focuser_frame)
         self.focuser_position_label.setObjectName(u"focuser_position_label")
         sizePolicy.setHeightForWidth(self.focuser_position_label.sizePolicy().hasHeightForWidth())
         self.focuser_position_label.setSizePolicy(sizePolicy)
 
-        self.gridLayout_2.addWidget(self.focuser_position_label, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.focuser_position_label, 0, 0, 1, 1)
 
-        self.line_5 = QFrame(self.focuser_frame)
-        self.line_5.setObjectName(u"line_5")
-        self.line_5.setFrameShape(QFrame.HLine)
-        self.line_5.setFrameShadow(QFrame.Sunken)
+        self.focuser_position_spinbox = QSpinBox(self.focuser_frame)
+        self.focuser_position_spinbox.setObjectName(u"focuser_position_spinbox")
+        self.focuser_position_spinbox.setFocusPolicy(Qt.StrongFocus)
 
-        self.gridLayout_2.addWidget(self.line_5, 0, 0, 1, 2)
-
-        self.temp_checkbox = QCheckBox(self.focuser_frame)
-        self.temp_checkbox.setObjectName(u"temp_checkbox")
-
-        self.gridLayout_2.addWidget(self.temp_checkbox, 2, 0, 1, 2)
+        self.gridLayout_2.addWidget(self.focuser_position_spinbox, 0, 1, 1, 1)
 
 
-        self.formLayout_9.setWidget(1, QFormLayout.SpanningRole, self.focuser_frame)
+        self.formLayout_9.setWidget(0, QFormLayout.SpanningRole, self.focuser_frame)
 
 
         self.formLayout_4.setWidget(4, QFormLayout.SpanningRole, self.focuser_group)
@@ -728,8 +695,7 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.camera_integration_spinbox, self.camera_loop_button)
         QWidget.setTabOrder(self.camera_loop_button, self.camera_capture_button)
         QWidget.setTabOrder(self.camera_capture_button, self.focuser_group)
-        QWidget.setTabOrder(self.focuser_group, self.focuser_settings_btn)
-        QWidget.setTabOrder(self.focuser_settings_btn, self.focuser_position_spinbox)
+        QWidget.setTabOrder(self.focuser_group, self.focuser_position_spinbox)
         QWidget.setTabOrder(self.focuser_position_spinbox, self.temp_checkbox)
         QWidget.setTabOrder(self.temp_checkbox, self.position_combobox)
 
@@ -866,10 +832,8 @@ class Ui_MainWindow(object):
         self.wheel_group.setTitle(QCoreApplication.translate("MainWindow", u"Filter wheel", None))
         self.position_label.setText(QCoreApplication.translate("MainWindow", u"Position", None))
         self.focuser_group.setTitle(QCoreApplication.translate("MainWindow", u"Focuser", None))
-        self.focuser_name_label.setText(QCoreApplication.translate("MainWindow", u"Not Connected", None))
-        self.focuser_settings_btn.setText("")
-        self.focuser_position_label.setText(QCoreApplication.translate("MainWindow", u"Position", None))
         self.temp_checkbox.setText(QCoreApplication.translate("MainWindow", u"Temp Comp", None))
+        self.focuser_position_label.setText(QCoreApplication.translate("MainWindow", u"Position", None))
         self.file_menu.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.import_menu.setTitle(QCoreApplication.translate("MainWindow", u"Import", None))
         self.menuExport.setTitle(QCoreApplication.translate("MainWindow", u"Export", None))

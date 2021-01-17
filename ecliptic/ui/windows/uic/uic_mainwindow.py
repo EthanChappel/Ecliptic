@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scroll_area_widget_contents = QWidget()
         self.scroll_area_widget_contents.setObjectName(u"scroll_area_widget_contents")
-        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 920, 1122))
+        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 920, 931))
         self.formLayout_4 = QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName(u"formLayout_4")
         self.mount_group = QGroupBox(self.scroll_area_widget_contents)
@@ -445,37 +445,11 @@ class Ui_MainWindow(object):
 
         self.camera_group = QGroupBox(self.scroll_area_widget_contents)
         self.camera_group.setObjectName(u"camera_group")
+        self.camera_group.setEnabled(False)
         sizePolicy2.setHeightForWidth(self.camera_group.sizePolicy().hasHeightForWidth())
         self.camera_group.setSizePolicy(sizePolicy2)
-        self.camera_group.setCheckable(True)
-        self.camera_group.setChecked(False)
         self.formLayout_8 = QFormLayout(self.camera_group)
         self.formLayout_8.setObjectName(u"formLayout_8")
-        self.horizontallayout_11 = QHBoxLayout()
-        self.horizontallayout_11.setObjectName(u"horizontallayout_11")
-        self.camera_name_label = QLabel(self.camera_group)
-        self.camera_name_label.setObjectName(u"camera_name_label")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.camera_name_label.sizePolicy().hasHeightForWidth())
-        self.camera_name_label.setSizePolicy(sizePolicy7)
-        self.camera_name_label.setWordWrap(True)
-
-        self.horizontallayout_11.addWidget(self.camera_name_label)
-
-        self.camera_settings_btn = QToolButton(self.camera_group)
-        self.camera_settings_btn.setObjectName(u"camera_settings_btn")
-        sizePolicy.setHeightForWidth(self.camera_settings_btn.sizePolicy().hasHeightForWidth())
-        self.camera_settings_btn.setSizePolicy(sizePolicy)
-        self.camera_settings_btn.setIcon(icon9)
-        self.camera_settings_btn.setPopupMode(QToolButton.InstantPopup)
-
-        self.horizontallayout_11.addWidget(self.camera_settings_btn)
-
-
-        self.formLayout_8.setLayout(0, QFormLayout.SpanningRole, self.horizontallayout_11)
-
         self.camera_frame = QFrame(self.camera_group)
         self.camera_frame.setObjectName(u"camera_frame")
         self.camera_frame.setFrameShape(QFrame.NoFrame)
@@ -484,29 +458,13 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout(self.camera_frame)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.line_4 = QFrame(self.camera_frame)
-        self.line_4.setObjectName(u"line_4")
-        self.line_4.setFrameShape(QFrame.HLine)
-        self.line_4.setFrameShadow(QFrame.Sunken)
-
-        self.gridLayout.addWidget(self.line_4, 0, 0, 1, 2)
-
         self.camera_exposure_spinbox = QSpinBox(self.camera_frame)
         self.camera_exposure_spinbox.setObjectName(u"camera_exposure_spinbox")
         sizePolicy3.setHeightForWidth(self.camera_exposure_spinbox.sizePolicy().hasHeightForWidth())
         self.camera_exposure_spinbox.setSizePolicy(sizePolicy3)
         self.camera_exposure_spinbox.setFocusPolicy(Qt.StrongFocus)
 
-        self.gridLayout.addWidget(self.camera_exposure_spinbox, 1, 1, 1, 1)
-
-        self.camera_gain_slider = QSlider(self.camera_frame)
-        self.camera_gain_slider.setObjectName(u"camera_gain_slider")
-        sizePolicy3.setHeightForWidth(self.camera_gain_slider.sizePolicy().hasHeightForWidth())
-        self.camera_gain_slider.setSizePolicy(sizePolicy3)
-        self.camera_gain_slider.setFocusPolicy(Qt.StrongFocus)
-        self.camera_gain_slider.setOrientation(Qt.Horizontal)
-
-        self.gridLayout.addWidget(self.camera_gain_slider, 4, 0, 1, 2)
+        self.gridLayout.addWidget(self.camera_exposure_spinbox, 0, 1, 1, 1)
 
         self.camera_exposure_slider = QSlider(self.camera_frame)
         self.camera_exposure_slider.setObjectName(u"camera_exposure_slider")
@@ -515,13 +473,51 @@ class Ui_MainWindow(object):
         self.camera_exposure_slider.setFocusPolicy(Qt.StrongFocus)
         self.camera_exposure_slider.setOrientation(Qt.Horizontal)
 
-        self.gridLayout.addWidget(self.camera_exposure_slider, 2, 0, 1, 2)
+        self.gridLayout.addWidget(self.camera_exposure_slider, 1, 0, 1, 2)
+
+        self.camera_gain_slider = QSlider(self.camera_frame)
+        self.camera_gain_slider.setObjectName(u"camera_gain_slider")
+        sizePolicy3.setHeightForWidth(self.camera_gain_slider.sizePolicy().hasHeightForWidth())
+        self.camera_gain_slider.setSizePolicy(sizePolicy3)
+        self.camera_gain_slider.setFocusPolicy(Qt.StrongFocus)
+        self.camera_gain_slider.setOrientation(Qt.Horizontal)
+
+        self.gridLayout.addWidget(self.camera_gain_slider, 3, 0, 1, 2)
+
+        self.camera_exposure_label = QLabel(self.camera_frame)
+        self.camera_exposure_label.setObjectName(u"camera_exposure_label")
+        sizePolicy.setHeightForWidth(self.camera_exposure_label.sizePolicy().hasHeightForWidth())
+        self.camera_exposure_label.setSizePolicy(sizePolicy)
+
+        self.gridLayout.addWidget(self.camera_exposure_label, 0, 0, 1, 1)
+
+        self.camera_gain_label = QLabel(self.camera_frame)
+        self.camera_gain_label.setObjectName(u"camera_gain_label")
+        sizePolicy.setHeightForWidth(self.camera_gain_label.sizePolicy().hasHeightForWidth())
+        self.camera_gain_label.setSizePolicy(sizePolicy)
+
+        self.gridLayout.addWidget(self.camera_gain_label, 2, 0, 1, 1)
+
+        self.camera_integration_checkbox = QCheckBox(self.camera_frame)
+        self.camera_integration_checkbox.setObjectName(u"camera_integration_checkbox")
+
+        self.gridLayout.addWidget(self.camera_integration_checkbox, 4, 0, 1, 1)
 
         self.horizontallayout_8 = QHBoxLayout()
         self.horizontallayout_8.setObjectName(u"horizontallayout_8")
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontallayout_8.addItem(self.horizontalSpacer_2)
+
+        self.camera_settings_btn = QToolButton(self.camera_frame)
+        self.camera_settings_btn.setObjectName(u"camera_settings_btn")
+        sizePolicy.setHeightForWidth(self.camera_settings_btn.sizePolicy().hasHeightForWidth())
+        self.camera_settings_btn.setSizePolicy(sizePolicy)
+        self.camera_settings_btn.setIcon(icon9)
+        self.camera_settings_btn.setIconSize(QSize(32, 32))
+        self.camera_settings_btn.setPopupMode(QToolButton.InstantPopup)
+
+        self.horizontallayout_8.addWidget(self.camera_settings_btn)
 
         self.camera_loop_button = QPushButton(self.camera_frame)
         self.camera_loop_button.setObjectName(u"camera_loop_button")
@@ -549,19 +545,7 @@ class Ui_MainWindow(object):
         self.horizontallayout_8.addWidget(self.camera_capture_button)
 
 
-        self.gridLayout.addLayout(self.horizontallayout_8, 7, 0, 1, 2)
-
-        self.camera_integration_checkbox = QCheckBox(self.camera_frame)
-        self.camera_integration_checkbox.setObjectName(u"camera_integration_checkbox")
-
-        self.gridLayout.addWidget(self.camera_integration_checkbox, 5, 0, 1, 1)
-
-        self.camera_gain_label = QLabel(self.camera_frame)
-        self.camera_gain_label.setObjectName(u"camera_gain_label")
-        sizePolicy.setHeightForWidth(self.camera_gain_label.sizePolicy().hasHeightForWidth())
-        self.camera_gain_label.setSizePolicy(sizePolicy)
-
-        self.gridLayout.addWidget(self.camera_gain_label, 3, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontallayout_8, 6, 0, 1, 2)
 
         self.camera_filter_combobox = QComboBox(self.camera_frame)
         self.camera_filter_combobox.setObjectName(u"camera_filter_combobox")
@@ -569,35 +553,28 @@ class Ui_MainWindow(object):
         self.camera_filter_combobox.setSizePolicy(sizePolicy3)
         self.camera_filter_combobox.setFocusPolicy(Qt.StrongFocus)
 
-        self.gridLayout.addWidget(self.camera_filter_combobox, 6, 1, 1, 1)
-
-        self.camera_exposure_label = QLabel(self.camera_frame)
-        self.camera_exposure_label.setObjectName(u"camera_exposure_label")
-        sizePolicy.setHeightForWidth(self.camera_exposure_label.sizePolicy().hasHeightForWidth())
-        self.camera_exposure_label.setSizePolicy(sizePolicy)
-
-        self.gridLayout.addWidget(self.camera_exposure_label, 1, 0, 1, 1)
-
-        self.camera_filter_label = QLabel(self.camera_frame)
-        self.camera_filter_label.setObjectName(u"camera_filter_label")
-
-        self.gridLayout.addWidget(self.camera_filter_label, 6, 0, 1, 1)
-
-        self.camera_gain_spinbox = QSpinBox(self.camera_frame)
-        self.camera_gain_spinbox.setObjectName(u"camera_gain_spinbox")
-        self.camera_gain_spinbox.setFocusPolicy(Qt.StrongFocus)
-
-        self.gridLayout.addWidget(self.camera_gain_spinbox, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.camera_filter_combobox, 5, 1, 1, 1)
 
         self.camera_integration_spinbox = QSpinBox(self.camera_frame)
         self.camera_integration_spinbox.setObjectName(u"camera_integration_spinbox")
         self.camera_integration_spinbox.setEnabled(False)
         self.camera_integration_spinbox.setFocusPolicy(Qt.StrongFocus)
 
-        self.gridLayout.addWidget(self.camera_integration_spinbox, 5, 1, 1, 1)
+        self.gridLayout.addWidget(self.camera_integration_spinbox, 4, 1, 1, 1)
+
+        self.camera_gain_spinbox = QSpinBox(self.camera_frame)
+        self.camera_gain_spinbox.setObjectName(u"camera_gain_spinbox")
+        self.camera_gain_spinbox.setFocusPolicy(Qt.StrongFocus)
+
+        self.gridLayout.addWidget(self.camera_gain_spinbox, 2, 1, 1, 1)
+
+        self.camera_filter_label = QLabel(self.camera_frame)
+        self.camera_filter_label.setObjectName(u"camera_filter_label")
+
+        self.gridLayout.addWidget(self.camera_filter_label, 5, 0, 1, 1)
 
 
-        self.formLayout_8.setWidget(1, QFormLayout.SpanningRole, self.camera_frame)
+        self.formLayout_8.setWidget(0, QFormLayout.SpanningRole, self.camera_frame)
 
 
         self.formLayout_4.setWidget(2, QFormLayout.SpanningRole, self.camera_group)
@@ -614,6 +591,9 @@ class Ui_MainWindow(object):
         self.horizontallayout_13.setObjectName(u"horizontallayout_13")
         self.wheel_name_label = QLabel(self.wheel_group)
         self.wheel_name_label.setObjectName(u"wheel_name_label")
+        sizePolicy7 = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
         sizePolicy7.setHeightForWidth(self.wheel_name_label.sizePolicy().hasHeightForWidth())
         self.wheel_name_label.setSizePolicy(sizePolicy7)
         self.wheel_name_label.setWordWrap(True)
@@ -749,7 +729,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 937, 25))
+        self.menubar.setGeometry(QRect(0, 0, 937, 21))
         self.file_menu = QMenu(self.menubar)
         self.file_menu.setObjectName(u"file_menu")
         self.import_menu = QMenu(self.file_menu)
@@ -783,8 +763,7 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.guider_gain_spinbox, self.guider_gain_slider)
         QWidget.setTabOrder(self.guider_gain_slider, self.guider_loop_button)
         QWidget.setTabOrder(self.guider_loop_button, self.camera_group)
-        QWidget.setTabOrder(self.camera_group, self.camera_settings_btn)
-        QWidget.setTabOrder(self.camera_settings_btn, self.camera_exposure_spinbox)
+        QWidget.setTabOrder(self.camera_group, self.camera_exposure_spinbox)
         QWidget.setTabOrder(self.camera_exposure_spinbox, self.camera_exposure_slider)
         QWidget.setTabOrder(self.camera_exposure_slider, self.camera_gain_spinbox)
         QWidget.setTabOrder(self.camera_gain_spinbox, self.camera_gain_slider)
@@ -829,17 +808,10 @@ class Ui_MainWindow(object):
         self.guider_gain_spinbox.valueChanged.connect(self.guider_gain_slider.setValue)
         self.camera_exposure_spinbox.valueChanged.connect(self.camera_exposure_slider.setValue)
         self.camera_loop_button.toggled.connect(self.camera_capture_button.setEnabled)
-        self.mount_group.toggled.connect(self.telescope_action.setChecked)
-        self.guider_group.toggled.connect(self.guider_action.setChecked)
-        self.camera_group.toggled.connect(self.camera_action.setChecked)
         self.focuser_group.toggled.connect(self.focuser_action.setChecked)
         self.wheel_group.toggled.connect(self.wheel_action.setChecked)
-        self.telescope_action.toggled.connect(self.mount_group.setChecked)
-        self.guider_action.toggled.connect(self.guider_group.setChecked)
         self.wheel_action.toggled.connect(self.wheel_group.setChecked)
-        self.camera_action.toggled.connect(self.camera_group.setChecked)
         self.focuser_action.toggled.connect(self.focuser_group.setChecked)
-        self.guider_loop_button.toggled.connect(self.guider_settings_btn.setDisabled)
         self.camera_loop_button.toggled.connect(self.camera_settings_btn.setDisabled)
         self.action_exit.triggered.connect(MainWindow.close)
         self.camera_capture_button.toggled.connect(self.camera_loop_button.setDisabled)
@@ -934,15 +906,14 @@ class Ui_MainWindow(object):
         self.guider_gain_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"e/adu", None))
         self.guider_settings_btn.setText("")
         self.camera_group.setTitle(QCoreApplication.translate("MainWindow", u"Camera", None))
-        self.camera_name_label.setText(QCoreApplication.translate("MainWindow", u"Not Connected", None))
-        self.camera_settings_btn.setText("")
         self.camera_exposure_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"ms", None))
-        self.camera_integration_checkbox.setText(QCoreApplication.translate("MainWindow", u"Integration", None))
-        self.camera_gain_label.setText(QCoreApplication.translate("MainWindow", u"Gain", None))
         self.camera_exposure_label.setText(QCoreApplication.translate("MainWindow", u"Exposure", None))
-        self.camera_filter_label.setText(QCoreApplication.translate("MainWindow", u"Filter", None))
-        self.camera_gain_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"e/adu", None))
+        self.camera_gain_label.setText(QCoreApplication.translate("MainWindow", u"Gain", None))
+        self.camera_integration_checkbox.setText(QCoreApplication.translate("MainWindow", u"Integration", None))
+        self.camera_settings_btn.setText("")
         self.camera_integration_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"s", None))
+        self.camera_gain_spinbox.setSuffix(QCoreApplication.translate("MainWindow", u"e/adu", None))
+        self.camera_filter_label.setText(QCoreApplication.translate("MainWindow", u"Filter", None))
         self.wheel_group.setTitle(QCoreApplication.translate("MainWindow", u"Filter Wheel", None))
         self.wheel_name_label.setText(QCoreApplication.translate("MainWindow", u"Not Connected", None))
         self.wheel_settings_btn.setText("")

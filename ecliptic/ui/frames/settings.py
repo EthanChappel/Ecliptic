@@ -23,12 +23,15 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         
         self.telescope_check_box.toggled.connect(self.parent.telescope_action.setChecked)
         self.guider_check_box.toggled.connect(self.parent.guider_action.setChecked)
+        self.camera_check_box.toggled.connect(self.parent.camera_action.setChecked)
 
         self.telescope_check_box.toggled.connect(self.connect_telescope)
         self.guider_check_box.toggled.connect(self.connect_guider)
+        self.camera_check_box.toggled.connect(self.connect_camera)
 
         self.telescope_settings_button.clicked.connect(self.setup_telescope)
         self.guider_settings_button.clicked.connect(self.setup_guider)
+        self.camera_settings_button.clicked.connect(self.setup_camera)
 
         # Insert filter settings.
         self.filters_layout = QtWidgets.QVBoxLayout(self.filters_group_box)
@@ -120,11 +123,11 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         elif not self.guider_check_box.isChecked():
             try:
                 if type(self.parent.guider) is ascom.AscomCamera:
-                    self.guider_menu.removeAction(self.ascomguidersettings_action)
+                    self.parent.guider_menu.removeAction(self.ascomguidersettings_action)
                     self.parent.guider.connected = False
                     self.parent.guider.dispose()
                 elif type(self.parent.guider) is zwo.ZwoCamera:
-                    self.guider_menu.removeAction(self.guider_settings_action)
+                    self.parent.guider_menu.removeAction(self.guider_settings_action)
                     self.parent.guider.close()
             except AttributeError as e:
                 print(e)
@@ -139,6 +142,55 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.parent.guider.setup_dialog()
         self.parent.guider.connected = True
         self.parent.setup_guider_controls()
+
+    def connect_camera(self):
+        if self.camera_check_box.isChecked():
+            name = "The camera"
+            camera_dialog = ConnectCamera()
+            camera_dialog.exec_()
+            try:
+                self.parent.camera = camera_dialog.result
+                if type(self.parent.camera) is ascom.AscomCamera:
+                    name = self.parent.camera.name
+                    self.camera_check_box.setText(f'Camera ({name})')
+                    self.parent.camera_settings_menu.insertAction(self.parent.savelocation_action, self.parent.ascomcamerasettings_action)
+                elif type(self.parent.camera) is zwo.ZwoCamera:
+                    self.parent.camera_settings_frame.set_camera(self.parent.camera)
+                    self.camera_check_box.setText(self.parent.camera)
+                    self.parent.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
+                    self.parent.camera_settings_menu.insertAction(self.parent.savelocation_action, self.parent.camera_settings_action)
+                else:
+                    raise Exception
+                self.parent.camera_group.setEnabled(True)
+                self.parent.setup_camera_controls()
+            except Exception as e:
+                print(e)
+                self.camera_check_box.setChecked(False)
+                self.parent.camera_group.setEnabled(False)
+                self.parent.connect_fail_dialog(name)
+
+        elif not self.camera_check_box.isChecked():
+            try:
+                if type(self.parent.camera) is ascom.AscomCamera:
+                    self.parent.camera_settings_menu.removeAction(self.parent.ascomcamerasettings_action)
+                    self.parent.camera.connected = False
+                    self.parent.camera.dispose()
+                elif type(self.parent.camera) is zwo.ZwoCamera:
+                    self.camera_settings_menu.removeAction(self.camera_settings_action)
+                    self.parent.camera.connected = False
+            except AttributeError as e:
+                print(e)
+            finally:
+                self.parent.camera = None
+                self.parent.camera_settings_frame.set_camera(self.parent.camera)
+                self.camera_check_box.setText("Camera")
+                self.parent.camera_group.setEnabled(False)
+    
+    def setup_camera(self):
+        self.parent.camera.connected = False
+        self.parent.camera.setup_dialog()
+        self.parent.camera.connected = True
+        self.parent.setup_camera_controls()
 
     def location_set(self):
         """Set observing location."""

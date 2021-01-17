@@ -97,6 +97,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.telescope_action.toggled.connect(self.settings_frame.telescope_check_box.setChecked)
         self.guider_action.toggled.connect(self.settings_frame.guider_check_box.setChecked)
+        self.camera_action.toggled.connect(self.settings_frame.camera_check_box.setChecked)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -113,11 +114,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_dockwindow.setVisible(False)
 
         self.slewstop_button.clicked.connect(self.goto_target)
-        self.camera_action.toggled.connect(self.connect_camera)
         self.focuser_action.toggled.connect(self.connect_focuser)
         self.wheel_action.toggled.connect(self.connect_filters)
 
-        self.ascomcamerasettings_action.triggered.connect(self.setup_camera)
+        self.ascomcamerasettings_action.triggered.connect(self.settings_frame.setup_camera)
         self.ascomguidersettings_action.triggered.connect(self.settings_frame.setup_guider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
@@ -288,46 +288,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_thread.daemon = True
         self.guider_thread.start()
 
-    def connect_camera(self):
-        if self.camera_group.isChecked():
-            name = "The camera"
-            camera_dialog = connectcamera.ConnectCamera()
-            camera_dialog.exec_()
-            try:
-                self.camera = camera_dialog.result
-                if type(self.camera) is ascom.AscomCamera:
-                    name = self.camera.name
-                    self.camera_name_label.setText(name)
-                    self.camera_settings_menu.insertAction(self.savelocation_action, self.ascomcamerasettings_action)
-                elif type(self.camera) is zwo.ZwoCamera:
-                    self.camera_settings_frame.set_camera(self.camera)
-                    self.camera_name_label.setText(camera_dialog.asi_camera)
-                    self.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
-                    self.camera_settings_menu.insertAction(self.savelocation_action, self.camera_settings_action)
-                else:
-                    raise Exception
-                self.setup_camera_controls()
-            except Exception as e:
-                print(e)
-                self.camera_group.setChecked(False)
-                self.connect_fail_dialog(name)
-
-        elif not self.camera_group.isChecked():
-            try:
-                if type(self.camera) is ascom.AscomCamera:
-                    self.camera_settings_menu.removeAction(self.ascomcamerasettings_action)
-                    self.camera.connected = False
-                    self.camera.dispose()
-                elif type(self.camera) is zwo.ZwoCamera:
-                    self.camera_settings_menu.removeAction(self.camera_settings_action)
-                    self.camera.connected = False
-            except AttributeError as e:
-                print(e)
-            finally:
-                self.camera = None
-                self.camera_settings_frame.set_camera(self.camera)
-                self.camera_name_label.setText("Not Connected")
-
     def setup_camera_controls(self):
         # TODO: Test these statements with more cameras that support different features
         if self.camera.has_gain:
@@ -354,12 +314,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if type(self.camera) is zwo.ZwoCamera:
             self.camera_settings_frame.setup_controls(self.camera)
-
-    def setup_camera(self):
-        self.camera.connected = False
-        self.camera.setup_dialog()
-        self.camera.connected = True
-        self.setup_camera_controls()
 
     def set_camera_exposure(self):
         self.camera.exposure = int(self.camera_exposure_spinbox.cleanText())

@@ -21,7 +21,7 @@ class Ui_FiltersFrame(object):
         FiltersFrame.resize(400, 300)
         self.verticalLayout = QVBoxLayout(FiltersFrame)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, -1)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.table = QTableWidget(FiltersFrame)
         if (self.table.columnCount() < 5):
             self.table.setColumnCount(5)
@@ -36,15 +36,12 @@ class Ui_FiltersFrame(object):
         __qtablewidgetitem4 = QTableWidgetItem()
         self.table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.table.setObjectName(u"table")
-        self.table.setFrameShape(QFrame.NoFrame)
-        self.table.setLineWidth(0)
         self.table.setSortingEnabled(False)
 
         self.verticalLayout.addWidget(self.table)
 
         self.horizontallayout_14 = QHBoxLayout()
         self.horizontallayout_14.setObjectName(u"horizontallayout_14")
-        self.horizontallayout_14.setContentsMargins(9, -1, 9, -1)
         self.add_button = QPushButton(FiltersFrame)
         self.add_button.setObjectName(u"add_button")
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)

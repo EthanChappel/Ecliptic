@@ -2,6 +2,7 @@ import os
 import json
 from PySide6 import QtWidgets
 from .uic.uic_settings import Ui_SettingsFrame
+from ui.frames.filters import FiltersFrame
 import appglobals
 
 
@@ -11,6 +12,11 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         
         super().__init__(self.parent)
         self.setupUi(self)
+
+        # Insert filter settings.
+        self.filters_layout = QtWidgets.QVBoxLayout(self.filters_group_box)
+        self.filters_layout.addWidget(FiltersFrame(self))
+        self.filters_group_box.setLayout(self.filters_layout)
         
         # Fill location widgets with saved values.
         self.lat_d_spin.setValue(appglobals.location["Latitude"][0])

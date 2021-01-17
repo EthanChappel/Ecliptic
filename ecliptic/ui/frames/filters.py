@@ -16,7 +16,7 @@ class FiltersFrame(QtWidgets.QFrame, Ui_FiltersFrame):
         super().__init__(self.parent)
         self.setupUi(self)
 
-        self.filters_changed.connect(self.parent.update_filters)
+        self.filters_changed.connect(self.parent.parent.update_filters)
 
         self.add_button.clicked.connect(self.add_filter_row)
         self.remove_button.clicked.connect(self.remove_filter_row)

@@ -18,7 +18,7 @@ class Ui_SettingsFrame(object):
     def setupUi(self, SettingsFrame):
         if not SettingsFrame.objectName():
             SettingsFrame.setObjectName(u"SettingsFrame")
-        SettingsFrame.resize(619, 486)
+        SettingsFrame.resize(622, 487)
         self.verticalLayout_2 = QVBoxLayout(SettingsFrame)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -30,7 +30,7 @@ class Ui_SettingsFrame(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 602, 490))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 622, 487))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.equipment_group_box = QGroupBox(self.scrollAreaWidgetContents)
@@ -240,9 +240,10 @@ class Ui_SettingsFrame(object):
 
         self.verticalLayout.addWidget(self.observer_group_box)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.filters_group_box = QGroupBox(self.scrollAreaWidgetContents)
+        self.filters_group_box.setObjectName(u"filters_group_box")
 
-        self.verticalLayout.addItem(self.verticalSpacer_3)
+        self.verticalLayout.addWidget(self.filters_group_box)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
@@ -285,5 +286,6 @@ class Ui_SettingsFrame(object):
         self.observer_name_label.setText(QCoreApplication.translate("SettingsFrame", u"Name", None))
         self.observer_telescope_label.setText(QCoreApplication.translate("SettingsFrame", u"Telescope", None))
         self.observer_camera_label.setText(QCoreApplication.translate("SettingsFrame", u"Camera", None))
+        self.filters_group_box.setTitle(QCoreApplication.translate("SettingsFrame", u"Filters", None))
     # retranslateUi
 

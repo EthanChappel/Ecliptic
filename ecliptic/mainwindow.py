@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -17,7 +17,6 @@ from ui.windows.uic.uic_mainwindow import Ui_MainWindow
 from ui.frames.schedule import ScheduleFrame
 from ui.frames.guider import GuiderFrame
 from ui.frames.camera import CameraFrame
-from ui.frames.filters import FiltersFrame
 from ui.frames.settings import SettingsFrame
 from ui.widgets.dockwindow import DockWindow
 from thread import TelescopeThread, CameraThread
@@ -90,16 +89,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.camera_dockwindow.setWidget(self.camera_frame)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.camera_dockwindow)
 
-        # Filters frame
-        self.filters_dockwindow = DockWindow(self, windowTitle='Filters')
-        self.filters_dockwindow.setFeatures(self.filters_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
-        self.filters_frame = FiltersFrame(self)
-        self.filters_dockwindow.setWidget(self.filters_frame)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.filters_dockwindow)
-
         # Settings frame
         self.settings_dockwindow = DockWindow(self, windowTitle='Settings')
-        self.settings_dockwindow.setFeatures(self.settings_dockwindow.features() & ~QtWidgets.QDockWidget.DockWidgetClosable)
         self.settings_frame = SettingsFrame(self)
         self.settings_dockwindow.setWidget(self.settings_frame)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.settings_dockwindow)
@@ -113,8 +104,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
         self.tabifyDockWidget(self.schedule_dockwindow, self.guider_dockwindow)
         self.tabifyDockWidget(self.guider_dockwindow, self.camera_dockwindow)
-        self.tabifyDockWidget(self.camera_dockwindow, self.filters_dockwindow)
-        self.tabifyDockWidget(self.filters_dockwindow, self.settings_dockwindow)
+        self.tabifyDockWidget(self.camera_dockwindow, self.settings_dockwindow)
         self.schedule_dockwindow.raise_()
         self.camera_dockwindow.setVisible(False)
         self.guider_dockwindow.setVisible(False)
@@ -377,9 +367,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def guider_loop(self):
         self.guider_thread = CameraThread(self.guider, self.guider_loop_button, self)
-                self.guider_thread.exposure_done.connect(self.guider_frame.preview)
-            self.guider_thread.daemon = True
-            self.guider_thread.start()
+        self.guider_thread.exposure_done.connect(self.guider_frame.preview)
+        self.guider_thread.daemon = True
+        self.guider_thread.start()
 
     def connect_camera(self):
         if self.camera_group.isChecked():

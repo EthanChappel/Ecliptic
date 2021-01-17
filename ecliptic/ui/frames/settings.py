@@ -1,10 +1,16 @@
 import os
+import sys
 import json
 from PySide6 import QtWidgets
 from .uic.uic_settings import Ui_SettingsFrame
 from ui.frames.filters import FiltersFrame
 from thread import TelescopeThread
+from connectcamera import ConnectCamera
 import appglobals
+from equipment import zwo
+
+if sys.platform.startswith("win"):
+    from equipment import ascom
 
 
 class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
@@ -16,9 +22,13 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
 
         
         self.telescope_check_box.toggled.connect(self.parent.telescope_action.setChecked)
+        self.guider_check_box.toggled.connect(self.parent.guider_action.setChecked)
 
         self.telescope_check_box.toggled.connect(self.connect_telescope)
+        self.guider_check_box.toggled.connect(self.connect_guider)
+
         self.telescope_settings_button.clicked.connect(self.setup_telescope)
+        self.guider_settings_button.clicked.connect(self.setup_guider)
 
         # Insert filter settings.
         self.filters_layout = QtWidgets.QVBoxLayout(self.filters_group_box)
@@ -83,6 +93,54 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.telescope_check_box.setChecked(False)
         self.parent.connect_fail_dialog("Telescope")
     
+    def connect_guider(self):
+        print('hello')
+        if self.guider_check_box.isChecked():
+            name = "The guider"
+            guider_dialog = ConnectCamera()
+            guider_dialog.exec_()
+            try:
+                self.parent.guider = guider_dialog.result
+                if type(self.parent.guider) is ascom.AscomCamera:
+                    name = self.parent.guider.name
+                    self.guider_check_box.setText(f'Guider ({name})')
+                    self.parent.guider_menu.addAction(self.parent.ascomguidersettings_action)
+                elif type(self.parent.guider) is zwo.ZwoCamera:
+                    self.parent.guider_settings_frame.set_camera(self.parent.guider)
+                    self.guider_check_box.setText(f'Guider ({self.parent.guider})')
+                    self.parent.guider_menu.addAction(self.guider_settings_action)
+                else:
+                    raise Exception
+                self.parent.guider_group.setEnabled(True)
+                self.parent.setup_guider_controls()
+            except Exception as e:
+                print(e)
+                self.parent.guider_group.setEnabled(False)
+                self.guider_check_box.setChecked(False)
+                self.parent.connect_fail_dialog(name)
+        elif not self.guider_check_box.isChecked():
+            try:
+                if type(self.parent.guider) is ascom.AscomCamera:
+                    self.guider_menu.removeAction(self.ascomguidersettings_action)
+                    self.parent.guider.connected = False
+                    self.parent.guider.dispose()
+                elif type(self.parent.guider) is zwo.ZwoCamera:
+                    self.guider_menu.removeAction(self.guider_settings_action)
+                    self.parent.guider.close()
+            except AttributeError as e:
+                print(e)
+            finally:
+                self.parent.guider = None
+                self.parent.guider_settings_frame.set_camera(self.parent.guider)
+                self.guider_check_box.setText("Guider")
+                self.parent.guider_group.setEnabled(False)
+
+    def setup_guider(self):
+        self.parent.guider.connected = False
+        self.parent.guider.setup_dialog()
+        self.parent.guider.connected = True
+        self.parent.setup_guider_controls()
+
     def location_set(self):
         """Set observing location."""
         appglobals.location["Latitude"] = [

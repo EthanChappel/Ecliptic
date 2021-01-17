@@ -82,7 +82,7 @@
          <x>0</x>
          <y>0</y>
          <width>916</width>
-         <height>1128</height>
+         <height>1083</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -483,6 +483,9 @@
         </item>
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="guider_group">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -492,53 +495,7 @@
           <property name="title">
            <string>Guider</string>
           </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <layout class="QHBoxLayout" name="horizontallayout_10">
-             <item>
-              <widget class="QLabel" name="guider_name_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Not Connected</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="guider_settings_btn">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resources/res.qrc">
-                 <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
            <item>
             <widget class="QFrame" name="guide_frame">
              <property name="frameShape">
@@ -563,14 +520,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="0" column="0" colspan="2">
-               <widget class="Line" name="guider_line">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
+              <item row="0" column="0">
                <widget class="QLabel" name="guider_exposure_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -583,7 +533,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="0" column="1">
                <widget class="QSpinBox" name="guider_exposure_spinbox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -599,7 +549,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
+              <item row="1" column="0" colspan="2">
                <widget class="QSlider" name="guider_exposure_slider">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -615,7 +565,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="guider_gain_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -628,7 +578,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="2" column="1">
                <widget class="QSpinBox" name="guider_gain_spinbox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -647,7 +597,7 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
+              <item row="3" column="0" colspan="2">
                <widget class="QSlider" name="guider_gain_slider">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -663,7 +613,7 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="0" colspan="2">
+              <item row="4" column="0" colspan="2">
                <layout class="QHBoxLayout" name="horizontallayout_7">
                 <item>
                  <spacer name="guider_spacer">
@@ -677,6 +627,32 @@
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="guider_settings_btn">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources/res.qrc">
+                    <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>32</width>
+                    <height>32</height>
+                   </size>
+                  </property>
+                  <property name="popupMode">
+                   <enum>QToolButton::InstantPopup</enum>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="guider_loop_button">
@@ -1504,7 +1480,6 @@
   <tabstop>object_combobox</tabstop>
   <tabstop>goto_button</tabstop>
   <tabstop>guider_group</tabstop>
-  <tabstop>guider_settings_btn</tabstop>
   <tabstop>guider_exposure_spinbox</tabstop>
   <tabstop>guider_exposure_slider</tabstop>
   <tabstop>guider_gain_spinbox</tabstop>
@@ -1675,22 +1650,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>mount_group</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>telescope_action</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>24</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>guider_group</sender>
    <signal>toggled(bool)</signal>
    <receiver>guider_action</receiver>
@@ -1755,38 +1714,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>telescope_action</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mount_group</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>82</x>
-     <y>24</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>guider_action</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>guider_group</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>81</x>
-     <y>373</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>wheel_action</sender>
    <signal>toggled(bool)</signal>
    <receiver>wheel_group</receiver>
@@ -1831,22 +1758,6 @@
     <hint type="destinationlabel">
      <x>78</x>
      <y>909</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>guider_loop_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>guider_settings_btn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>138</x>
-     <y>436</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>260</y>
     </hint>
    </hints>
   </connection>

@@ -96,6 +96,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.settings_dockwindow)
         
         self.telescope_action.toggled.connect(self.settings_frame.telescope_check_box.setChecked)
+        self.guider_action.toggled.connect(self.settings_frame.guider_check_box.setChecked)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -113,12 +114,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.slewstop_button.clicked.connect(self.goto_target)
         self.camera_action.toggled.connect(self.connect_camera)
-        self.guider_action.toggled.connect(self.connect_guider)
         self.focuser_action.toggled.connect(self.connect_focuser)
         self.wheel_action.toggled.connect(self.connect_filters)
 
         self.ascomcamerasettings_action.triggered.connect(self.setup_camera)
-        self.ascomguidersettings_action.triggered.connect(self.setup_guider)
+        self.ascomguidersettings_action.triggered.connect(self.settings_frame.setup_guider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
         self.wheel_settings_btn.clicked.connect(self.setup_filterwheel)
 
@@ -249,50 +249,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def slew_diagonal(self, rate1: float, rate2: float):
         self.telescope.move_axis(0, rate1)
         self.telescope.move_axis(1, rate2)
-
-    def connect_guider(self):
-        if self.guider_group.isChecked():
-            name = "The guider"
-            guider_dialog = connectcamera.ConnectCamera()
-            guider_dialog.exec_()
-            try:
-                self.guider = guider_dialog.result
-                if type(self.guider) is ascom.AscomCamera:
-                    name = self.guider.name
-                    self.guider_name_label.setText(name)
-                    self.guider_menu.addAction(self.ascomguidersettings_action)
-                elif type(self.guider) is zwo.ZwoCamera:
-                    self.guider_settings_frame.set_camera(self.guider)
-                    self.guider_name_label.setText(guider_dialog.asi_camera)
-                    self.guider_menu.addAction(self.guider_settings_action)
-                else:
-                    raise Exception
-                self.setup_guider_controls()
-            except Exception as e:
-                print(e)
-                self.guider_group.setChecked(False)
-                self.connect_fail_dialog(name)
-        elif not self.guider_group.isChecked():
-            try:
-                if type(self.guider) is ascom.AscomCamera:
-                    self.guider_menu.removeAction(self.ascomguidersettings_action)
-                    self.guider.connected = False
-                    self.guider.dispose()
-                elif type(self.guider) is zwo.ZwoCamera:
-                    self.guider_menu.removeAction(self.guider_settings_action)
-                    self.guider.close()
-            except AttributeError as e:
-                print(e)
-            finally:
-                self.guider = None
-                self.guider_settings_frame.set_camera(self.guider)
-                self.guider_name_label.setText("Not Connected")
-
-    def setup_guider(self):
-        self.guider.connected = False
-        self.guider.setup_dialog()
-        self.guider.connected = True
-        self.setup_guider_controls()
 
     def set_guider_exposure(self):
         self.guider.exposure = int(self.guider_exposure_spinbox.cleanText())

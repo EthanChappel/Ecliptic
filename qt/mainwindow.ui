@@ -80,7 +80,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-518</y>
+         <y>-57</y>
          <width>920</width>
          <height>1216</height>
         </rect>
@@ -739,35 +739,6 @@
                   <property name="icon">
                    <iconset resource="resources/res.qrc">
                     <normaloff>:/icons/ic_replay_white_48px.svg</normaloff>:/icons/ic_replay_white_48px.svg</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>32</width>
-                    <height>32</height>
-                   </size>
-                  </property>
-                  <property name="checkable">
-                   <bool>true</bool>
-                  </property>
-                  <property name="autoDefault">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="guider_start_button">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources/res.qrc">
-                    <normaloff>:/icons/ic_play_arrow_white_48px.svg</normaloff>:/icons/ic_play_arrow_white_48px.svg</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -1590,7 +1561,6 @@
   <tabstop>guider_gain_spinbox</tabstop>
   <tabstop>guider_gain_slider</tabstop>
   <tabstop>guider_loop_button</tabstop>
-  <tabstop>guider_start_button</tabstop>
   <tabstop>camera_group</tabstop>
   <tabstop>camera_settings_btn</tabstop>
   <tabstop>camera_exposure_spinbox</tabstop>
@@ -1736,22 +1706,6 @@
     <hint type="destinationlabel">
      <x>162</x>
      <y>565</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>guider_loop_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>guider_start_button</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>138</x>
-     <y>436</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>436</y>
     </hint>
    </hints>
   </connection>
@@ -1992,22 +1946,6 @@
     <hint type="destinationlabel">
      <x>138</x>
      <y>774</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>guider_start_button</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>guider_loop_button</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>190</x>
-     <y>436</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>138</x>
-     <y>436</y>
     </hint>
    </hints>
   </connection>

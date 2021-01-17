@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -184,8 +184,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.guider_loop_button.clicked.connect(self.guider_loop)
         self.camera_loop_button.clicked.connect(self.camera_loop)
-
-        self.guider_start_button.clicked.connect(self.guider_loop)
         self.camera_capture_button.toggled.connect(self.camera_record)
 
         # Connect functions to actions
@@ -378,11 +376,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.guider_settings_frame.setup_controls(self.guider)
 
     def guider_loop(self):
-        if self.guider_loop_button.isChecked():
-            if self.guider_start_button.isChecked():
-                self.guider_thread = threading.Thread(target=self.guider_frame.preview)  # To be implemented
-            else:
-                self.guider_thread = CameraThread(self.guider, self.guider_loop_button)
+        self.guider_thread = CameraThread(self.guider, self.guider_loop_button, self)
                 self.guider_thread.exposure_done.connect(self.guider_frame.preview)
             self.guider_thread.daemon = True
             self.guider_thread.start()

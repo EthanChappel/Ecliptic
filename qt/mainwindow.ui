@@ -80,14 +80,17 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-57</y>
-         <width>920</width>
-         <height>1216</height>
+         <y>0</y>
+         <width>916</width>
+         <height>1128</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
         <item row="0" column="0" colspan="2">
          <widget class="QGroupBox" name="mount_group">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -97,53 +100,7 @@
           <property name="title">
            <string>Telescope</string>
           </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <layout class="QHBoxLayout" name="horizontallayout_9">
-             <item>
-              <widget class="QLabel" name="telescope_name_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Not Connected</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="scope_settings_btn">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resources/res.qrc">
-                 <normaloff>:/icons/ic_settings_white_48px.svg</normaloff>:/icons/ic_settings_white_48px.svg</iconset>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
            <item>
             <widget class="QFrame" name="scope_frame">
              <property name="frameShape">
@@ -168,13 +125,6 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item>
-               <widget class="Line" name="line_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
               <item>
                <layout class="QGridLayout" name="gridlayout_10">
                 <item row="0" column="1">
@@ -1315,7 +1265,7 @@
      <x>0</x>
      <y>0</y>
      <width>937</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1541,7 +1491,6 @@
  <tabstops>
   <tabstop>mount_group</tabstop>
   <tabstop>scrollarea</tabstop>
-  <tabstop>scope_settings_btn</tabstop>
   <tabstop>slewnorthwest_button</tabstop>
   <tabstop>slewnorth_button</tabstop>
   <tabstop>slewnortheast_button</tabstop>

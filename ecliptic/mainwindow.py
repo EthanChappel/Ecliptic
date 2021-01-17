@@ -94,6 +94,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_frame = SettingsFrame(self)
         self.settings_dockwindow.setWidget(self.settings_frame)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.settings_dockwindow)
+        
+        self.telescope_action.toggled.connect(self.settings_frame.telescope_check_box.setChecked)
 
         if sys.platform.startswith("win"):
             asi.init(str(sys.path[0]) + "\\lib\\ASICamera2.dll")
@@ -110,13 +112,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.guider_dockwindow.setVisible(False)
 
         self.slewstop_button.clicked.connect(self.goto_target)
-        self.telescope_action.toggled.connect(self.connect_telescope)
         self.camera_action.toggled.connect(self.connect_camera)
         self.guider_action.toggled.connect(self.connect_guider)
         self.focuser_action.toggled.connect(self.connect_focuser)
         self.wheel_action.toggled.connect(self.connect_filters)
 
-        self.scope_settings_btn.clicked.connect(self.setup_telescope)
         self.ascomcamerasettings_action.triggered.connect(self.setup_camera)
         self.ascomguidersettings_action.triggered.connect(self.setup_guider)
         self.focuser_settings_btn.clicked.connect(self.setup_focuser)
@@ -232,45 +232,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.setWindowTitle("Ecliptic - Connection Failed")
         messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
-
-    def connect_telescope(self):
-        if self.mount_group.isChecked():
-            name = "The telescope"
-            self.setup_thread = TelescopeThread(self.telescope, self)
-            self.setup_thread.setup_complete.connect(self.telescope_settings)
-            self.setup_thread.setup_failed.connect(self.telescope_connect_failed)
-            self.setup_thread.daemon = True
-            self.setup_thread.start()
-        elif not self.mount_group.isChecked():
-            try:
-                self.telescope.connected = False
-                self.telescope.dispose()
-            except AttributeError as e:
-                print(e)
-            self.telescope = None
-            self.telescope_name_label.setText("Not Connected")
-
-    def setup_telescope(self):
-        self.telescope.connected = False
-        self.telescope.setup_dialog()
-        self.telescope.connected = True
-        self.telescope_settings()
-
-    def telescope_settings(self, telescope):
-        self.telescope = telescope
-        name = self.telescope.name
-        self.telescope_name_label.setText(name)
-        if not self.telescope.can_slew_eq:
-            messagebox = QtWidgets.QMessageBox()
-            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
-            messagebox.setText("ASCOM Telescopes that can't accept equatorial coordinates are not supported!")
-            messagebox.exec_()
-            self.telescope_action.setChecked(False)
-    
-    def telescope_connect_failed(self, e: Exception):
-        print(e)
-        self.mount_group.setChecked(False)
-        self.connect_fail_dialog("Telescope")
 
     def goto_target(self):
         goto_thread = threading.Thread(target=self.goto_target_thread)

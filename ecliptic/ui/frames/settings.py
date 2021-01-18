@@ -241,6 +241,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                 self.parent.focuser_group.setEnabled(True)
             except Exception as e:
                 print(e)
+                self.focuser_check_box.setChecked(False)
                 self.parent.focuser_group.setDisabled(True)
                 self.parent.connect_fail_dialog(name)
         elif not self.focuser_check_box.isChecked():

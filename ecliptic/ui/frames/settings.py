@@ -70,6 +70,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
             name = "The telescope"
             self.setup_thread = TelescopeThread(self.parent.telescope, self)
             self.setup_thread.setup_complete.connect(self.telescope_settings)
+            self.setup_thread.setup_complete.connect(self.parent.can_plate_solve)
             self.setup_thread.setup_failed.connect(self.telescope_connect_failed)
             self.setup_thread.daemon = True
             self.setup_thread.start()
@@ -81,6 +82,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                 print(e)
             finally:
                 self.parent.telescope = None
+                self.parent.can_plate_solve()
                 self.telescope_check_box.setText("Telescope")
                 self.parent.mount_group.setEnabled(False)
     
@@ -147,6 +149,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                 self.parent.guider_settings_frame.set_camera(self.parent.guider)
                 self.guider_check_box.setText("Guider")
                 self.parent.guider_group.setEnabled(False)
+        self.parent.can_plate_solve()
 
     def setup_guider(self):
         self.parent.guider.connected = False

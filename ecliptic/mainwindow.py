@@ -282,6 +282,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def guider_loop(self):
         self.guider_thread = CameraThread(self.guider, self.guider_loop_button, self)
         self.guider_thread.exposure_done.connect(self.guider_frame.preview)
+        self.guider_thread.exposure_done.connect(self.can_plate_solve)
         self.guider_thread.daemon = True
         self.guider_thread.start()
 
@@ -414,6 +415,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.position_combobox.blockSignals(False)
         index = self.position_combobox.findText(text2)
         self.position_combobox.setCurrentIndex(index)
+    
+    @QtCore.Slot()
+    def can_plate_solve(self):
+        self.guider_frame.plate_solve_button.setEnabled(
+            bool(self.telescope and self.guider and self.guider_frame.image)
+        )
 
     def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""

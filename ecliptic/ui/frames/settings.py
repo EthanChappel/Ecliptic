@@ -8,6 +8,8 @@ from thread import TelescopeThread
 from connectcamera import ConnectCamera
 import appglobals
 from equipment import zwo
+from astrometry.astap import AstapSolver
+import zwosettings
 
 if sys.platform.startswith("win"):
     from equipment import ascom
@@ -19,7 +21,6 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         
         super().__init__(self.parent)
         self.setupUi(self)
-
         
         self.telescope_check_box.toggled.connect(self.parent.telescope_action.setChecked)
         self.guider_check_box.toggled.connect(self.parent.guider_action.setChecked)
@@ -59,7 +60,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.long_d_spin.valueChanged.connect(self.location_set)
         self.long_m_spin.valueChanged.connect(self.location_set)
         self.long_s_spin.valueChanged.connect(self.location_set)
-    
+
         self.astap_location_button.clicked.connect(self.set_astap_dir)
         if "ASTAP Location" in appglobals.settings.keys():
             self.astap_location_line_edit.setText(appglobals.settings['ASTAP Location'])

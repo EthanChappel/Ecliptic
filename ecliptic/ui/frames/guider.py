@@ -26,5 +26,13 @@ class GuiderFrame(QtWidgets.QFrame, Ui_GuiderFrame):
         self.solver = solver
     
     def plate_solve(self):
-        self.solver.solve(self.image)
+        self.solver.solve(
+            self.image,
+            self.parent.telescope.right_ascension,
+            self.parent.telescope.declination,
+            self.parent.settings_frame.search_radius_spin_box.value(),
+            None,
+            self.parent.settings_frame.downsample_combo_box.currentIndex(),
+            self.parent.settings_frame.plate_solve_debug_check_box.isChecked(),
+        )
 

@@ -119,8 +119,8 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                     self.parent.guider_menu.addAction(self.parent.ascomguidersettings_action)
                 elif type(self.parent.guider) is zwo.ZwoCamera:
                     self.parent.guider_settings_frame.set_camera(self.parent.guider)
-                    self.guider_check_box.setText(f'Guider ({self.parent.guider})')
-                    self.parent.guider_menu.addAction(self.guider_settings_action)
+                    self.guider_check_box.setText(f'Guider ({self.parent.guider.name})')
+                    self.parent.guider_menu.addAction(self.parent.guider_settings_action)
                 else:
                     raise Exception
                 self.parent.guider_group.setEnabled(True)
@@ -137,7 +137,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                     self.parent.guider.connected = False
                     self.parent.guider.dispose()
                 elif type(self.parent.guider) is zwo.ZwoCamera:
-                    self.parent.guider_menu.removeAction(self.guider_settings_action)
+                    self.parent.guider_menu.removeAction(self.parent.guider_settings_action)
                     self.parent.guider.close()
             except AttributeError as e:
                 print(e)
@@ -166,8 +166,8 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                     self.parent.camera_settings_menu.insertAction(self.parent.savelocation_action, self.parent.ascomcamerasettings_action)
                 elif type(self.parent.camera) is zwo.ZwoCamera:
                     self.parent.camera_settings_frame.set_camera(self.parent.camera)
-                    self.camera_check_box.setText(self.parent.camera)
-                    self.parent.camera_settings_action.setDefaultWidget(self.camera_settings_frame)
+                    self.camera_check_box.setText(f'Camera ({self.parent.camera.name})')
+                    self.parent.camera_settings_action.setDefaultWidget(self.parent.camera_settings_frame)
                     self.parent.camera_settings_menu.insertAction(self.parent.savelocation_action, self.parent.camera_settings_action)
                 else:
                     raise Exception
@@ -186,7 +186,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                     self.parent.camera.connected = False
                     self.parent.camera.dispose()
                 elif type(self.parent.camera) is zwo.ZwoCamera:
-                    self.camera_settings_menu.removeAction(self.camera_settings_action)
+                    self.parent.camera_settings_menu.removeAction(self.parent.camera_settings_action)
                     self.parent.camera.connected = False
             except AttributeError as e:
                 print(e)

@@ -15,10 +15,14 @@ class AstapSolver(Solver):
         tmp = tempfile.TemporaryDirectory()
 
         output = BytesIO()
-        output.write(b'RAW1' + image.size[0].to_bytes(4, 'little') + image.size[1].to_bytes(4, 'little') + np.asarray(image).tobytes())
+        output.write(
+            b'RAW1' + image.size[0].to_bytes(4, 'little') + image.size[1].to_bytes(4, 'little') + np.asarray(image).tobytes()
+        )
+
+        name = Path(f'{tmp.name}/stdin').as_posix()
 
         command = [
-            self.program.name, '-f', 'stdin', '-o', Path(f'{tmp.name}/stdin').as_posix()
+            self.program.name, '-f', 'stdin', '-o', name
         ]
 
         if ra_h is not None:
@@ -37,7 +41,7 @@ class AstapSolver(Solver):
         proc = subprocess.Popen(command, executable=self.program, stdin=subprocess.PIPE, bufsize=0)
         proc.communicate(input=output.getvalue())
 
-        with open(Path(f'{tmp.name}/stdin.wcs').as_posix(), 'r') as result:
+        with open(f'{name}.wcs', 'r') as result:
             d = {}
             for l in result:
                 if l.rstrip() and 'PLTSOLVD' not in l and 'COMMENT' not in l:
@@ -54,7 +58,7 @@ class AstapSolver(Solver):
         w.wcs.cdelt = [d['CDELT1'], d['CDELT2']]
         w.wcs.crota = [d['CROTA1'], d['CROTA2']]
         w.wcs.cd = [[d['CD1_1'], d['CD1_2']], [d['CD2_1'], d['CD2_2']]]
-
+        
         sky = w.pixel_to_world(image.size[0] // 2, image.size[1] // 2)
         
         output.close()

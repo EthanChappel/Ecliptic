@@ -80,7 +80,7 @@ class ZwoCamera(Camera):
 
     @property
     def roi_resolution(self):
-        return self._driver.get_roi()[:2]
+        return self._driver.get_roi()[2:]
 
     def set_roi_resolution(self, width: int, height: int):
         self._driver.set_roi_format(width, height, self.bin, self.image_type)

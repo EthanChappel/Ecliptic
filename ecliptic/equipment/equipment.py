@@ -16,6 +16,9 @@ class Device(ABC):
     @abstractmethod
     def connected(self, value: bool): pass
 
+    @abstractmethod
+    def close(self): pass
+
 
 class Telescope(Device):
     @abstractmethod

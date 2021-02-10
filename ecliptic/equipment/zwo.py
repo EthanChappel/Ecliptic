@@ -31,6 +31,9 @@ class ZwoCamera(Camera):
     def stop_exposure(self):
         self._driver.stop_exposure()
 
+    def close(self):
+        self._driver.close()
+
     @property
     def gain(self) -> int:
         return self._driver.get_control_value(asi.ASI_GAIN)[0]

@@ -40,6 +40,9 @@ class AscomDevice(Device):
     @connected.setter
     def connected(self, value: bool):
         self.driver.Connected = value
+    
+    def close(self):
+        self.driver.Dispose()
 
 
 class AscomTelescope(Telescope, AscomDevice):

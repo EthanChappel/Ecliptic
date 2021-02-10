@@ -91,6 +91,14 @@ class AscomTelescope(Telescope, AscomDevice):
     @property
     def can_slew(self) -> bool:
         return self.driver.CanSlew
+    
+    @property
+    def right_ascension(self) -> float:
+        return self.driver.RightAscension
+    
+    @property
+    def declination(self) -> float:
+        return self.driver.Declination
 
     @property
     def pier_side(self):

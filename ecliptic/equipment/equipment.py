@@ -46,6 +46,14 @@ class Telescope(Device):
 
     @property
     @abstractmethod
+    def right_ascension(self) -> float: pass
+
+    @property
+    @abstractmethod
+    def declination(self) -> float: pass
+
+    @property
+    @abstractmethod
     def pier_side(self) -> int: pass
 
 

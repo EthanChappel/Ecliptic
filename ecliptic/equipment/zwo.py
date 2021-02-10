@@ -7,6 +7,7 @@ class ZwoCamera(Camera):
     def __init__(self, index: int, image_type: int = asi.ASI_IMG_RAW16):
         self.image_type = image_type
         self._driver = asi.Camera(index)
+        self._driver.set_image_type(asi.ASI_IMG_RAW8)
         self._controls = self._driver.get_controls()
         self._info = self._driver.get_camera_property()
 
@@ -30,7 +31,7 @@ class ZwoCamera(Camera):
 
     def stop_exposure(self):
         self._driver.stop_exposure()
-
+    
     def close(self):
         self._driver.close()
 

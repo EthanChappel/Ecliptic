@@ -21,7 +21,7 @@ class TelescopeThread(QtCore.QThread):
             self.setup_failed.emit(e)
 
 class CameraThread(QtCore.QThread):
-    exposure_done = QtCore.Signal(QtGui.QPixmap)
+    exposure_done = QtCore.Signal(object)
 
     def __init__(self, camera, widget, parent=None):
         super().__init__(parent)
@@ -41,8 +41,7 @@ class CameraThread(QtCore.QThread):
             if self.writer:
                 self.writer.add_frame(frame.tobytes())
             image = Image.fromarray(frame)
-            pix = ImageQt.toqpixmap(image)
-            self.exposure_done.emit(pix)
+            self.exposure_done.emit(image)
 
         self.camera.video_mode = False
     

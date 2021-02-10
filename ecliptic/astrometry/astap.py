@@ -1,6 +1,7 @@
 import subprocess
 from io import BytesIO
 from pathlib import Path
+import tempfile
 import numpy as np
 from astropy.wcs import WCS
 from .solver import Solver
@@ -11,11 +12,13 @@ class AstapSolver(Solver):
         self.program = Path(path)
     
     def solve(self, image, ra_h=None, dec_d=None, radius_d=None, fov_d=None, down_sample=None, debug=False):
+        tmp = tempfile.TemporaryDirectory()
+
         output = BytesIO()
         output.write(b'RAW1' + image.size[0].to_bytes(4, 'little') + image.size[1].to_bytes(4, 'little') + np.asarray(image).tobytes())
 
         command = [
-            self.program.name, '-f', 'stdin'
+            self.program.name, '-f', 'stdin', '-o', Path(f'{tmp.name}/stdin').as_posix()
         ]
 
         if ra_h is not None:
@@ -34,7 +37,7 @@ class AstapSolver(Solver):
         proc = subprocess.Popen(command, executable=self.program, stdin=subprocess.PIPE, bufsize=0)
         proc.communicate(input=output.getvalue())
 
-        with open('stdin.wcs', 'r') as result:
+        with open(Path(f'{tmp.name}/stdin.wcs').as_posix(), 'r') as result:
             d = {}
             for l in result:
                 if l.rstrip() and 'PLTSOLVD' not in l and 'COMMENT' not in l:
@@ -55,4 +58,4 @@ class AstapSolver(Solver):
         sky = w.pixel_to_world(image.size[0] // 2, image.size[1] // 2)
         
         output.close()
-        return (sky[0], sky[1])
+        tmp.cleanup()

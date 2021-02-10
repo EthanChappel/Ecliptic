@@ -59,7 +59,6 @@ class AstapSolver(Solver):
         w.wcs.crota = [d['CROTA1'], d['CROTA2']]
         w.wcs.cd = [[d['CD1_1'], d['CD1_2']], [d['CD2_1'], d['CD2_2']]]
         
-        sky = w.pixel_to_world(image.size[0] // 2, image.size[1] // 2)
-        
         output.close()
         tmp.cleanup()
+        return w.pixel_to_world(image.size[0] // 2, image.size[1] // 2)

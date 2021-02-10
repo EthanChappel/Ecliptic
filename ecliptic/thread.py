@@ -22,6 +22,7 @@ class TelescopeThread(QtCore.QThread):
 
 class CameraThread(QtCore.QThread):
     exposure_done = QtCore.Signal(object)
+    setup_complete = QtCore.Signal(object)
 
     def __init__(self, camera, widget, parent=None):
         super().__init__(parent)

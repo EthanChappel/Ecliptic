@@ -60,6 +60,10 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
         self.long_m_spin.valueChanged.connect(self.location_set)
         self.long_s_spin.valueChanged.connect(self.location_set)
     
+        self.astap_location_button.clicked.connect(self.set_astap_dir)
+        if "ASTAP Location" in appglobals.settings.keys():
+            self.astap_location_line_edit.setText(appglobals.settings['ASTAP Location'])
+    
     def connect_telescope(self, b):
         if self.telescope_check_box.isChecked():
             name = "The telescope"
@@ -301,3 +305,23 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
                 appglobals.location["Longitude"][2]
             )
         )
+
+    def set_astap_dir(self):
+        if "ASTAP Location" in appglobals.settings.keys():
+            default_dir = appglobals.settings["ASTAP Location"]
+        else:
+            default_dir = None
+        
+        astap_dialog = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            "Select ASTAP executable",
+            default_dir,
+            filter="Executable files (*.exe);;All files (*.*)",
+            options = QtWidgets.QFileDialog.DontUseNativeDialog
+        )
+
+        if str(astap_dialog[0]) != "":
+            appglobals.settings["ASTAP Location"] = str(astap_dialog[0])
+            self.parent.save_settings()
+            self.astap_location_line_edit.setText(str(astap_dialog[0]))
+            self.parent.guider_frame.set_solver(AstapSolver(self.astap_location_line_edit.text()))

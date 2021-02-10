@@ -30,7 +30,7 @@ class Ui_SettingsFrame(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 622, 487))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -203, 605, 690))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.equipment_group_box = QGroupBox(self.scrollAreaWidgetContents)
@@ -245,6 +245,42 @@ class Ui_SettingsFrame(object):
 
         self.verticalLayout.addWidget(self.filters_group_box)
 
+        self.plate_solving_group_box = QGroupBox(self.scrollAreaWidgetContents)
+        self.plate_solving_group_box.setObjectName(u"plate_solving_group_box")
+        self.formLayout_2 = QFormLayout(self.plate_solving_group_box)
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.astap_radio = QRadioButton(self.plate_solving_group_box)
+        self.astap_radio.setObjectName(u"astap_radio")
+        self.astap_radio.setEnabled(False)
+        self.astap_radio.setChecked(True)
+
+        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.astap_radio)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.astap_location_line_edit = QLineEdit(self.plate_solving_group_box)
+        self.astap_location_line_edit.setObjectName(u"astap_location_line_edit")
+
+        self.horizontalLayout.addWidget(self.astap_location_line_edit)
+
+        self.astap_location_button = QPushButton(self.plate_solving_group_box)
+        self.astap_location_button.setObjectName(u"astap_location_button")
+        self.astap_location_button.setAutoDefault(True)
+
+        self.horizontalLayout.addWidget(self.astap_location_button)
+
+
+        self.formLayout_2.setLayout(0, QFormLayout.FieldRole, self.horizontalLayout)
+
+        self.label = QLabel(self.plate_solving_group_box)
+        self.label.setObjectName(u"label")
+        self.label.setWordWrap(True)
+
+        self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.label)
+
+
+        self.verticalLayout.addWidget(self.plate_solving_group_box)
+
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
         self.verticalLayout_2.addWidget(self.scrollArea)
@@ -256,6 +292,9 @@ class Ui_SettingsFrame(object):
         self.camera_check_box.toggled.connect(self.camera_settings_button.setEnabled)
         self.filter_wheel_check_box.toggled.connect(self.filter_wheel_settings_button.setEnabled)
         self.focuser_check_box.toggled.connect(self.focuser_settings_button.setEnabled)
+
+        self.astap_location_button.setDefault(False)
+
 
         QMetaObject.connectSlotsByName(SettingsFrame)
     # setupUi
@@ -287,5 +326,9 @@ class Ui_SettingsFrame(object):
         self.observer_telescope_label.setText(QCoreApplication.translate("SettingsFrame", u"Telescope", None))
         self.observer_camera_label.setText(QCoreApplication.translate("SettingsFrame", u"Camera", None))
         self.filters_group_box.setTitle(QCoreApplication.translate("SettingsFrame", u"Filters", None))
+        self.plate_solving_group_box.setTitle(QCoreApplication.translate("SettingsFrame", u"Plate solving", None))
+        self.astap_radio.setText(QCoreApplication.translate("SettingsFrame", u"ASTAP", None))
+        self.astap_location_button.setText(QCoreApplication.translate("SettingsFrame", u"Browse...", None))
+        self.label.setText(QCoreApplication.translate("SettingsFrame", u"<html><head/><body><p>ASTAP is a free stacking and astrometric solver (plate solver) program. It has a powerful FITS viewer and the native astrometric solver can be used by Ecliptic or other imaging programs to synchronise the mount based on an image taken.</p><p><a href=\"http://www.hnsky.org/astap.htm\"><span style=\" text-decoration: underline; color:#007af4;\">http://www.hnsky.org/astap.htm</span></a></p></body></html>", None))
     # retranslateUi
 

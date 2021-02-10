@@ -44,9 +44,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>622</width>
-        <height>487</height>
+        <y>-203</y>
+        <width>605</width>
+        <height>690</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -420,6 +420,58 @@
          <property name="title">
           <string>Filters</string>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="plate_solving_group_box">
+         <property name="title">
+          <string>Plate solving</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="astap_radio">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>ASTAP</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLineEdit" name="astap_location_line_edit"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="astap_location_button">
+              <property name="text">
+               <string>Browse...</string>
+              </property>
+              <property name="autoDefault">
+               <bool>true</bool>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ASTAP is a free stacking and astrometric solver (plate solver) program. It has a powerful FITS viewer and the native astrometric solver can be used by Ecliptic or other imaging programs to synchronise the mount based on an image taken.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.hnsky.org/astap.htm&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;http://www.hnsky.org/astap.htm&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

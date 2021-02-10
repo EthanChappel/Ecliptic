@@ -49,7 +49,7 @@
         <x>0</x>
         <y>0</y>
         <width>400</width>
-        <height>229</height>
+        <height>231</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -145,8 +145,21 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="3" rowspan="2">
-      <widget class="QPushButton" name="guidersetref_button">
+     <item row="0" column="4" rowspan="2">
+      <spacer name="guiderzoom_spacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="3">
+      <widget class="QPushButton" name="solve_center_button">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -156,15 +169,8 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="toolTip">
-        <string>Replace guide reference</string>
-       </property>
        <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources/res.qrc">
-         <normaloff>:/icons/target.svg</normaloff>:/icons/target.svg</iconset>
+        <string>Solve &amp;&amp; Center</string>
        </property>
        <property name="iconSize">
         <size>
@@ -180,18 +186,33 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="4" rowspan="2">
-      <spacer name="guiderzoom_spacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="plate_solve_button">
+       <property name="enabled">
+        <bool>false</bool>
        </property>
-       <property name="sizeHint" stdset="0">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Plate Solve</string>
+       </property>
+       <property name="iconSize">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
-      </spacer>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -32,7 +32,7 @@ class Ui_GuiderFrame(object):
         self.guider_scrollarea.setAlignment(Qt.AlignCenter)
         self.guiderscrollareawidgetcontents = QWidget()
         self.guiderscrollareawidgetcontents.setObjectName(u"guiderscrollareawidgetcontents")
-        self.guiderscrollareawidgetcontents.setGeometry(QRect(0, 0, 400, 229))
+        self.guiderscrollareawidgetcontents.setGeometry(QRect(0, 0, 400, 231))
         self.verticalLayout_6 = QVBoxLayout(self.guiderscrollareawidgetcontents)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -88,25 +88,32 @@ class Ui_GuiderFrame(object):
 
         self.guider_gridlayout.addWidget(self.guiderzoom_line, 0, 2, 2, 1)
 
-        self.guidersetref_button = QPushButton(GuiderFrame)
-        self.guidersetref_button.setObjectName(u"guidersetref_button")
-        self.guidersetref_button.setEnabled(False)
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.guidersetref_button.sizePolicy().hasHeightForWidth())
-        self.guidersetref_button.setSizePolicy(sizePolicy2)
-        icon = QIcon()
-        icon.addFile(u":/icons/target.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.guidersetref_button.setIcon(icon)
-        self.guidersetref_button.setIconSize(QSize(24, 24))
-        self.guidersetref_button.setAutoDefault(True)
-
-        self.guider_gridlayout.addWidget(self.guidersetref_button, 0, 3, 2, 1)
-
         self.guiderzoom_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.guider_gridlayout.addItem(self.guiderzoom_spacer, 0, 4, 2, 1)
+
+        self.solve_center_button = QPushButton(GuiderFrame)
+        self.solve_center_button.setObjectName(u"solve_center_button")
+        self.solve_center_button.setEnabled(False)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.solve_center_button.sizePolicy().hasHeightForWidth())
+        self.solve_center_button.setSizePolicy(sizePolicy2)
+        self.solve_center_button.setIconSize(QSize(24, 24))
+        self.solve_center_button.setAutoDefault(True)
+
+        self.guider_gridlayout.addWidget(self.solve_center_button, 1, 3, 1, 1)
+
+        self.plate_solve_button = QPushButton(GuiderFrame)
+        self.plate_solve_button.setObjectName(u"plate_solve_button")
+        self.plate_solve_button.setEnabled(False)
+        sizePolicy2.setHeightForWidth(self.plate_solve_button.sizePolicy().hasHeightForWidth())
+        self.plate_solve_button.setSizePolicy(sizePolicy2)
+        self.plate_solve_button.setIconSize(QSize(24, 24))
+        self.plate_solve_button.setAutoDefault(True)
+
+        self.guider_gridlayout.addWidget(self.plate_solve_button, 0, 3, 1, 1)
 
 
         self.verticalLayout.addLayout(self.guider_gridlayout)
@@ -114,7 +121,8 @@ class Ui_GuiderFrame(object):
 
         self.retranslateUi(GuiderFrame)
 
-        self.guidersetref_button.setDefault(False)
+        self.solve_center_button.setDefault(False)
+        self.plate_solve_button.setDefault(False)
 
 
         QMetaObject.connectSlotsByName(GuiderFrame)
@@ -125,9 +133,7 @@ class Ui_GuiderFrame(object):
         self.guider_preview_label.setText("")
         self.guiderzoom_label.setText(QCoreApplication.translate("GuiderFrame", u"Zoom", None))
         self.guiderzoom_spinbox.setSuffix(QCoreApplication.translate("GuiderFrame", u"%", None))
-#if QT_CONFIG(tooltip)
-        self.guidersetref_button.setToolTip(QCoreApplication.translate("GuiderFrame", u"Replace guide reference", None))
-#endif // QT_CONFIG(tooltip)
-        self.guidersetref_button.setText("")
+        self.solve_center_button.setText(QCoreApplication.translate("GuiderFrame", u"Solve && Center", None))
+        self.plate_solve_button.setText(QCoreApplication.translate("GuiderFrame", u"Plate Solve", None))
     # retranslateUi
 

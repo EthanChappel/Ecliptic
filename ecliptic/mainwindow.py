@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import threading
@@ -11,15 +11,13 @@ import appglobals
 import connectcamera
 import zwosettings
 import guiderparameters
-from astropy.time import Time
-from astropy.coordinates import get_body
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow
 from ui.frames.schedule import ScheduleFrame
 from ui.frames.guider import GuiderFrame
 from ui.frames.camera import CameraFrame
 from ui.frames.settings import SettingsFrame
 from ui.widgets.dockwindow import DockWindow
-from thread import TelescopeThread, CameraThread, FinderCameraThread
+from thread import TelescopeSlewThread, CameraThread, FinderCameraThread
 from equipment import zwo
 
 if sys.platform.startswith("win"):
@@ -39,6 +37,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.wheel = None
         self.focuser = None
 
+        self.telescope_thread = None
         self.camera_thread = None
         self.guider_thread = None
 
@@ -228,18 +227,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
 
-    def goto_target(self):
-        goto_thread = threading.Thread(target=self.goto_target_thread)
-        goto_thread.start()
-
-    def goto_target_thread(self):
-        if self.object_combobox.currentText() == "Home":
-            self.telescope.goto_home()
-        elif self.object_combobox.currentText() == "Stop" or self.sender() is self.slewstop_button:
-            self.telescope.tracking = False
-        else:
-            body = get_body(self.object_combobox.currentText().lower(), Time.now())
-            self.telescope.goto(body.ra.hour, body.dec.degree)
+    def goto_target(self, verify=False):
+        self.telescope_thread = TelescopeSlewThread(self.telescope, self.object_combobox.currentText())
+        self.telescope_thread.daemon = True
+        self.telescope_thread.start()
 
     def slew_diagonal(self, rate1: float, rate2: float):
         self.telescope.move_axis(0, rate1)

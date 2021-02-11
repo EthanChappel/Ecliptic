@@ -3,7 +3,7 @@ from io import BytesIO
 from pathlib import Path
 import tempfile
 import numpy as np
-from astropy.wcs import WCS
+from astropy import wcs
 from .solver import Solver
 
 
@@ -52,13 +52,14 @@ class AstapSolver(Solver):
                     except ValueError:
                         d[k.rstrip(' ')] = v.replace('\'', ' ').strip()
 
-        w = WCS(naxis=2)
+        w = wcs.WCS(naxis=2)
         w.wcs.crpix = [d['CRPIX1'], d['CRPIX2']]
         w.wcs.crval = [d['CRVAL1'], d['CRVAL2']]
         w.wcs.cdelt = [d['CDELT1'], d['CDELT2']]
         w.wcs.crota = [d['CROTA1'], d['CROTA2']]
         w.wcs.cd = [[d['CD1_1'], d['CD1_2']], [d['CD2_1'], d['CD2_2']]]
+        w.wcs.ctype = [d['CTYPE1'], d['CTYPE2']]
         
         output.close()
         tmp.cleanup()
-        return w.pixel_to_world(image.size[0] // 2, image.size[1] // 2)
+        return wcs.utils.pixel_to_skycoord(image.size[0] // 2, image.size[1] // 2, w)

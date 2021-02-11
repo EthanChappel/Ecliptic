@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -114,8 +114,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.schedule_dockwindow.raise_()
         self.camera_dockwindow.setVisible(False)
         self.guider_dockwindow.setVisible(False)
-
-        self.slewstop_button.clicked.connect(self.goto_target)
 
         self.ascomcamerasettings_action.triggered.connect(self.settings_frame.setup_camera)
         self.ascomguidersettings_action.triggered.connect(self.settings_frame.setup_guider)

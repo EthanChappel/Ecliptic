@@ -325,32 +325,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QPushButton" name="slewstop_button">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip">
-                   <string>Slew the mount west</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources/res.qrc">
-                    <normaloff>:/icons/ic_report_white_48px.svg</normaloff>:/icons/ic_report_white_48px.svg</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>36</width>
-                    <height>36</height>
-                   </size>
-                  </property>
-                  <property name="autoDefault">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="0">
                  <widget class="QPushButton" name="slewwest_button">
                   <property name="sizePolicy">
@@ -1383,7 +1357,6 @@
   <tabstop>slewnorth_button</tabstop>
   <tabstop>slewnortheast_button</tabstop>
   <tabstop>slewwest_button</tabstop>
-  <tabstop>slewstop_button</tabstop>
   <tabstop>sleweast_button</tabstop>
   <tabstop>slewsouthwest_button</tabstop>
   <tabstop>slewsouth_button</tabstop>

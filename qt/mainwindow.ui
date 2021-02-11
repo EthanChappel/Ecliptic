@@ -80,9 +80,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-116</y>
-         <width>920</width>
-         <height>823</height>
+         <y>0</y>
+         <width>916</width>
+         <height>989</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_4">
@@ -101,6 +101,65 @@
            <string>Telescope</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QFormLayout" name="formLayout_2">
+             <property name="topMargin">
+              <number>7</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="telescope_ra_label">
+               <property name="text">
+                <string>Right Ascension</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="telescope_ra_value_label">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="telescope_Dec_label">
+               <property name="text">
+                <string>Declination</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="telescope_dec_value_label">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Controls</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
            <item>
             <widget class="QFrame" name="scope_frame">
              <property name="frameShape">
@@ -451,7 +510,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="goto_button">
+                 <widget class="QToolButton" name="goto_button">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -466,10 +525,10 @@
                   </property>
                   <property name="icon">
                    <iconset resource="resources/res.qrc">
-                    <normaloff>:/icons/ic_check_white_48px.svg</normaloff>:/icons/ic_check_white_48px.svg</iconset>
+                    <normaloff>:/icons/target.svg</normaloff>:/icons/target.svg</iconset>
                   </property>
-                  <property name="autoDefault">
-                   <bool>true</bool>
+                  <property name="popupMode">
+                   <enum>QToolButton::MenuButtonPopup</enum>
                   </property>
                  </widget>
                 </item>
@@ -655,7 +714,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="guider_loop_button">
+                 <widget class="QPushButton" name="guider_snap_button">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -664,16 +723,13 @@
                   </property>
                   <property name="icon">
                    <iconset resource="resources/res.qrc">
-                    <normaloff>:/icons/ic_replay_white_48px.svg</normaloff>:/icons/ic_replay_white_48px.svg</iconset>
+                    <normaloff>:/icons/photo_camera-white-48dp.svg</normaloff>:/icons/photo_camera-white-48dp.svg</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
                     <width>32</width>
                     <height>32</height>
                    </size>
-                  </property>
-                  <property name="checkable">
-                   <bool>true</bool>
                   </property>
                   <property name="autoDefault">
                    <bool>true</bool>
@@ -1097,7 +1153,7 @@
      <x>0</x>
      <y>0</y>
      <width>937</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -1340,7 +1396,7 @@
   <tabstop>guider_exposure_slider</tabstop>
   <tabstop>guider_gain_spinbox</tabstop>
   <tabstop>guider_gain_slider</tabstop>
-  <tabstop>guider_loop_button</tabstop>
+  <tabstop>guider_snap_button</tabstop>
   <tabstop>camera_group</tabstop>
   <tabstop>camera_exposure_spinbox</tabstop>
   <tabstop>camera_exposure_slider</tabstop>

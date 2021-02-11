@@ -19,7 +19,7 @@ from ui.frames.guider import GuiderFrame
 from ui.frames.camera import CameraFrame
 from ui.frames.settings import SettingsFrame
 from ui.widgets.dockwindow import DockWindow
-from thread import TelescopeThread, CameraThread
+from thread import TelescopeThread, CameraThread, FinderCameraThread
 from equipment import zwo
 
 if sys.platform.startswith("win"):
@@ -170,7 +170,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.goto_button.clicked.connect(self.goto_target)
 
-        self.guider_loop_button.clicked.connect(self.guider_loop)
+        self.guider_snap_button.clicked.connect(self.guider_snap)
         self.camera_loop_button.clicked.connect(self.camera_loop)
         self.camera_capture_button.toggled.connect(self.camera_record)
 
@@ -279,8 +279,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if type(self.guider) is zwo.ZwoCamera:
             self.guider_settings_frame.setup_controls(self.guider)
 
-    def guider_loop(self):
-        self.guider_thread = CameraThread(self.guider, self.guider_loop_button, self)
+    def guider_snap(self):
+        self.guider_thread = FinderCameraThread(self.guider, None, self)
         self.guider_thread.exposure_done.connect(self.guider_frame.preview)
         self.guider_thread.exposure_done.connect(self.can_plate_solve)
         self.guider_thread.daemon = True

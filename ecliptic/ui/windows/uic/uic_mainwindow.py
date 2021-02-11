@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.scrollarea.setWidgetResizable(True)
         self.scroll_area_widget_contents = QWidget()
         self.scroll_area_widget_contents.setObjectName(u"scroll_area_widget_contents")
-        self.scroll_area_widget_contents.setGeometry(QRect(0, -116, 920, 823))
+        self.scroll_area_widget_contents.setGeometry(QRect(0, 0, 916, 989))
         self.formLayout_4 = QFormLayout(self.scroll_area_widget_contents)
         self.formLayout_4.setObjectName(u"formLayout_4")
         self.mount_group = QGroupBox(self.scroll_area_widget_contents)
@@ -135,6 +135,51 @@ class Ui_MainWindow(object):
         self.mount_group.setSizePolicy(sizePolicy2)
         self.verticalLayout_3 = QVBoxLayout(self.mount_group)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.formLayout_2.setContentsMargins(-1, 7, -1, -1)
+        self.telescope_ra_label = QLabel(self.mount_group)
+        self.telescope_ra_label.setObjectName(u"telescope_ra_label")
+
+        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.telescope_ra_label)
+
+        self.telescope_ra_value_label = QLabel(self.mount_group)
+        self.telescope_ra_value_label.setObjectName(u"telescope_ra_value_label")
+
+        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.telescope_ra_value_label)
+
+        self.telescope_Dec_label = QLabel(self.mount_group)
+        self.telescope_Dec_label.setObjectName(u"telescope_Dec_label")
+
+        self.formLayout_2.setWidget(1, QFormLayout.LabelRole, self.telescope_Dec_label)
+
+        self.telescope_dec_value_label = QLabel(self.mount_group)
+        self.telescope_dec_value_label.setObjectName(u"telescope_dec_value_label")
+
+        self.formLayout_2.setWidget(1, QFormLayout.FieldRole, self.telescope_dec_value_label)
+
+
+        self.verticalLayout_3.addLayout(self.formLayout_2)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.label = QLabel(self.mount_group)
+        self.label.setObjectName(u"label")
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
+
+        self.horizontalLayout.addWidget(self.label)
+
+        self.line_2 = QFrame(self.mount_group)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.HLine)
+        self.line_2.setFrameShadow(QFrame.Sunken)
+
+        self.horizontalLayout.addWidget(self.line_2)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
+
         self.scope_frame = QFrame(self.mount_group)
         self.scope_frame.setObjectName(u"scope_frame")
         self.scope_frame.setFrameShape(QFrame.NoFrame)
@@ -315,14 +360,14 @@ class Ui_MainWindow(object):
 
         self.horizontallayout_4.addWidget(self.object_combobox)
 
-        self.goto_button = QPushButton(self.scope_frame)
+        self.goto_button = QToolButton(self.scope_frame)
         self.goto_button.setObjectName(u"goto_button")
         sizePolicy.setHeightForWidth(self.goto_button.sizePolicy().hasHeightForWidth())
         self.goto_button.setSizePolicy(sizePolicy)
         icon19 = QIcon()
-        icon19.addFile(u":/icons/ic_check_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon19.addFile(u":/icons/target.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.goto_button.setIcon(icon19)
-        self.goto_button.setAutoDefault(True)
+        self.goto_button.setPopupMode(QToolButton.MenuButtonPopup)
 
         self.horizontallayout_4.addWidget(self.goto_button)
 
@@ -418,21 +463,20 @@ class Ui_MainWindow(object):
 
         self.horizontallayout_7.addWidget(self.guider_settings_btn)
 
-        self.guider_loop_button = QPushButton(self.guide_frame)
-        self.guider_loop_button.setObjectName(u"guider_loop_button")
+        self.guider_snap_button = QPushButton(self.guide_frame)
+        self.guider_snap_button.setObjectName(u"guider_snap_button")
         sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy6.setHorizontalStretch(0)
         sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.guider_loop_button.sizePolicy().hasHeightForWidth())
-        self.guider_loop_button.setSizePolicy(sizePolicy6)
+        sizePolicy6.setHeightForWidth(self.guider_snap_button.sizePolicy().hasHeightForWidth())
+        self.guider_snap_button.setSizePolicy(sizePolicy6)
         icon20 = QIcon()
-        icon20.addFile(u":/icons/ic_replay_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.guider_loop_button.setIcon(icon20)
-        self.guider_loop_button.setIconSize(QSize(32, 32))
-        self.guider_loop_button.setCheckable(True)
-        self.guider_loop_button.setAutoDefault(True)
+        icon20.addFile(u":/icons/photo_camera-white-48dp.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.guider_snap_button.setIcon(icon20)
+        self.guider_snap_button.setIconSize(QSize(32, 32))
+        self.guider_snap_button.setAutoDefault(True)
 
-        self.horizontallayout_7.addWidget(self.guider_loop_button)
+        self.horizontallayout_7.addWidget(self.guider_snap_button)
 
 
         self.formLayout_3.setLayout(4, QFormLayout.SpanningRole, self.horizontallayout_7)
@@ -536,7 +580,9 @@ class Ui_MainWindow(object):
         self.camera_loop_button.setObjectName(u"camera_loop_button")
         sizePolicy6.setHeightForWidth(self.camera_loop_button.sizePolicy().hasHeightForWidth())
         self.camera_loop_button.setSizePolicy(sizePolicy6)
-        self.camera_loop_button.setIcon(icon20)
+        icon21 = QIcon()
+        icon21.addFile(u":/icons/ic_replay_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.camera_loop_button.setIcon(icon21)
         self.camera_loop_button.setIconSize(QSize(32, 32))
         self.camera_loop_button.setCheckable(True)
         self.camera_loop_button.setAutoDefault(True)
@@ -548,9 +594,9 @@ class Ui_MainWindow(object):
         self.camera_capture_button.setEnabled(False)
         sizePolicy6.setHeightForWidth(self.camera_capture_button.sizePolicy().hasHeightForWidth())
         self.camera_capture_button.setSizePolicy(sizePolicy6)
-        icon21 = QIcon()
-        icon21.addFile(u":/icons/ic_play_arrow_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.camera_capture_button.setIcon(icon21)
+        icon22 = QIcon()
+        icon22.addFile(u":/icons/ic_play_arrow_white_48px.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.camera_capture_button.setIcon(icon22)
         self.camera_capture_button.setIconSize(QSize(32, 32))
         self.camera_capture_button.setCheckable(True)
         self.camera_capture_button.setAutoDefault(True)
@@ -653,7 +699,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 937, 21))
+        self.menubar.setGeometry(QRect(0, 0, 937, 26))
         self.file_menu = QMenu(self.menubar)
         self.file_menu.setObjectName(u"file_menu")
         self.import_menu = QMenu(self.file_menu)
@@ -685,8 +731,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.guider_exposure_spinbox, self.guider_exposure_slider)
         QWidget.setTabOrder(self.guider_exposure_slider, self.guider_gain_spinbox)
         QWidget.setTabOrder(self.guider_gain_spinbox, self.guider_gain_slider)
-        QWidget.setTabOrder(self.guider_gain_slider, self.guider_loop_button)
-        QWidget.setTabOrder(self.guider_loop_button, self.camera_group)
+        QWidget.setTabOrder(self.guider_gain_slider, self.guider_snap_button)
+        QWidget.setTabOrder(self.guider_snap_button, self.camera_group)
         QWidget.setTabOrder(self.camera_group, self.camera_exposure_spinbox)
         QWidget.setTabOrder(self.camera_exposure_spinbox, self.camera_exposure_slider)
         QWidget.setTabOrder(self.camera_exposure_slider, self.camera_gain_spinbox)
@@ -780,6 +826,11 @@ class Ui_MainWindow(object):
         self.ascomcamerasettings_action.setText(QCoreApplication.translate("MainWindow", u"ASCOM Settings", None))
         self.ascomguidersettings_action.setText(QCoreApplication.translate("MainWindow", u"ASCOM Settings", None))
         self.mount_group.setTitle(QCoreApplication.translate("MainWindow", u"Telescope", None))
+        self.telescope_ra_label.setText(QCoreApplication.translate("MainWindow", u"Right Ascension", None))
+        self.telescope_ra_value_label.setText("")
+        self.telescope_Dec_label.setText(QCoreApplication.translate("MainWindow", u"Declination", None))
+        self.telescope_dec_value_label.setText("")
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Controls", None))
 #if QT_CONFIG(tooltip)
         self.slewnorth_button.setToolTip(QCoreApplication.translate("MainWindow", u"Slew the mount north", None))
 #endif // QT_CONFIG(tooltip)

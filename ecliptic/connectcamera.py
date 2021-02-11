@@ -2,13 +2,13 @@ import sys
 from PySide6 import QtCore, QtWidgets
 import zwoasi as asi
 from equipment import zwo
-from ui import ui_connectcamera
+from ui.windows.uic.uic_connectcamera import Ui_ConnectCamera
 
 if sys.platform.startswith("win"):
     from equipment import ascom
 
 
-class ConnectCamera(QtWidgets.QDialog, ui_connectcamera.Ui_ConnectCamera):
+class ConnectCamera(QtWidgets.QDialog, Ui_ConnectCamera):
     def __init__(self):
         super().__init__()
         self.setupUi(self)

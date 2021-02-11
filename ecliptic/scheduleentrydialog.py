@@ -1,5 +1,5 @@
 from PySide6 import QtCore, QtWidgets
-from ui.ui_scheduleentry import Ui_ScheduleEntryDialog
+from ui.windows.uic.uic_scheduleentry import Ui_ScheduleEntryDialog
 from ui.delegates.widgets import *
 
 class ScheduleEntryDialog(QtWidgets.QDialog, Ui_ScheduleEntryDialog):

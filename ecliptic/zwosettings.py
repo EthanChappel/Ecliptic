@@ -1,10 +1,10 @@
 from typing import Union
 from PySide6 import QtWidgets
 from equipment import zwo
-from ui import ui_zwosettings
+from ui.windows.uic.uic_zwosettings import Ui_ZWOSettings
 
 
-class ZWOSettings(QtWidgets.QFrame, ui_zwosettings.Ui_ZWOSettings):
+class ZWOSettings(QtWidgets.QFrame, Ui_ZWOSettings):
     def __init__(self):
         super().__init__()
         self.camera = None

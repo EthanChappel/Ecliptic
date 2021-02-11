@@ -8,9 +8,8 @@ import zwoasi as asi
 from PIL import Image, ImageQt
 from PySide6 import QtCore, QtGui, QtWidgets
 import appglobals
-import connectcamera
-import zwosettings
-import guiderparameters
+from ui.windows.zwosettings import ZWOSettings
+from ui.windows.guiderparameters import GuiderParameters
 from ui.windows.uic.uic_mainwindow import Ui_MainWindow
 from ui.frames.schedule import ScheduleFrame
 from ui.frames.guider import GuiderFrame
@@ -45,14 +44,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.status_coords_label = QtWidgets.QLabel()
         self.setupUi(self)
 
-        self.camera_settings_frame = zwosettings.ZWOSettings()
+        self.camera_settings_frame = ZWOSettings()
         self.camera_settings_action = QtWidgets.QWidgetAction(None)
         self.camera_settings_menu = QtWidgets.QMenu()
         self.camera_settings_menu.addAction(self.savelocation_action)
         self.camera_settings_btn.setMenu(self.camera_settings_menu)
 
-        self.guider_settings_frame = zwosettings.ZWOSettings()
-        self.guider_parameters_frame = guiderparameters.GuiderParameters()
+        self.guider_settings_frame = ZWOSettings()
+        self.guider_parameters_frame = GuiderParameters()
         self.guider_settings_action = QtWidgets.QWidgetAction(None)
         self.guider_settings_action.setDefaultWidget(self.guider_settings_frame)
         self.guider_parameters_action = QtWidgets.QWidgetAction(None)

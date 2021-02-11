@@ -5,11 +5,10 @@ from PySide6 import QtWidgets
 from .uic.uic_settings import Ui_SettingsFrame
 from ui.frames.filters import FiltersFrame
 from thread import TelescopeConnectThread
-from connectcamera import ConnectCamera
+from ui.windows.connectcamera import ConnectCamera
 import appglobals
 from equipment import zwo
 from astrometry.astap import AstapSolver
-import zwosettings
 
 if sys.platform.startswith("win"):
     from equipment import ascom

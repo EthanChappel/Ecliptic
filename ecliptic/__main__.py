@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from PySide6 import QtCore, QtGui, QtWidgets
-import mainwindow
+from ui.windows.mainwindow import MainWindow
 
 sys.dont_write_bytecode = True
 
@@ -38,6 +38,6 @@ app.setStyleSheet("""
 app.setPalette(palette)
 app.setStyle("Fusion")
 
-widget = mainwindow.MainWindow()
+widget = MainWindow()
 widget.show()
 sys.exit(app.exec_())

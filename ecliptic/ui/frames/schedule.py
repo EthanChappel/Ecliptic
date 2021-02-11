@@ -3,7 +3,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from .uic.uic_schedule import Ui_ScheduleFrame
 from ..delegates.widgets import *
 from ..delegates.custom import *
-from scheduleentrydialog import ScheduleEntryDialog
+from ui.windows.scheduleentrydialog import ScheduleEntryDialog
 import appglobals
 from database import Database
 

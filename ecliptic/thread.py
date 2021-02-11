@@ -52,3 +52,11 @@ class CameraThread(QtCore.QThread):
             self.writer.close()
 
         self.writer = writer
+
+class FinderCameraThread(CameraThread):
+    def run(self):
+        self.camera.video_mode = True
+        frame = self.camera.get_frame()
+        self.camera.video_mode = False
+        image = Image.fromarray(frame)
+        self.exposure_done.emit(image)

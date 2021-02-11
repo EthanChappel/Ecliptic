@@ -34,6 +34,9 @@ class Telescope(Device):
     def pulse_guide(self, direction: int, duration: int): pass
 
     @abstractmethod
+    def sync(self, ra: float, dec: float): pass
+
+    @abstractmethod
     def set_parked(self, parked: bool): pass
 
     @property

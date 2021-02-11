@@ -71,6 +71,9 @@ class AscomTelescope(Telescope, AscomDevice):
 
     def pulse_guide(self, direction: int, duration: int):
         self.driver.PulseGuide(direction, duration)
+    
+    def sync(self, ra: float, dec: float):
+        self.driver.SyncToCoordinates(ra, dec)
 
     @property
     def can_slew_eq(self) -> bool:

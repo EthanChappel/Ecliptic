@@ -60,3 +60,24 @@ class FinderCameraThread(CameraThread):
         self.camera.video_mode = False
         image = Image.fromarray(frame)
         self.exposure_done.emit(image)
+
+
+class PlateSolveThread(QtCore.QThread):
+    plate_solve_complete = QtCore.Signal(object)
+
+    def __init__(self, solver, image, ra_h=None, dec_d=None, radius_d=None, fov_d=None, down_sample=None, debug=False, parent=None):
+        super().__init__(parent)
+
+        self.solver = solver
+        self.image = image
+        self.ra = ra_h
+        self.dec = dec_d
+        self.radius = radius_d
+        self.fov = fov_d
+        self.down_sample = down_sample
+        self.debug = debug
+    
+    def run(self):
+        self.plate_solve_complete.emit(
+            self.solver.solve(self.image, self.ra, self.dec, self.radius, self.fov, self.down_sample, self.debug)
+        )

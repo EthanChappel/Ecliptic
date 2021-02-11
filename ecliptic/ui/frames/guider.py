@@ -1,5 +1,6 @@
 from PySide6 import QtGui, QtWidgets
 from PIL import ImageQt
+from thread import PlateSolveThread
 from .uic.uic_guider import Ui_GuiderFrame
 from astrometry.astap import AstapSolver
 import appglobals
@@ -10,6 +11,7 @@ class GuiderFrame(QtWidgets.QFrame, Ui_GuiderFrame):
         self.parent = parent
         self.solver = None
         self.image = None
+        self.thread = None
         
         super().__init__(self.parent)
         self.setupUi(self)
@@ -26,7 +28,8 @@ class GuiderFrame(QtWidgets.QFrame, Ui_GuiderFrame):
         self.solver = solver
     
     def plate_solve(self):
-        self.solver.solve(
+        self.thread = PlateSolveThread(
+            self.solver,
             self.image,
             self.parent.telescope.right_ascension,
             self.parent.telescope.declination,
@@ -35,4 +38,6 @@ class GuiderFrame(QtWidgets.QFrame, Ui_GuiderFrame):
             self.parent.settings_frame.downsample_combo_box.currentIndex(),
             self.parent.settings_frame.plate_solve_debug_check_box.isChecked(),
         )
+        self.thread.daemon = True
+        self.thread.start()
 

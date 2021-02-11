@@ -2,6 +2,8 @@ from PySide6 import QtCore, QtGui
 from formats.ser3 import Ser3Writer
 from PIL import Image, ImageQt
 from equipment.ascom import AscomTelescope
+from astropy.coordinates import get_body
+from astropy.time import Time
 
 
 class TelescopeThread(QtCore.QThread):
@@ -19,6 +21,25 @@ class TelescopeThread(QtCore.QThread):
             self.setup_complete.emit(telescope)
         except Exception as e:
             self.setup_failed.emit(e)
+
+
+class TelescopeSlewThread(QtCore.QThread):
+    slew_complete = QtCore.Signal()
+
+    def __init__(self, telescope, target, parent=None):
+        super().__init__(parent)
+        self.telescope = telescope
+        self.target = target
+    
+    def run(self):
+        if self.target == "Home":
+            self.telescope.goto_home()
+        elif self.target == "Stop":
+            self.telescope.tracking = False
+        else:
+            body = get_body(self.target.lower(), Time.now())
+            self.telescope.goto(body.ra.hour, body.dec.degree)
+
 
 class CameraThread(QtCore.QThread):
     exposure_done = QtCore.Signal(object)

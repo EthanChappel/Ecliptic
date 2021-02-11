@@ -6,7 +6,7 @@ from astropy.coordinates import get_body
 from astropy.time import Time
 
 
-class TelescopeThread(QtCore.QThread):
+class TelescopeConnectThread(QtCore.QThread):
     setup_complete = QtCore.Signal(AscomTelescope)
     setup_failed = QtCore.Signal(Exception)
 

@@ -4,7 +4,7 @@ import json
 from PySide6 import QtWidgets
 from .uic.uic_settings import Ui_SettingsFrame
 from ui.frames.filters import FiltersFrame
-from thread import TelescopeThread
+from thread import TelescopeConnectThread
 from connectcamera import ConnectCamera
 import appglobals
 from equipment import zwo
@@ -68,7 +68,7 @@ class SettingsFrame(QtWidgets.QFrame, Ui_SettingsFrame):
     def connect_telescope(self, b):
         if self.telescope_check_box.isChecked():
             name = "The telescope"
-            self.setup_thread = TelescopeThread(self.parent.telescope, self)
+            self.setup_thread = TelescopeConnectThread(self.parent.telescope, self)
             self.setup_thread.setup_complete.connect(self.telescope_settings)
             self.setup_thread.setup_complete.connect(self.parent.can_plate_solve)
             self.setup_thread.setup_failed.connect(self.telescope_connect_failed)

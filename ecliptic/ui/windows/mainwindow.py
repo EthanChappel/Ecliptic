@@ -226,6 +226,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         messagebox.setText("{} failed to connect.".format(name))
         messagebox.exec_()
 
+    def goto_target(self):
         self.telescope_thread = TelescopeSlewThread(self.telescope, self.object_combobox.currentText(), parent=self)
         self.telescope_thread.daemon = True
         self.telescope_thread.start()

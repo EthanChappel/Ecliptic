@@ -53,8 +53,9 @@ class CameraThread(QtCore.QThread):
         self.widget = widget
         self.writer = None
 
-        self.parent.start_recording.connect(self.set_writer)
-        self.parent.stop_recording.connect(self.set_writer)
+        if self.parent:
+            self.parent.start_recording.connect(self.set_writer)
+            self.parent.stop_recording.connect(self.set_writer)
 
     def run(self):
         self.camera.video_mode = True

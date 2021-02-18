@@ -1,8 +1,12 @@
-import json
+﻿import json
 import os
 import sys
 import threading
 from datetime import datetime
+import astropy.units as u
+from astropy.coordinates import get_body
+from astropy.coordinates import Angle
+from astropy.time import Time
 from formats.ser3 import Ser3Writer
 import zwoasi as asi
 from PIL import Image, ImageQt
@@ -164,7 +168,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.slewsouthwest_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
         self.slewnorthwest_button.released.connect(lambda: self.slew_diagonal(0.0, 0.0))
 
-        self.goto_button.clicked.connect(self.goto_target)
+        self.goto_button.clicked.connect(self.goto_target_and_verify)
 
         self.guider_snap_button.clicked.connect(self.guider_snap)
         self.camera_loop_button.clicked.connect(self.camera_loop)
@@ -230,6 +234,47 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.telescope_thread = TelescopeSlewThread(self.telescope, self.object_combobox.currentText(), parent=self)
         self.telescope_thread.daemon = True
         self.telescope_thread.start()
+    
+    # TODO: Use multithreading
+    def goto_target_and_verify(self):
+        target = self.object_combobox.currentText()
+        if target == "Home":
+            self.telescope.goto_home()
+            return
+        elif target == "Stop":
+            self.telescope.tracking = False
+            return
+
+        separation = Angle(180 * u.deg)
+        attempts = self.settings_frame.max_attempts_spin_box.value()
+        precision = Angle(self.settings_frame.precision_spin_box.value() * u.arcsec)
+        
+        # Repeat until slew is sufficiently accurate or max attempts reached.
+        while separation > precision and attempts > 0:
+            body = get_body(target.lower(), Time.now())
+            self.telescope.goto(body.ra.hour, body.dec.degree)
+
+            # Capture image from guider.
+            self.guider.video_mode = True
+            frame = self.guider.get_frame()
+            self.guider.video_mode = False
+            image = Image.fromarray(frame)
+            self.guider_frame.preview(image)
+
+            # Get real position of telescope.
+            results = self.guider_frame.solver.solve(
+                image,
+                body.ra.hour,
+                body.dec.deg,
+                self.settings_frame.search_radius_spin_box.value(),
+                None,
+                self.settings_frame.downsample_combo_box.currentIndex(),
+                self.settings_frame.plate_solve_debug_check_box.isChecked(),
+            )
+
+            # Calculate accuracy of slew.
+            separation = results.separation(body)
+            attempts -= 1
 
     def slew_diagonal(self, rate1: float, rate2: float):
         self.telescope.move_axis(0, rate1)

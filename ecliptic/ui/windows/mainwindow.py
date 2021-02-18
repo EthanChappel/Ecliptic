@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import threading
@@ -406,9 +406,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     
     @QtCore.Slot()
     def can_plate_solve(self):
-        self.guider_frame.plate_solve_button.setEnabled(
-            bool(self.telescope and self.guider and self.guider_frame.image)
-        )
+        can_solve = bool(self.telescope and self.guider and self.guider_frame.image)
+        self.guider_frame.plate_solve_button.setEnabled(can_solve)
+        return can_solve
 
     def showEvent(self, event: QtGui.QShowEvent):
         """Override default showEvent method."""

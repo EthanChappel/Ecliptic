@@ -1,9 +1,11 @@
 from PySide6 import QtCore, QtGui
 from formats.ser3 import Ser3Writer
 from PIL import Image, ImageQt
-from equipment.ascom import AscomTelescope
 from astropy.coordinates import get_body
+from astropy.coordinates import Angle
 from astropy.time import Time
+import astropy.units as u
+from equipment.ascom import AscomTelescope
 
 
 class TelescopeConnectThread(QtCore.QThread):
@@ -104,3 +106,61 @@ class PlateSolveThread(QtCore.QThread):
         self.plate_solve_complete.emit(
             self.solver.solve(self.image, self.ra, self.dec, self.radius, self.fov, self.down_sample, self.debug)
         )
+
+class GotoAndVerifyThread(QtCore.QThread):
+    exposure_done = QtCore.Signal(object)
+    plate_solve_complete = QtCore.Signal(object)
+    plate_solve_failed = QtCore.Signal(object)
+
+    def __init__(self, target, accuracy, max_attempts, telescope, finder, solver, radius_d=None, fov_d=None, down_sample=None, debug=False, parent=None):
+        super().__init__(parent)
+        
+        self.target = target
+        self.accuracy = Angle(accuracy * u.arcsec)
+        self.attempts = max_attempts
+        self.telescope = telescope
+        self.finder = finder
+        self.solver = solver
+        self.radius = radius_d
+        self.fov = fov_d
+        self.down_sample = down_sample
+        self.debug = debug
+        self.parent = parent
+
+    # TODO: Utilize other threads.
+    def run(self):
+        results = None
+        separation = Angle(180 * u.deg)
+        
+        # Repeat until slew is sufficiently accurate or max attempts reached.
+        while separation > self.accuracy and self.attempts > 0:
+            self.telescope.goto(self.target.ra.hour, self.target.dec.degree)
+
+            # Capture image from finder.
+            self.finder.video_mode = True
+            frame = self.finder.get_frame()
+            self.finder.video_mode = False
+            image = Image.fromarray(frame)
+            self.exposure_done.emit(image)
+
+            try:
+                # Get real position of telescope.
+                results = self.solver.solve(
+                    image,
+                    self.target.ra.hour,
+                    self.target.dec.deg,
+                    self.radius,
+                    self.fov,
+                    self.down_sample,
+                    self.debug,
+                )
+                self.plate_solve_complete.emit(results)
+            except FileNotFoundError:
+                plate_solve_failed.emit(FileNotFoundError)
+                return
+
+            self.telescope.sync(results.ra.hour, results.dec.deg)
+
+            # Calculate accuracy of slew.
+            separation = results.separation(self.target)
+            self.attempts -= 1

@@ -18,7 +18,7 @@ class Ui_SettingsFrame(object):
     def setupUi(self, SettingsFrame):
         if not SettingsFrame.objectName():
             SettingsFrame.setObjectName(u"SettingsFrame")
-        SettingsFrame.resize(622, 487)
+        SettingsFrame.resize(631, 552)
         self.verticalLayout_2 = QVBoxLayout(SettingsFrame)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -30,7 +30,7 @@ class Ui_SettingsFrame(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -254, 605, 741))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -313, 614, 865))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.equipment_group_box = QGroupBox(self.scrollAreaWidgetContents)
@@ -278,16 +278,26 @@ class Ui_SettingsFrame(object):
 
         self.formLayout_2.setWidget(2, QFormLayout.SpanningRole, self.label)
 
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.formLayout_3 = QFormLayout()
+        self.formLayout_3.setObjectName(u"formLayout_3")
+        self.precision_label = QLabel(self.plate_solving_group_box)
+        self.precision_label.setObjectName(u"precision_label")
 
-        self.horizontalLayout_4.addItem(self.horizontalSpacer)
+        self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.precision_label)
+
+        self.precision_spin_box = QSpinBox(self.plate_solving_group_box)
+        self.precision_spin_box.setObjectName(u"precision_spin_box")
+        self.precision_spin_box.setMinimum(1)
+        self.precision_spin_box.setMaximum(7800)
+        self.precision_spin_box.setSingleStep(5)
+        self.precision_spin_box.setValue(120)
+
+        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.precision_spin_box)
 
         self.search_radius_label = QLabel(self.plate_solving_group_box)
         self.search_radius_label.setObjectName(u"search_radius_label")
 
-        self.horizontalLayout_4.addWidget(self.search_radius_label)
+        self.formLayout_3.setWidget(2, QFormLayout.LabelRole, self.search_radius_label)
 
         self.search_radius_spin_box = QSpinBox(self.plate_solving_group_box)
         self.search_radius_spin_box.setObjectName(u"search_radius_spin_box")
@@ -296,19 +306,12 @@ class Ui_SettingsFrame(object):
         self.search_radius_spin_box.setSingleStep(2)
         self.search_radius_spin_box.setValue(20)
 
-        self.horizontalLayout_4.addWidget(self.search_radius_spin_box)
-
-        self.line_2 = QFrame(self.plate_solving_group_box)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.VLine)
-        self.line_2.setFrameShadow(QFrame.Sunken)
-
-        self.horizontalLayout_4.addWidget(self.line_2)
+        self.formLayout_3.setWidget(2, QFormLayout.FieldRole, self.search_radius_spin_box)
 
         self.downsample_label = QLabel(self.plate_solving_group_box)
         self.downsample_label.setObjectName(u"downsample_label")
 
-        self.horizontalLayout_4.addWidget(self.downsample_label)
+        self.formLayout_3.setWidget(3, QFormLayout.LabelRole, self.downsample_label)
 
         self.downsample_combo_box = QComboBox(self.plate_solving_group_box)
         self.downsample_combo_box.addItem("")
@@ -318,22 +321,28 @@ class Ui_SettingsFrame(object):
         self.downsample_combo_box.addItem("")
         self.downsample_combo_box.setObjectName(u"downsample_combo_box")
 
-        self.horizontalLayout_4.addWidget(self.downsample_combo_box)
+        self.formLayout_3.setWidget(3, QFormLayout.FieldRole, self.downsample_combo_box)
 
-        self.line_3 = QFrame(self.plate_solving_group_box)
-        self.line_3.setObjectName(u"line_3")
-        self.line_3.setFrameShape(QFrame.VLine)
-        self.line_3.setFrameShadow(QFrame.Sunken)
+        self.max_attempts_label = QLabel(self.plate_solving_group_box)
+        self.max_attempts_label.setObjectName(u"max_attempts_label")
 
-        self.horizontalLayout_4.addWidget(self.line_3)
+        self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.max_attempts_label)
+
+        self.max_attempts_spin_box = QSpinBox(self.plate_solving_group_box)
+        self.max_attempts_spin_box.setObjectName(u"max_attempts_spin_box")
+        self.max_attempts_spin_box.setMinimum(1)
+        self.max_attempts_spin_box.setMaximum(100)
+        self.max_attempts_spin_box.setValue(5)
+
+        self.formLayout_3.setWidget(1, QFormLayout.FieldRole, self.max_attempts_spin_box)
 
         self.plate_solve_debug_check_box = QCheckBox(self.plate_solving_group_box)
         self.plate_solve_debug_check_box.setObjectName(u"plate_solve_debug_check_box")
 
-        self.horizontalLayout_4.addWidget(self.plate_solve_debug_check_box)
+        self.formLayout_3.setWidget(4, QFormLayout.SpanningRole, self.plate_solve_debug_check_box)
 
 
-        self.formLayout_2.setLayout(4, QFormLayout.SpanningRole, self.horizontalLayout_4)
+        self.formLayout_2.setLayout(4, QFormLayout.SpanningRole, self.formLayout_3)
 
         self.line = QFrame(self.plate_solving_group_box)
         self.line.setObjectName(u"line")
@@ -394,6 +403,8 @@ class Ui_SettingsFrame(object):
         self.astap_radio.setText(QCoreApplication.translate("SettingsFrame", u"ASTAP", None))
         self.astap_location_button.setText(QCoreApplication.translate("SettingsFrame", u"Browse...", None))
         self.label.setText(QCoreApplication.translate("SettingsFrame", u"<html><head/><body><p>ASTAP is a free stacking and astrometric solver (plate solver) program. It has a powerful FITS viewer and the native astrometric solver can be used by Ecliptic or other imaging programs to synchronise the mount based on an image taken.</p><p><a href=\"http://www.hnsky.org/astap.htm\"><span style=\" text-decoration: underline; color:#007af4;\">http://www.hnsky.org/astap.htm</span></a></p></body></html>", None))
+        self.precision_label.setText(QCoreApplication.translate("SettingsFrame", u"Precision", None))
+        self.precision_spin_box.setSuffix(QCoreApplication.translate("SettingsFrame", u"\"", None))
         self.search_radius_label.setText(QCoreApplication.translate("SettingsFrame", u"Search radius", None))
         self.search_radius_spin_box.setSuffix(QCoreApplication.translate("SettingsFrame", u"\u00b0", None))
         self.downsample_label.setText(QCoreApplication.translate("SettingsFrame", u"Downsample", None))
@@ -403,6 +414,7 @@ class Ui_SettingsFrame(object):
         self.downsample_combo_box.setItemText(3, QCoreApplication.translate("SettingsFrame", u"3", None))
         self.downsample_combo_box.setItemText(4, QCoreApplication.translate("SettingsFrame", u"4", None))
 
+        self.max_attempts_label.setText(QCoreApplication.translate("SettingsFrame", u"Max Attempts", None))
         self.plate_solve_debug_check_box.setText(QCoreApplication.translate("SettingsFrame", u"Debug", None))
     # retranslateUi
 

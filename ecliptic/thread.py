@@ -28,6 +28,7 @@ class TelescopeSlewThread(QtCore.QThread):
 
     def __init__(self, telescope, target, parent=None):
         super().__init__(parent)
+        self.parent = parent
         self.telescope = telescope
         self.target = target
     

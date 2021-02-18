@@ -267,10 +267,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if type(self.guider) is zwo.ZwoCamera:
             self.guider_settings_frame.setup_controls(self.guider)
 
-    def guider_snap(self):
+    def guider_snap(self, plate_solve=False):
         self.guider_thread = FinderCameraThread(self.guider, None, self)
         self.guider_thread.exposure_done.connect(self.guider_frame.preview)
         self.guider_thread.exposure_done.connect(self.can_plate_solve)
+        if plate_solve:
+            self.guider_thread.exposure_done.connect(self.guider_frame.plate_solve)
         self.guider_thread.daemon = True
         self.guider_thread.start()
 

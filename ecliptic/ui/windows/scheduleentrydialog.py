@@ -1,6 +1,7 @@
 from PySide6 import QtCore, QtWidgets
 from ui.windows.uic.scheduleentry import Ui_ScheduleEntryDialog
 from ui.delegates.widgets import *
+import appglobals
 
 class ScheduleEntryDialog(QtWidgets.QDialog, Ui_ScheduleEntryDialog):
     def __init__(self):
@@ -10,7 +11,7 @@ class ScheduleEntryDialog(QtWidgets.QDialog, Ui_ScheduleEntryDialog):
         self.filter_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
         # Create Delegates for columns in filters table.
-        self.filter_delegate = QComboBoxItemDelegate(self)
+        self.filter_delegate = QComboBoxItemDelegate(self, [f['Name'] for f in appglobals.filters])
         self.exposure_delegate = QDoubleSpinBoxItemDelegate(self)
         self.gain_delegate = QSpinBoxItemDelegate(self)
         self.bin_delegate = QComboBoxItemDelegate(self)
@@ -25,8 +26,8 @@ class ScheduleEntryDialog(QtWidgets.QDialog, Ui_ScheduleEntryDialog):
         self.filter_table.setItemDelegateForColumn(4, self.limit_delegate)
         self.filter_table.setItemDelegateForColumn(5, self.format_delegate)
 
-        self.add_filter_button.clicked.connect(self.add_filter_row)
-        self.remove_filter_button.clicked.connect(self.remove_filter_row)
+        self.add_button.clicked.connect(self.add_filter_row)
+        self.remove_button.clicked.connect(self.remove_filter_row)
 
     def add_filter_row(self):
         """Add row in filter_table."""

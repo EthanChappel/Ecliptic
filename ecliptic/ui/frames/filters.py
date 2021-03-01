@@ -25,17 +25,10 @@ class FiltersFrame(QtWidgets.QFrame, Ui_FiltersFrame):
 
         self.filter_list_model = QtCore.QStringListModel()
 
-        self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-        self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-
         # Create Delegates for columns in filters table.
         self.position_delegate = QSpinBoxItemDelegate(self)
-        self.lower_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, appglobals.CUTOFF_UNIT)
-        self.upper_cutoff_delegate = QSpinBoxItemDelegate(self, 0, 2000, appglobals.CUTOFF_UNIT)
 
-        self.table.setItemDelegateForColumn(2, self.position_delegate)
-        self.table.setItemDelegateForColumn(3, self.lower_cutoff_delegate)
-        self.table.setItemDelegateForColumn(4, self.upper_cutoff_delegate)
+        self.table.setItemDelegateForColumn(1, self.position_delegate)
 
         self.table.itemChanged.connect(self.save_filters)
     
@@ -58,10 +51,8 @@ class FiltersFrame(QtWidgets.QFrame, Ui_FiltersFrame):
             self.add_filter_row()
 
             self.table.setItem(count, 0, QtWidgets.QTableWidgetItem(f["Name"]))
-            self.table.setItem(count, 1, QtWidgets.QTableWidgetItem(f["Brand"]))
-            self.table.setItem(count, 2, QtWidgets.QTableWidgetItem(str(f["Wheel Position"])))
-            self.table.setItem(count, 3, QtWidgets.QTableWidgetItem(str(f["Lower Cutoff"])))
-            self.table.setItem(count, 4, QtWidgets.QTableWidgetItem(str(f["Upper Cutoff"])))
+            self.table.setItem(count, 1, QtWidgets.QTableWidgetItem(str(f["Wheel Position"])))
+            self.table.setItem(count, 2, QtWidgets.QTableWidgetItem(f["Comments"]))
 
             count += 1
     
@@ -80,7 +71,7 @@ class FiltersFrame(QtWidgets.QFrame, Ui_FiltersFrame):
                 # Save existing items with numeric strings as integers.
                 if item is None:
                     pass
-                elif col > 1 and item.text() not in ("", "None"):
+                elif col == 1 and item.text() not in ("", "None"):
                     value = int(item.text())
                 elif isinstance(item.text(), str) and item.text() not in ("", "None"):
                     value = item.text()

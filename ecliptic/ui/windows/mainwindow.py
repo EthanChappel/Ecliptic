@@ -430,7 +430,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         index = self.position_combobox.findText(text)
         self.position_combobox.setCurrentIndex(index)
         self.position_combobox.blockSignals(False)
-        index = self.position_combobox.findText(text2)
+        index = self.position_combobox.findText(text)
         self.position_combobox.setCurrentIndex(index)
     
     @QtCore.Slot()

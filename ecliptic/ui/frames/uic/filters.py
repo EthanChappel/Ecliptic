@@ -23,20 +23,17 @@ class Ui_FiltersFrame(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.table = QTableWidget(FiltersFrame)
-        if (self.table.columnCount() < 5):
-            self.table.setColumnCount(5)
+        if (self.table.columnCount() < 3):
+            self.table.setColumnCount(3)
         __qtablewidgetitem = QTableWidgetItem()
         self.table.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
         self.table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
         __qtablewidgetitem2 = QTableWidgetItem()
         self.table.setHorizontalHeaderItem(2, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.table.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.table.setObjectName(u"table")
         self.table.setSortingEnabled(False)
+        self.table.horizontalHeader().setStretchLastSection(True)
 
         self.verticalLayout.addWidget(self.table)
 
@@ -88,16 +85,12 @@ class Ui_FiltersFrame(object):
         ___qtablewidgetitem.setToolTip(QCoreApplication.translate("FiltersFrame", u"The name of the filter", None));
 #endif // QT_CONFIG(tooltip)
         ___qtablewidgetitem1 = self.table.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("FiltersFrame", u"Brand", None));
-        ___qtablewidgetitem2 = self.table.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("FiltersFrame", u"Wheel Position", None));
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("FiltersFrame", u"Wheel Position", None));
 #if QT_CONFIG(tooltip)
-        ___qtablewidgetitem2.setToolTip(QCoreApplication.translate("FiltersFrame", u"The position the filter lies in the filter wheel", None));
+        ___qtablewidgetitem1.setToolTip(QCoreApplication.translate("FiltersFrame", u"The position the filter lies in the filter wheel", None));
 #endif // QT_CONFIG(tooltip)
-        ___qtablewidgetitem3 = self.table.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("FiltersFrame", u"Lower Cutoff", None));
-        ___qtablewidgetitem4 = self.table.horizontalHeaderItem(4)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate("FiltersFrame", u"Upper Cutoff", None));
+        ___qtablewidgetitem2 = self.table.horizontalHeaderItem(2)
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("FiltersFrame", u"Comments", None));
 #if QT_CONFIG(tooltip)
         self.add_button.setToolTip(QCoreApplication.translate("FiltersFrame", u"Add row", None))
 #endif // QT_CONFIG(tooltip)

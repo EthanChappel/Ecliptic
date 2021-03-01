@@ -31,17 +31,15 @@
      <property name="sortingEnabled">
       <bool>false</bool>
      </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <column>
       <property name="text">
        <string>Name</string>
       </property>
       <property name="toolTip">
        <string>The name of the filter</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Brand</string>
       </property>
      </column>
      <column>
@@ -54,12 +52,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Lower Cutoff</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Upper Cutoff</string>
+       <string>Comments</string>
       </property>
      </column>
     </widget>

@@ -1,5 +1,5 @@
 from PySide6 import QtWidgets
-from ui.windows.uic.uic_guiderparameters import Ui_GuiderParameters
+from ui.windows.uic.guiderparameters import Ui_GuiderParameters
 
 
 class GuiderParameters(QtWidgets.QFrame, Ui_GuiderParameters):

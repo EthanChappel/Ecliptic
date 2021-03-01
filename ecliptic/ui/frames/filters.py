@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict
 from PySide6 import QtCore, QtWidgets
-from .uic.uic_filters import Ui_FiltersFrame
+from .uic.filters import Ui_FiltersFrame
 from ..delegates.widgets import *
 import appglobals
 

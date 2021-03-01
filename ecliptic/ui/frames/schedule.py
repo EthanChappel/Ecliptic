@@ -1,6 +1,6 @@
 import sqlite3
 from PySide6 import QtCore, QtGui, QtWidgets
-from .uic.uic_schedule import Ui_ScheduleFrame
+from .uic.schedule import Ui_ScheduleFrame
 from ..delegates.widgets import *
 from ..delegates.custom import *
 from ui.windows.scheduleentrydialog import ScheduleEntryDialog

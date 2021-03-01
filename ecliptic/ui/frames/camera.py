@@ -1,6 +1,6 @@
 from PySide6 import QtGui, QtWidgets
 from PIL import ImageQt
-from .uic.uic_camera import Ui_CameraFrame
+from .uic.camera import Ui_CameraFrame
 
 
 class CameraFrame(QtWidgets.QFrame, Ui_CameraFrame):

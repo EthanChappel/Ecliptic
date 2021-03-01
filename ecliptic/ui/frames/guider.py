@@ -1,7 +1,7 @@
 from PySide6 import QtGui, QtWidgets
 from PIL import ImageQt
 from thread import PlateSolveThread
-from .uic.uic_guider import Ui_GuiderFrame
+from .uic.guider import Ui_GuiderFrame
 from astrometry.astap import AstapSolver
 import appglobals
 

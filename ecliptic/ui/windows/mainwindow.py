@@ -12,7 +12,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 import appglobals
 from ui.windows.zwosettings import ZWOSettings
 from ui.windows.guiderparameters import GuiderParameters
-from ui.windows.uic.uic_mainwindow import Ui_MainWindow
+from ui.windows.uic.mainwindow import Ui_MainWindow
 from ui.frames.schedule import ScheduleFrame
 from ui.frames.guider import GuiderFrame
 from ui.frames.camera import CameraFrame

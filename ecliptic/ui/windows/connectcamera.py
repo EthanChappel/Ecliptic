@@ -2,7 +2,7 @@ import sys
 from PySide6 import QtCore, QtWidgets
 import zwoasi as asi
 from equipment import zwo
-from ui.windows.uic.uic_connectcamera import Ui_ConnectCamera
+from ui.windows.uic.connectcamera import Ui_ConnectCamera
 
 if sys.platform.startswith("win"):
     from equipment import ascom

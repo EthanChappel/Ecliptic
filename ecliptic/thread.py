@@ -156,7 +156,7 @@ class GotoAndVerifyThread(QtCore.QThread):
                 )
                 self.plate_solve_complete.emit(results)
             except FileNotFoundError:
-                plate_solve_failed.emit(FileNotFoundError)
+                self.plate_solve_failed.emit(FileNotFoundError)
                 return
 
             self.telescope.sync(results.ra.hour, results.dec.deg)

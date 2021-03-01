@@ -23,27 +23,6 @@ class Ui_ScheduleEntryDialog(object):
         self.verticalLayout = QVBoxLayout(ScheduleEntryDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.filter_table = QTableWidget(ScheduleEntryDialog)
-        if (self.filter_table.columnCount() < 6):
-            self.filter_table.setColumnCount(6)
-        __qtablewidgetitem = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(2, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
-        __qtablewidgetitem5 = QTableWidgetItem()
-        self.filter_table.setHorizontalHeaderItem(5, __qtablewidgetitem5)
-        self.filter_table.setObjectName(u"filter_table")
-        self.filter_table.setFrameShape(QFrame.NoFrame)
-        self.filter_table.setFrameShadow(QFrame.Plain)
-
-        self.verticalLayout.addWidget(self.filter_table)
-
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(9, -1, 9, 9)
@@ -91,18 +70,6 @@ class Ui_ScheduleEntryDialog(object):
 
     def retranslateUi(self, ScheduleEntryDialog):
         ScheduleEntryDialog.setWindowTitle("")
-        ___qtablewidgetitem = self.filter_table.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Filter", None));
-        ___qtablewidgetitem1 = self.filter_table.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Exposure", None));
-        ___qtablewidgetitem2 = self.filter_table.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Gain", None));
-        ___qtablewidgetitem3 = self.filter_table.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Bin", None));
-        ___qtablewidgetitem4 = self.filter_table.horizontalHeaderItem(4)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Limit", None));
-        ___qtablewidgetitem5 = self.filter_table.horizontalHeaderItem(5)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate("ScheduleEntryDialog", u"Format", None));
         self.add_button.setText("")
         self.remove_button.setText("")
         self.reset_button.setText("")
